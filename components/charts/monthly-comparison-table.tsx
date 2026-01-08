@@ -5,14 +5,14 @@ import { ArrowUp, ArrowDown, Minus } from "lucide-react"
 const comparisonData = [
   {
     metric: "Total Transaction Volume",
-    current: "£4,900,000",
-    previous: "£5,100,000",
+    current: "R4,900,000",
+    previous: "R5,100,000",
     change: -3.9,
   },
   {
     metric: "Average Transaction Value",
-    current: "£2,273",
-    previous: "£2,283",
+    current: "R2,273",
+    previous: "R2,283",
     change: -0.4,
   },
   {

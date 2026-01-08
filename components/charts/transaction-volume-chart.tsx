@@ -30,7 +30,7 @@ export function TransactionVolumeChart() {
         <ChartContainer
           config={{
             volume: {
-              label: "Volume (£)",
+              label: "Volume (R)",
               color: "hsl(var(--chart-1))",
             },
             transactions: {
@@ -55,7 +55,7 @@ export function TransactionVolumeChart() {
                 stroke="var(--color-volume)"
                 strokeWidth={2}
                 dot={{ r: 4 }}
-                name="Volume (£)"
+                name="Volume (R)"
               />
               <Line
                 yAxisId="right"
