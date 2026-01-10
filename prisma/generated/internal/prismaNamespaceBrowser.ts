@@ -53,7 +53,9 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   MonitoringJob: 'MonitoringJob',
   AuditLog: 'AuditLog',
-  SanctionEntity: 'SanctionEntity'
+  SanctionEntity: 'SanctionEntity',
+  BlindIndex: 'BlindIndex',
+  SystemConfig: 'SystemConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,6 +110,29 @@ export const SanctionEntityScalarFieldEnum = {
 export type SanctionEntityScalarFieldEnum = (typeof SanctionEntityScalarFieldEnum)[keyof typeof SanctionEntityScalarFieldEnum]
 
 
+export const BlindIndexScalarFieldEnum = {
+  id: 'id',
+  hash: 'hash',
+  recordId: 'recordId',
+  model: 'model',
+  field: 'field'
+} as const
+
+export type BlindIndexScalarFieldEnum = (typeof BlindIndexScalarFieldEnum)[keyof typeof BlindIndexScalarFieldEnum]
+
+
+export const SystemConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  fuzzyThreshold: 'fuzzyThreshold',
+  phoneticAlgorithm: 'phoneticAlgorithm',
+  semanticContext: 'semanticContext',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SystemConfigScalarFieldEnum = (typeof SystemConfigScalarFieldEnum)[keyof typeof SystemConfigScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -122,4 +147,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

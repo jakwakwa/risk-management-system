@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client"
-  output          = "./generated"
+  output          = "../node_modules/@prisma/client"
   previewFeatures = ["postgresqlExtensions"]
 }
 
@@ -41,4 +41,24 @@ model SanctionEntity {
   createdAt DateTime                    @default(now())
 
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+model BlindIndex {
+  id       String @id @default(cuid())
+  hash     String
+  recordId String
+  model    String
+  field    String
+
+  @@index([hash])
+  @@index([recordId, model, field])
+}
+
+model SystemConfig {
+  id                String   @id @default(cuid())
+  key               String   @unique // e.g. "ENGINE_SETTINGS"
+  fuzzyThreshold    Float    @default(0.7)
+  phoneticAlgorithm String   @default("BMPM") // BMPM or DoubleMetaphone
+  semanticContext   String? // Optional context for vector search
+  updatedAt         DateTime @updatedAt
 }

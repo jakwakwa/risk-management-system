@@ -54,3 +54,13 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type SanctionEntity = Prisma.SanctionEntityModel
+/**
+ * Model BlindIndex
+ * 
+ */
+export type BlindIndex = Prisma.BlindIndexModel
+/**
+ * Model SystemConfig
+ * 
+ */
+export type SystemConfig = Prisma.SystemConfigModel
