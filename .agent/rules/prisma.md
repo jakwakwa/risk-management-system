@@ -2,46 +2,30 @@
 trigger: always_on
 ---
 
-## 2) Prisma Schema Changes
+description: Enforcement of Prisma schema field naming, relation casing, and type safety protocols.
+alwaysApply: true
+---
 
-- In `schema.prisma`:
+## Prisma Schema & Casing Standards
 
-  - `generator client`:
+This project follows a strict differentiation between database column casing and Prisma Client relation casing.
 
-    ```diff
-    - provider = "prisma-client-js"
-    + provider = "prisma-client"
-      output   = "./generated"
-    ```
+### 1. Field Casing & Mapping
+- **Database Fields**: Use **snake_case** for all model fields (e.g., `created_at`, `user_id`). These typically use the `@map` attribute to link to underlying database columns.
+- **Relations**: Use **camelCase** for relation fields (e.g., `authorProfile`, `linkedAccount`). 
+- **Verification**: Before writing a query, always verify field names in [schema.prisma](mdc:prisma/schema.prisma).
 
-  - Remove any `previewFeatures = ["driverAdapters"]` and any `engineType` attributes.
+### 2. Implementation Rules
+- **No Assumptions**: Do not guess field names. If a field exists in the DB as `userId`, check if Prisma expects `user_id` based on the schema mapping.
+- **Type Safety**: Prefer importing generated types from `@prisma/client` or project-specific types from `@/lib/types`. Avoid using `any`.
+- **Query Structure**: Ensure `where`, `orderBy`, and `select`/`include` blocks respect the snake_case/camelCase split.
 
-  - Update the `datasource db` block:
+### 3. Examples
 
-    - **Goal:** keep the existing `provider` value, but **remove any `url = …` entry**.
-
-    - Example (for illustration only — do not insert comments into the user's schema):
-
-      - Before:
-
-        ```prisma
-        datasource db {
-          provider = "postgresql"
-          url      = env("DATABASE_URL")
-        }
-        ```
-
-      - After:
-
-        ```prisma
-        datasource db {
-          provider = "postgresql"
-        }
-        ```
-
-    - Rules:
-
-      - Preserve the existing `provider` value exactly as-is (e.g. `"postgresql"`, `"mysql"`, `"sqlite"`, etc.).
-      - Remove only the `url = ...` line from the `datasource db` block.
-      - Preserve any other properties on the datasource (for example: `shadowDatabaseUrl`, `relationMode`, `schemas`, `extensions`, `directUrl`, etc.).
-      - Do **not** add explanatory comments into the schema; comments in this prompt are hints for you, not code to emit.
+- **Correct Query Pattern**:
+```ts
+// snake_case for data fields, camelCase for relations
+await prisma.modelName.findUnique({
+  where: { account_id: id },
+  include: { userProfile: true } 
+});
