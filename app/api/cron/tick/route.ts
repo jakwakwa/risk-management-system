@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from '@/lib/db';
 import { CloudTasksClient } from "@google-cloud/tasks";
+import { createTemporalClient } from '@/services/temporal/client';
 // @ts-ignore
 import parser from "cron-parser";
 
 // DIRECT instantiation - NO factory, NO adapter
-const db = new PrismaClient();
 const tasksClient = new CloudTasksClient();
 
 export async function POST(req: NextRequest) {
