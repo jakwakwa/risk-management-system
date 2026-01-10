@@ -1,0 +1,44 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [pg_trgm, vector]
+}
+
+model MonitoringJob {
+  id             String   @id @default(cuid())
+  clientName     String
+  cronExpression String
+  nextRunAt      DateTime
+  userId         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([nextRunAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  jobId       String
+  clientName  String
+  result      String
+  gcsUrl      String
+  pdfHash     String
+  screened_at DateTime @default(now())
+
+  @@index([jobId])
+}
+
+model SanctionEntity {
+  id        String                      @id @default(cuid())
+  name      String
+  source    String
+  embedding Unsupported("vector(768)")?
+  createdAt DateTime                    @default(now())
+
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
+}
