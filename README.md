@@ -1,7 +1,5 @@
 
-# ---
-
-**Risk Management System: Deep Insights Engine**
+# Risk Management System: Deep Insights Engine**
 
 This repository contains the core risk analysis pipeline for the StratCol Risk platform. The architecture is designed to offload heavy data transformations to **BigQuery SQL** and leverage **Vertex AI** for behavioural pattern recognition, orchestrated via **Temporal.io**.
 
