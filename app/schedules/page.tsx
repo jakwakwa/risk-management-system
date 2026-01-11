@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { redirect } from 'next/navigation';
-
+import { CronPicker } from '@/components/scheduler/cron-picker';
 export default async function SchedulesPage() {
   // Mock User ID for now since auth isn't fully set up in the context provided
   const userId = 'user_123'; 
@@ -49,9 +49,8 @@ export default async function SchedulesPage() {
                         <Input id="clientName" name="clientName" placeholder="e.g. Acme Corp" required />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="cron">Cron Expression</Label>
-                        <Input id="cron" name="cron" placeholder="0 0 * * *" defaultValue="0 0 * * *" required />
-                        <p className="text-xs text-muted-foreground">Default: Daily at Midnight</p>
+                        <Label htmlFor="cron">Schedule</Label>
+                        <CronPicker name="cron" defaultValue="0 0 * * *" />
                     </div>
                     <Button type="submit" className="w-full">Create Schedule</Button>
                 </form>
