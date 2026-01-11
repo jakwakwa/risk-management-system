@@ -1,153 +1,293 @@
+To deploy your solution to Cloud Run while enabling full integration with BigQuery and Vertex AI, the focus shifts from just "uploading code" to **Identity and Access Management (IAM)**.
 
-The core shift is moving the "Transformation" logic out of your TypeScript code (Node.js) and into BigQuery SQL, as specified in your requirements: *"Utilise BigQuery's capabilities to transform... calculating total transaction counts."*
+In GCP, Cloud Run services do not use your personal credentials; they use a **Service Account**. To enable the "Deep Insights" pipeline you've built, this service account must have the explicit "keys" to talk to BigQuery (for your SQL transformations) and Vertex AI (for your risk scoring).
 
-### **1\. Add: BigQuery Transformation Scripts (SQL)**
+---
 
-Location: Create a new folder services/bigquery/sql/ or scripts/sql/.  
-Why: Your requirements state that data preparation (calculating monthly totals, significant values) must happen in BigQuery, not in the application memory.  
-**Create file:** services/bigquery/sql/transform\_client\_metrics.sql
+### 1. Provision a Dedicated Service Account
 
-SQL
+Avoid using the "Default Compute Service Account," as it often has broader permissions than necessary. Create a granular identity for your risk engine.
 
-\-- This query performs the "Transform and Prepare" step defined in your requirements  
-CREATE OR REPLACE PROCEDURE \`stratcol\_risk.generate\_client\_metrics\`(clientId INT64)  
-BEGIN  
-  \-- 1\. Aggregating Monthly Behaviour (Moving logic from TS to SQL)  
-  CREATE OR REPLACE TEMP TABLE MonthlyStats AS  
-  SELECT  
-    FORMAT\_DATE('%Y-%m', transaction\_date) as month\_period,  
-    COUNT(\*) as total\_transaction\_count,  
-    SUM(amount) as total\_value,  
-    MAX(amount) as max\_significant\_transaction  
-  FROM \`stratcol\_risk.transactions\`  
-  WHERE client\_id \= clientId  
-  GROUP BY 1;
+```bash
+# Create the service account
+gcloud iam service-accounts create risk-engine-sa \
+    --display-name="Risk Analysis Service Account"
 
-  \-- 2\. Write these "Deep Insights" to a serving table for Next.js  
-  MERGE \`stratcol\_risk.client\_behaviour\_profiles\` T  
-  USING MonthlyStats S  
-  ON T.client\_id \= clientId AND T.month \= S.month\_period  
-  WHEN MATCHED THEN  
-    UPDATE SET   
-      total\_count \= S.total\_transaction\_count,  
-      total\_value \= S.total\_value,  
-      significant\_transaction \= S.max\_significant\_transaction  
-  WHEN NOT MATCHED THEN  
-    INSERT (client\_id, month, total\_count, total\_value, significant\_transaction)  
-    VALUES (clientId, S.month\_period, S.total\_transaction\_count, S.total\_value, S.max\_significant\_transaction);  
-END;
+# Define your Project ID
+PROJECT_ID=$(gcloud config get-value project)
 
-### **2\. Change: risk-activities.ts (The Transformation Layer)**
+```
 
-Location: services/temporal/risk-activities.ts  
-Why: Currently, your analyzeClientRisks function manually fetches rows and calculates averages in TypeScript (lines 16-32). This violates the requirement to "Utilise BigQuery's capabilities." We must delete the math logic and replace it with a call to the SQL procedure above.  
-**Update code:**
+### 2. Grant "Full Integration" Permissions
 
-TypeScript
+For your specific workflow (Transform -> Predict), the service account needs three primary roles:
 
-import { bqClient } from '@/lib/bigquery';
+| Role | Why? |
+| --- | --- |
+| **`roles/bigquery.jobUser`** | To run the `CALL` command for your stored procedure. |
+| **`roles/bigquery.dataEditor`** | To read/write to the `client_behaviour_profiles` table. |
+| **`roles/aiplatform.user`** | To call the Vertex AI endpoint for predictions. |
 
-export async function transformAndAnalyzeData(bqClientId: number): Promise\<void\> {  
-    console.log(\`Triggering BigQuery Transformation for Client ${bqClientId}...\`);
+**Run these commands to bind the roles:**
 
-    // INSTEAD OF: fetching rows and doing Math.avg() in Node.js  
-    // WE DO: Trigger the BigQuery Stored Procedure  
-    const query \= \`CALL \\\`stratcol\_risk.generate\_client\_metrics\\\`(@clientId)\`;
+```bash
+# BigQuery Permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/bigquery.jobUser"
 
-    await bqClient.query({  
-        query,  
-        params: { clientId: bqClientId },  
-    });
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/bigquery.dataEditor"
 
-    // The data is now ready in the 'client\_behaviour\_profiles' table for Vertex AI to read  
+# Vertex AI Permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/aiplatform.user"
+
+```
+
+### 3. Containerise and Deploy
+
+Since you are using Next.js and Node.js, ensure your `Dockerfile` uses the "Standalone" output mode for a slim image.
+
+**Deployment Command:**
+
+```bash
+gcloud run deploy risk-analysis-service \
+    --source . \
+    --service-account="risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+    --region=europe-west1 \
+    --set-env-vars="VERTEX_AI_ENDPOINT_ID=your-endpoint-id,PROJECT_ID=$PROJECT_ID" \
+    --allow-unauthenticated
+
+```
+
+> **Note:** Use `--allow-unauthenticated` only if your dashboard is public or handled by an Auth provider like Firebase/Clerk. For internal-only APIs, omit this flag.
+
+---
+
+### 4. Continuous Deployment (The Engineering Standard)
+
+As a Full-Stack Engineer, you'll likely want to automate this. The most "GCP-native" way is using **Cloud Build** via a `cloudbuild.yaml` file in your root:
+
+```yaml
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/risk-engine:$COMMIT_SHA', '.']
+
+  # Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/risk-engine:$COMMIT_SHA']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'risk-analysis-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/risk-engine:$COMMIT_SHA'
+      - '--service-account'
+      - 'risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--region'
+      - 'europe-west1'
+
+```
+
+### Next Steps
+
+Once deployed, the Cloud Run service must automatically use its attached Service Account to authenticate with the Google Cloud SDKs (BigQuery and Vertex AI) without needing any JSON key files in your source code.
+
+To ensure your Next.js application runs efficiently on Cloud Run with minimal cold starts, we need to leverage the **standalone** output feature. This significantly reduces the container size by only including the necessary files for production, rather than the entire `node_modules` folder.
+
+### 1. Update `next.config.ts`
+
+First, configure Next.js to automatically bundle only the required files.
+
+```typescript
+// next.config.ts or next.config.js
+const nextConfig = {
+  output: 'standalone',
+  // Ensure your GCP environment variables are available
+  env: {
+    VERTEX_AI_ENDPOINT_ID: process.env.VERTEX_AI_ENDPOINT_ID,
+  }
+};
+
+export default nextConfig;
+
+```
+
+---
+
+### 2. The Optimized Dockerfile
+
+This multi-stage build ensures your final image is lightweight, which is crucial for Cloud Run's performance and cost-efficiency.
+
+```dockerfile
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Disable telemetry during the build
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN npm run build
+
+# Stage 3: Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy the standalone build and static files
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 8080
+ENV PORT 8080
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]
+
+```
+
+---
+
+### 3. High-Level Architecture Overview
+
+Deploying this container to Cloud Run places it at the centre of your GCP ecosystem. The service account acts as the secure bridge to BigQuery and Vertex AI without managing secret keys.
+
+### 4. Deployment Strategy with Optimisations
+
+When you run the final deploy command, add these specific flags to optimise the **Full-Stack AI journey**:
+
+```bash
+gcloud run deploy risk-analysis-service \
+    --source . \
+    --service-account="risk-engine-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+    --region=europe-west1 \
+    --cpu=1 \
+    --memory=512Mi \
+    --min-instances=0 \
+    --max-instances=10 \
+    --set-env-vars="NODE_ENV=production" \
+    --labels="managed-by=temporal-risk-engine"
+
+```
+
+###  5. Temporal Compatibility
+Since you are building a production-grade AI journey, using **Terraform** is the best way to ensure your VPC networking and Cloud Run service are tightly coupled and reproducible.
+
+The following configuration sets up the **VPC Access Connector** (for outbound traffic from Cloud Run to your VPC, like a PostgreSQL instance) and handles the **Private Ingress** settings.
+
+### 1. Terraform: Network & VPC Connector
+
+This block creates the "bridge" between the serverless environment and your private network.
+
+```hcl
+# The VPC Access Connector
+resource "google_vpc_access_connector" "connector" {
+  name          = "risk-engine-vpc-conn"
+  region        = "europe-west1"
+  ip_cidr_range = "10.8.0.0/28" # A small /28 range for the connector instances
+  network       = "default"      # Or your custom VPC name
 }
 
-### **3\. Add: Vertex AI Prediction Activity**
-
-Location: services/temporal/risk-activities.ts  
-Why: The requirements state: "Use Vertex AI platform to build and train... models that analyse client behaviour patterns." You need a dedicated activity to trigger this prediction using the data we just transformed.  
-**Add code:**
-
-TypeScript
-
-import { PredictionServiceClient } from '@google-cloud/aiplatform';
-
-// Helper for Vertex AI Prediction  
-const predictionClient \= new PredictionServiceClient({  
-    apiEndpoint: 'us-central1-aiplatform.googleapis.com',  
-});
-
-export async function predictRiskWithVertex(bqClientId: number): Promise\<number\> {  
-    // 1\. Construct the instance from the BigQuery data we just prepared  
-    // (In a real scenario, you might use Batch Prediction, but for online scoring:)  
-    const instance \= {  
-        // Fetch the aggregated metrics from Step 1  
-        sql: \`SELECT \* FROM client\_behaviour\_profiles WHERE client\_id \= ${bqClientId} ORDER BY month DESC LIMIT 1\`  
-    };
-
-    // 2\. Call the Endpoint  
-    const \[response\] \= await predictionClient.predict({  
-        endpoint: process.env.VERTEX\_AI\_ENDPOINT\_ID, // e.g., projects/.../endpoints/...  
-        instances: \[instance\], // formatting depends on your specific model  
-    });
-
-    // 3\. Extract Risk Score  
-    const riskScore \= response.predictions?.\[0\]?.structValue?.fields?.risk\_score?.numberValue || 0;  
-    return riskScore;  
+# Enable Private Google Access on the subnet where your Temporal Worker lives
+resource "google_compute_subnetwork" "worker_subnet" {
+  name          = "temporal-worker-subnet"
+  ip_cidr_range = "10.128.0.0/20"
+  region        = "europe-west1"
+  network       = "default"
+  private_ip_google_access = true
 }
 
-### **4\. Update: risk-workflows.ts (The Orchestration)**
+```
 
-Location: services/temporal/risk-workflows.ts  
-Why: The workflow must now orchestrate the new "Deep Insights" pipeline: Ingest \-\> Transform (SQL) \-\> Predict (Vertex) \-\> Visualize.  
-**Update code:**
+---
 
-TypeScript
+### 2. Terraform: Cloud Run with Private Ingress
 
-import { proxyActivities } from '@temporalio/workflow';  
-import type \* as activities from './risk-activities';
+This defines the Cloud Run service, attaches your high-performance Docker image, and locks down ingress so only internal VPC traffic (like your Temporal Worker) can reach it.
 
-const {   
-    transformAndAnalyzeData, // The BigQuery SQL Job  
-    predictRiskWithVertex,   // The Vertex AI Job  
-    saveRiskProfile          // The DB Update  
-} \= proxyActivities\<typeof activities\>({  
-    startToCloseTimeout: '10 minutes',  
-});
+```hcl
+resource "google_cloud_run_v2_service" "risk_service" {
+  name     = "risk-analysis-service"
+  location = "europe-west1"
+  ingress  = "INGRESS_TRAFFIC_INTERNAL_ONLY" # Only internal/VPC traffic allowed
 
-export async function RiskAnalysisWorkflow(monitoringJobId: string, bqClientId: number): Promise\<string\> {  
-    // Step 1: Transform & Prepare (BigQuery)  
-    // "Utilise BigQuery's capabilities to transform... calculating total transaction counts"  
-    await transformAndAnalyzeData(bqClientId);
+  template {
+    service_account = "risk-engine-sa@${var.project_id}.iam.gserviceaccount.com"
+    
+    containers {
+      image = "gcr.io/${var.project_id}/risk-engine:latest"
+      
+      env {
+        name  = "VERTEX_AI_ENDPOINT_ID"
+        value = var.vertex_endpoint
+      }
 
-    // Step 2: AI Prediction (Vertex AI)  
-    // "Use Vertex AI platform to build and train machine learning models"  
-    const riskScore \= await predictRiskWithVertex(bqClientId);
+      ports {
+        container_port = 8080
+      }
+    }
 
-    // Step 3: Result Ingestion (Looker/Next.js Ready)  
-    await saveRiskProfile(monitoringJobId, {   
-        bqClientId,   
-        riskScore,   
-        // We no longer calculate anomalies here; they come from Vertex/BQ now  
-        anomalies: riskScore \> 80 ? \['Vertex AI Flagged High Risk'\] : \[\]   
-    });
-
-    return \`Deep Analysis completed for Client ${bqClientId}\`;  
+    vpc_access {
+      connector = google_vpc_access_connector.connector.id
+      egress    = "ALL_TRAFFIC" # Force all outbound traffic through the VPC
+    }
+  }
 }
 
-### **5\. Change: Next.js Dashboard (The Looker Replacement)**
+```
 
-Location: app/dashboard/page.tsx  
-Why: To act as Looker, the UI must visualize the results of the BigQuery aggregation, not just raw rows.
+---
 
-* **Remove:** Any simple db.transaction.findMany calls that try to graph raw data.  
-* **Add:** A query that fetches from the RiskProfile (which now contains the Vertex AI score) and the ClientBehaviourProfile (the BigQuery aggregated table) to render the "Transaction Trends" chart.
+### 3. Granting the Worker Permission
 
-### **Summary of Changes**
+Even with the networks connected, GCP follows "Zero Trust." Your Temporal Worker's Service Account must have the **Cloud Run Invoker** role to actually call the service.
 
-| Component | Current State | Required Change |
-| :---- | :---- | :---- |
-| **Logic** | Calculating avg\_volume in Node.js (TypeScript) | **Move to BigQuery SQL** (CREATE PROCEDURE) to handle scale. |
-| **Activities** | analyzeClientRisks does everything | **Split into** transformAndAnalyzeData (SQL) and predictRiskWithVertex (AI). |
-| **Workflow** | Linear 2-step process | **Multi-step DAG:** Transform (BQ) \-\> Predict (Vertex) \-\> Save. |
-| **UI** | Displays raw data | Displays **Aggregated Insights** (Pre-calculated in Step 1). |
+```hcl
+resource "google_cloud_run_v2_service_iam_member" "worker_invoker" {
+  location = google_cloud_run_v2_service.risk_service.location
+  name     = google_cloud_run_v2_service.risk_service.name
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:temporal-worker-sa@${var.project_id}.iam.gserviceaccount.com"
+}
+
+```
+
+### The Full-Stack Flow
+
+With this setup:
+
+1. **Ingress:** Your Temporal Worker (on GKE/VM) sends a request. Because `private_ip_google_access` is true, the request stays inside the Google network and hits the "Internal Only" Cloud Run endpoint.
+2. **Authentication:** The Worker provides an OIDC token in the header. Cloud Run verifies this against the `roles/run.invoker` IAM policy we just set.
+3. **Egress:** If your Cloud Run service needs to talk back to a private database in your VPC, it uses the `vpc_access_connector` we defined in Step 1.
+
+**Would you like me to provide the TypeScript logic for the Temporal Worker to generate the required OIDC token for authenticating these internal Cloud Run calls?**
+### Why this works
+
+* **Next.js Standalone:** By copying the `.next/standalone` folder, our image size will likely drop from ~800MB to under 150MB, drastically reducing **cold start** times.
+* **Internal Networking:** Since Cloud Run, BigQuery, and Vertex AI are all within the GCP backbone, data transfer is highly secure and follows the lowest latency paths.
+.
+
