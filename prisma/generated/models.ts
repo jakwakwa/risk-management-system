@@ -11,4 +11,6 @@
 export type * from './models/MonitoringJob.js'
 export type * from './models/AuditLog.js'
 export type * from './models/SanctionEntity.js'
+export type * from './models/BlindIndex.js'
+export type * from './models/SystemConfig.js'
 export type * from './commonInputTypes.js'

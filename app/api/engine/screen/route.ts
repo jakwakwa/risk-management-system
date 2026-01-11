@@ -1,13 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from '@/lib/db';
 import { Storage } from "@google-cloud/storage";
 import { VertexAI } from "@google-cloud/vertexai";
 import { generatePDF } from "@/lib/report-generator";
 import crypto from "crypto";
 
-// DIRECT instantiation - NO factory, NO adapter
-const db = new PrismaClient();
-const storage = new Storage();
+
+const storage = new Storage({
+    projectId: process.env.GCP_PROJECT_ID,
+});
+
 const vertexAI = new VertexAI({
 	project: process.env.GCP_PROJECT_ID!,
 	location: process.env.VERTEX_AI_LOCATION || "us-central1",

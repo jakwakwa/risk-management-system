@@ -22,7 +22,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  output          = \"./generated\"\n  previewFeatures = [\"postgresqlExtensions\"]\n}\n\ndatasource db {\n  provider   = \"postgresql\"\n  extensions = [pg_trgm, vector]\n}\n\nmodel MonitoringJob {\n  id             String   @id @default(cuid())\n  clientName     String\n  cronExpression String\n  nextRunAt      DateTime\n  userId         String\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  @@index([nextRunAt])\n}\n\nmodel AuditLog {\n  id          String   @id @default(cuid())\n  jobId       String\n  clientName  String\n  result      String\n  gcsUrl      String\n  pdfHash     String\n  screened_at DateTime @default(now())\n\n  @@index([jobId])\n}\n\nmodel SanctionEntity {\n  id        String                      @id @default(cuid())\n  name      String\n  source    String\n  embedding Unsupported(\"vector(768)\")?\n  createdAt DateTime                    @default(now())\n\n  @@index([name(ops: raw(\"gin_trgm_ops\"))], type: Gin)\n}\n",
+  "inlineSchema": "generator client {\n  provider        = \"prisma-client\"\n  output          = \"./generated\"\n  previewFeatures = [\"postgresqlExtensions\"]\n}\n\ndatasource db {\n  provider   = \"postgresql\"\n  extensions = [pg_trgm, vector]\n}\n\nmodel MonitoringJob {\n  id             String   @id @default(cuid())\n  clientName     String\n  cronExpression String\n  nextRunAt      DateTime\n  userId         String\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  @@index([nextRunAt])\n}\n\nmodel AuditLog {\n  id          String   @id @default(cuid())\n  jobId       String\n  clientName  String\n  result      String\n  gcsUrl      String\n  pdfHash     String\n  screened_at DateTime @default(now())\n\n  @@index([jobId])\n}\n\nmodel SanctionEntity {\n  id        String                      @id @default(cuid())\n  name      String\n  source    String\n  embedding Unsupported(\"vector(768)\")?\n  createdAt DateTime                    @default(now())\n\n  @@index([name(ops: raw(\"gin_trgm_ops\"))], type: Gin)\n}\n\nmodel BlindIndex {\n  id       String @id @default(cuid())\n  hash     String\n  recordId String\n  model    String\n  field    String\n\n  @@index([hash])\n  @@index([recordId, model, field])\n}\n\nmodel SystemConfig {\n  id                String   @id @default(cuid())\n  key               String   @unique // e.g. \"ENGINE_SETTINGS\"\n  fuzzyThreshold    Float    @default(0.7)\n  phoneticAlgorithm String   @default(\"BMPM\") // BMPM or DoubleMetaphone\n  semanticContext   String? // Optional context for vector search\n  updatedAt         DateTime @updatedAt\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -30,7 +30,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"MonitoringJob\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cronExpression\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nextRunAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"jobId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"result\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gcsUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pdfHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"screened_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SanctionEntity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"MonitoringJob\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cronExpression\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nextRunAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"jobId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"clientName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"result\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gcsUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pdfHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"screened_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"SanctionEntity\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"BlindIndex\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"recordId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"field\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"SystemConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fuzzyThreshold\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"phoneticAlgorithm\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"semanticContext\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -205,6 +205,26 @@ export interface PrismaClient<
     * ```
     */
   get sanctionEntity(): Prisma.SanctionEntityDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.blindIndex`: Exposes CRUD operations for the **BlindIndex** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BlindIndices
+    * const blindIndices = await prisma.blindIndex.findMany()
+    * ```
+    */
+  get blindIndex(): Prisma.BlindIndexDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.systemConfig`: Exposes CRUD operations for the **SystemConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemConfigs
+    * const systemConfigs = await prisma.systemConfig.findMany()
+    * ```
+    */
+  get systemConfig(): Prisma.SystemConfigDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

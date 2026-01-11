@@ -10,7 +10,5 @@ export default defineConfig({
   datasource: {
     // Prefer DIRECT TCP via DATABASE_URL
     url: env('DATABASE_URL'),
-    // Optionally support shadow DB if present:
-    // shadowDatabaseUrl: env('SHADOW_DATABASE_URL'),
   },
 })
