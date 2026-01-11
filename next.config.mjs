@@ -6,6 +6,13 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  serverExternalPackages: [
+    '@google-cloud/tasks',
+    '@google-cloud/aiplatform',
+    '@google-cloud/bigquery',
+    '@google-cloud/storage',
+    '@google-cloud/vertexai',
+  ],
  
 }
 
