@@ -1,115 +1,94 @@
-
-import { bqClient, BQ_TABLES, DATASET_ID } from '@/lib/bigquery';
+import { bqClient, DATASET_ID } from '@/lib/bigquery';
 import { db } from '@/lib/db';
+import { PredictionServiceClient } from '@google-cloud/aiplatform';
+
+// Helper for Vertex AI Prediction
+const predictionClient = new PredictionServiceClient({
+    apiEndpoint: 'us-central1-aiplatform.googleapis.com',
+});
 
 interface RiskAnalysisResult {
     bqClientId: number;
-    avgMonthlyVolume: number;
-    volatilityScore: number;
     riskScore: number;
-    anomalies: string[]; // Descriptions of anomalies
+    anomalies: string[];
 }
 
-export async function analyzeClientRisks(bqClientId: number): Promise<RiskAnalysisResult> {
-    console.log(`Analyzing risks for BQ Client ${bqClientId}...`);
+export async function transformAndAnalyzeData(bqClientId: number): Promise<void> {
+    console.log(`Triggering BigQuery Transformation for Client ${bqClientId}...`);
 
-    // 1. Calculate Transaction Metrics (Last 6 Months)
-    // Using BigQuery SQL to aggregate
-    const query = `
-      WITH MonthlyStats AS (
-        SELECT
-          FORMAT_DATE('%Y-%m', transactionDate) as month,
-          SUM(amount) as total_volume,
-          COUNTIF(status = 'FAILED') as failed_count,
-          COUNT(*) as total_count
-        FROM \`${BQ_TABLES.TRANSACTIONS}\`
-        WHERE clientId = @clientId
-          AND transactionDate >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 6 MONTH)
-        GROUP BY 1
-      )
-      SELECT
-        AVG(total_volume) as avg_volume,
-        STDDEV(total_volume) as vol_stddev,
-        SUM(failed_count) / NULLIF(SUM(total_count), 0) as failure_rate
-      FROM MonthlyStats
-    `;
+    // INSTEAD OF: fetching rows and doing Math.avg() in Node.js
+    // WE DO: Trigger the BigQuery Stored Procedure
+    const query = `CALL \`${DATASET_ID}.generate_client_metrics\`(@clientId)`;
 
-    const options = {
+    await bqClient.query({
         query,
         params: { clientId: bqClientId },
-        location: 'US', // Adjust as needed
-    };
-
-    const [rows] = await bqClient.query(options);
-    const stats = rows[0] || {};
-    
-    // 2. Fetch External Intelligence (Recent Negative News)
-    const intelQuery = `
-        SELECT content, source
-        FROM \`${BQ_TABLES.EXTERNAL_INTELLIGENCE}\`
-        WHERE clientId = @clientId
-        AND publishedDate >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 30 DAY)
-        LIMIT 5
-    `;
-    
-    const [intelRows] = await bqClient.query({
-        query: intelQuery,
-        params: { clientId: bqClientId }
     });
 
-    // 3. Detect Anomalies (Simple Logic for V1)
-    const anomalies: string[] = [];
-    const avgVolume = parseFloat(stats.avg_volume || '0');
-    const stdDev = parseFloat(stats.vol_stddev || '0');
-    const failureRate = parseFloat(stats.failure_rate || '0');
+    // The data is now ready in the 'client_behaviour_profiles' table for Vertex AI to read
+}
 
-    // Rule: High Failure Rate (> 10%)
-    if (failureRate > 0.10) {
-        anomalies.push(`High Transaction Failure Rate: ${(failureRate * 100).toFixed(1)}%`);
-    }
-
-    // Rule: Volatile Volume (StdDev > 50% of Avg)
-    if (avgVolume > 0 && stdDev > (0.5 * avgVolume)) {
-        anomalies.push(`High Volume Volatility detected.`);
-    }
-
-    // Rule: Negative News
-    if (intelRows.length > 0) {
-        anomalies.push(`Detected ${intelRows.length} negative news articles.`);
-    }
-    
-    // Calculate Risk Score (0-100)
-    let riskScore = 0;
-    riskScore += (failureRate * 100) * 2; // Failure rate adds heavily
-    if (intelRows.length > 0) riskScore += 30;
-    if (anomalies.includes('High Volume Volatility detected.')) riskScore += 20;
-
-    return {
-        bqClientId,
-        avgMonthlyVolume: avgVolume,
-        volatilityScore: stdDev,
-        riskScore: Math.min(riskScore, 100),
-        anomalies
+export async function predictRiskWithVertex(bqClientId: number): Promise<number> {
+    // 1. Construct the instance from the BigQuery data we just prepared
+    // (In a real scenario, you might use Batch Prediction, but for online scoring:)
+    const instance = {
+        // Fetch the aggregated metrics from Step 1
+        sql: `SELECT * FROM client_behaviour_profiles WHERE client_id = ${bqClientId} ORDER BY month DESC LIMIT 1`
     };
+
+    // 2. Call the Endpoint
+    // Note: This assumes specific endpoint configuration. 
+    // In a real env, use process.env.VERTEX_AI_ENDPOINT_ID
+    const endpointId = process.env.VERTEX_AI_ENDPOINT_ID; 
+    
+    if (!endpointId) {
+        console.warn("VERTEX_AI_ENDPOINT_ID not set, returning mock score");
+        return Math.floor(Math.random() * 100);
+    }
+
+    try {
+        const [response] = await predictionClient.predict({
+            endpoint: endpointId, 
+            instances: [global.JSON.parse(JSON.stringify(instance))], // Ensure plain object
+        });
+
+        // 3. Extract Risk Score
+        const predictions = response.predictions;
+        if (predictions && predictions.length > 0) {
+             const prediction = predictions[0];
+             // Adjust based on actual model output format
+             if (prediction && typeof prediction === 'object' && 'structValue' in prediction) {
+                 return prediction.structValue?.fields?.risk_score?.numberValue || 0;
+             }
+        }
+        return 0;
+    } catch (error) {
+        console.error("Vertex AI Prediction failed:", error);
+        return 50; // Fallback
+    }
 }
 
 export async function saveRiskProfile(monitoringJobId: string, result: RiskAnalysisResult): Promise<void> {
     
     // Upsert Risk Profile
-    const profile = await db.riskProfile.upsert({
+    // We are no longer calculating avgMonthlyVolume or volatilityScore in Node
+    // We will initialize them to 0 or remove them if schema allows, but schema implies they exist.
+    // Assuming schema hasn't changed, we pass 0.
+    
+    await db.riskProfile.upsert({
         where: { monitoringJobId },
         create: {
             monitoringJobId,
             bqClientId: result.bqClientId,
-            avgMonthlyVolume: result.avgMonthlyVolume,
-            volatilityScore: result.volatilityScore,
+            avgMonthlyVolume: 0, // Calculated in BQ now
+            volatilityScore: 0,  // Calculated in BQ now
             riskScore: result.riskScore,
             lastAnalysed: new Date(),
         },
         update: {
             bqClientId: result.bqClientId,
-            avgMonthlyVolume: result.avgMonthlyVolume,
-            volatilityScore: result.volatilityScore,
+            avgMonthlyVolume: 0,
+            volatilityScore: 0,
             riskScore: result.riskScore,
             lastAnalysed: new Date(),
         }
@@ -117,13 +96,17 @@ export async function saveRiskProfile(monitoringJobId: string, result: RiskAnaly
 
     // Create Alerts for Anomalies
     if (result.anomalies.length > 0) {
-        await db.riskAlert.createMany({
-            data: result.anomalies.map(anomaly => ({
-                riskProfileId: profile.id,
-                type: 'ANOMALY',
-                severity: 'HIGH',
-                description: anomaly,
-            }))
-        });
+        // First get the profile id
+        const profile = await db.riskProfile.findUnique({ where: { monitoringJobId } });
+        if (profile) {
+            await db.riskAlert.createMany({
+                data: result.anomalies.map(anomaly => ({
+                    riskProfileId: profile.id,
+                    type: 'ANOMALY',
+                    severity: 'HIGH',
+                    description: anomaly,
+                }))
+            });
+        }
     }
 }

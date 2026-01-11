@@ -1,22 +1,33 @@
 
 import { proxyActivities } from '@temporalio/workflow';
-import type * as activities from './activities'; // Imports all, including risk-activities
+import type * as activities from './activities';
 
-const { analyzeClientRisks, saveRiskProfile } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '5 minutes', // BQ queries can take time
-  retry: {
-      initialInterval: '5s',
-      backoffCoefficient: 2,
-      maximumAttempts: 5,
-  }
+const { 
+    transformAndAnalyzeData,
+    predictRiskWithVertex,
+    saveRiskProfile 
+} = proxyActivities<typeof activities>({
+    startToCloseTimeout: '10 minutes',
+    retry: {
+        initialInterval: '5s',
+        backoffCoefficient: 2,
+        maximumAttempts: 5,
+    }
 });
 
 export async function RiskAnalysisWorkflow(monitoringJobId: string, bqClientId: number): Promise<string> {
-    // 1. Analyze Risks (BigQuery)
-    const riskResult = await analyzeClientRisks(bqClientId);
+    // Step 1: Transform & Prepare (BigQuery)
+    await transformAndAnalyzeData(bqClientId);
 
-    // 2. Save Results (Prisma)
-    await saveRiskProfile(monitoringJobId, riskResult);
+    // Step 2: AI Prediction (Vertex AI)
+    const riskScore = await predictRiskWithVertex(bqClientId);
 
-    return `Analysis completed for Client ${bqClientId}. Score: ${riskResult.riskScore}`;
+    // Step 3: Result Ingestion
+    await saveRiskProfile(monitoringJobId, {
+        bqClientId,
+        riskScore,
+        anomalies: riskScore > 80 ? ['Vertex AI Flagged High Risk'] : []
+    });
+
+    return `Deep Analysis completed for Client ${bqClientId}. Risk Score: ${riskScore}`;
 }
