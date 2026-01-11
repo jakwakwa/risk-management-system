@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { db } from '@/lib/db';
 import { ShieldCheck, Activity, Users, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { RiskHeatmap } from '@/components/risk-heatmap';
 
 export default async function DashboardPage() {
     const totalJobs = await db.monitoringJob.count();
@@ -62,17 +63,7 @@ export default async function DashboardPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        {/* Placeholder for Recharts AreaChart */}
-                        <div className="h-[200px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed">
-                            Wait for client-side chart component...
-                        </div>
-                    </CardContent>
-                </Card>
+                <RiskHeatmap />
                 <Card className="col-span-3">
                     <CardHeader>
                         <CardTitle>Recent Activity</CardTitle>
