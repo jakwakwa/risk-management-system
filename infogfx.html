@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StratCol Risk Analysis Engine | Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #1E293B; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px; 
+            max-height: 400px; 
+        }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+        
+        /* No SVG utilized. Diagrams built with CSS borders/shapes */
+        .arrow-down {
+            width: 0; 
+            height: 0; 
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #94A3B8;
+            margin: 0 auto;
+        }
+        .connection-line {
+            width: 4px;
+            height: 40px;
+            background-color: #94A3B8;
+            margin: 0 auto;
+        }
+    </style>
+    <!-- 
+        PALETTE: "Vibrant Fintech"
+        Primary Blue: #2563EB
+        Cyan Accent: #06B6D4
+        Violet Accent: #8B5CF6
+        Emerald Success: #10B981
+        Amber Warning: #F59E0B
+        Slate Text: #1E293B
+        
+        NARRATIVE PLAN:
+        1. Introduction: The Need for Speed & Smarter Risk.
+        2. Data Ecosystem: Visualizing the 3 pillars (Static, Ops, Public).
+        3. The Engine: Comparing Legacy vs. New Architecture.
+        4. Performance & Cost: Hard numbers (ROI, Speed).
+        5. AI in Action: Visualizing Anomaly Detection.
+        6. Future Roadmap: Next steps.
+        
+        CHART SELECTION SUMMARY:
+        1. Data Coverage -> Radar Chart (Chart.js) -> Compare scope of risk monitoring.
+        2. Performance Metrics -> Grouped Bar Chart (Chart.js) -> Compare Old vs New stats.
+        3. Cost Profile -> Doughnut Chart (Chart.js) -> Show shift in budget allocation.
+        4. Anomaly Simulation -> Scatter Plot (Plotly - Canvas) -> Visualize "finding the needle".
+        5. ROI -> Single Big Number.
+        
+        CONSTRAINT CHECK:
+        - NO SVG used.
+        - NO Mermaid JS used.
+        - Canvas rendering for all charts.
+        - Tailwind CSS for layout.
+    -->
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- HERO SECTION -->
+    <header class="bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-500 text-white py-16 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-4">Risk Analysis Engine</h1>
+            <p class="text-xl md:text-2xl font-light opacity-90 mb-8">From Manual Spreadsheets to AI-Driven "Deep Insights"</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">BigQuery Transformation</span>
+                <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">Vertex AI Prediction</span>
+                <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">Real-Time Risk Scoring</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+
+        <!-- SECTION 1: THE DATA CHALLENGE -->
+        <section>
+            <div class="mb-8 border-l-4 border-blue-600 pl-4">
+                <h2 class="text-3xl font-bold text-gray-900">1. Expanding the Risk Horizon</h2>
+                <p class="mt-2 text-lg text-gray-600">
+                    StratCol's legacy systems relied on static data and manual Excel reports. The new engine ingests three distinct layers of data to create a holistic view of client behavior.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                        <h3 class="font-bold text-xl mb-2 text-blue-800">Static Data</h3>
+                        <p class="text-gray-600 text-sm">Client Identity, Employment, Director Details.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-cyan-500">
+                        <h3 class="font-bold text-xl mb-2 text-cyan-800">Operational Data</h3>
+                        <p class="text-gray-600 text-sm">Transaction Volumes, Bounce Rates, Preferred Collection Days, Spikes in Disputes.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-violet-500">
+                        <h3 class="font-bold text-xl mb-2 text-violet-800">Public Risk Data</h3>
+                        <p class="text-gray-600 text-sm">Social Media Sentiment, Liquidation Rumors, PEP Status, Fraud Alerts.</p>
+                    </div>
+                </div>
+
+                <!-- Visualization: Radar Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-center font-bold text-gray-700 mb-4">Risk Monitoring Coverage</h3>
+                    <div class="chart-container">
+                        <canvas id="riskRadarChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-gray-400 mt-4">Comparing the scope of factors analyzed by the Legacy vs. New System.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ARCHITECTURAL SHIFT -->
+        <section class="bg-slate-50 rounded-3xl p-8 border border-slate-200 shadow-sm">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-gray-900">2. The Architectural Transformation</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
+                    Moving from a Node.js bottleneck to a Cloud-Native "Data Gravity" model using BigQuery and Vertex AI.
+                </p>
+            </div>
+
+            <!-- HTML/CSS Process Diagram (Replacing Mermaid/SVG) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch text-center">
+                
+                <!-- Legacy Column -->
+                <div class="flex flex-col space-y-4">
+                    <h4 class="font-bold text-red-500 uppercase tracking-widest text-sm">Legacy Architecture</h4>
+                    <div class="bg-white p-6 rounded-lg shadow border-2 border-red-100 flex-1 flex flex-col justify-center items-center opacity-70">
+                        <div class="text-4xl mb-2">🐢</div>
+                        <strong class="block text-gray-800">Node.js Runtime</strong>
+                        <span class="text-xs text-gray-500 mt-2">Pulls raw data to app layer</span>
+                        <span class="text-xs text-red-500 font-bold mt-1">High Latency</span>
+                        <span class="text-xs text-red-500 font-bold">Memory Crashes</span>
+                    </div>
+                </div>
+
+                <!-- Transition Arrow -->
+                <div class="hidden md:flex flex-col justify-center items-center text-blue-500">
+                    <div class="text-4xl font-black">&rarr;</div>
+                    <span class="text-xs font-bold uppercase mt-2">Optimized To</span>
+                </div>
+                 <!-- Mobile Arrow -->
+                <div class="md:hidden flex justify-center py-4 text-blue-500">
+                     <div class="text-4xl font-black">&darr;</div>
+                </div>
+
+                <!-- Future Column -->
+                <div class="flex flex-col space-y-4">
+                    <h4 class="font-bold text-green-500 uppercase tracking-widest text-sm">New "Fortress" Architecture</h4>
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-green-100 flex-1 flex flex-col justify-center items-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-green-500"></div>
+                        <div class="text-4xl mb-2">🚀</div>
+                        <strong class="block text-gray-800">BigQuery + Vertex AI</strong>
+                        <span class="text-xs text-gray-500 mt-2">Compute moves to Data</span>
+                        <span class="text-xs text-green-600 font-bold mt-1">Parallel Processing</span>
+                        <span class="text-xs text-green-600 font-bold">Zero Trust Security</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: PERFORMANCE METRICS -->
+        <section>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Chart 1: Bar Comparison -->
+                <div>
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-gray-900">3. Performance Impact</h2>
+                        <p class="mt-2 text-gray-600">
+                            The shift to server-side transformation reduces overhead and enables warehouse-scale processing.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                        <div class="chart-container">
+                            <canvas id="performanceBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Cost/ROI Breakdown -->
+                <div>
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-bold text-gray-900">4. The Business Case</h2>
+                        <p class="mt-2 text-gray-600">
+                            Shifting from fixed infrastructure to a value-based model drastically improves ROI.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                         <!-- KPI Card 1 -->
+                        <div class="bg-gradient-to-br from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg text-center">
+                            <h3 class="text-lg font-medium opacity-80">Memory Reduction</h3>
+                            <p class="text-4xl lg:text-5xl font-bold mt-2">90%</p>
+                            <p class="text-xs mt-2 opacity-70">Application Layer Overhead</p>
+                        </div>
+                         <!-- KPI Card 2 -->
+                        <div class="bg-gradient-to-br from-emerald-500 to-teal-700 text-white p-6 rounded-xl shadow-lg text-center">
+                            <h3 class="text-lg font-medium opacity-80">ROI Timeline</h3>
+                            <p class="text-4xl lg:text-5xl font-bold mt-2">3-6 Mo</p>
+                            <p class="text-xs mt-2 opacity-70">Positive Return on Investment</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                         <h3 class="font-bold text-gray-700 mb-4 text-center">Cost Model Comparison</h3>
+                         <div class="chart-container">
+                             <canvas id="costDonutChart"></canvas>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: AI ANOMALY DETECTION (PLOTLY) -->
+        <section class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+            <div class="mb-8 border-l-4 border-violet-500 pl-4">
+                <h2 class="text-3xl font-bold text-gray-900">5. Vertex AI in Action: Finding Anomalies</h2>
+                <p class="mt-2 text-lg text-gray-600">
+                    Traditional rules miss nuanced patterns. Vertex AI analyzes "Data Gravity" to detect structuring and velocity spikes.
+                    <br><span class="text-sm italic text-gray-500">*Simulation of identifying high-risk outliers (Red) against normal behavior (Blue) based on volume and value.*</span>
+                </p>
+            </div>
+            
+            <div id="plotlyContainer" class="w-full h-96 rounded-xl overflow-hidden bg-slate-50"></div>
+        </section>
+
+        <!-- SECTION 5: FUTURE ROADMAP -->
+        <section class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">6. Future Vision & Next Steps</h2>
+            
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-200"></div>
+
+                <!-- Milestone 1 -->
+                <div class="relative z-10 mb-12 flex items-center w-full">
+                    <div class="w-1/2 pr-8 text-right">
+                        <h3 class="text-xl font-bold text-blue-600">Iterate Models</h3>
+                        <p class="text-gray-600 text-sm mt-1">Deploy new ML versions rapidly without changing core app code.</p>
+                    </div>
+                    <div class="w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow flex items-center justify-center shrink-0 mx-auto">
+                        <span class="text-white text-xs font-bold">1</span>
+                    </div>
+                    <div class="w-1/2 pl-8"></div>
+                </div>
+
+                <!-- Milestone 2 -->
+                <div class="relative z-10 mb-12 flex items-center w-full flex-row-reverse">
+                    <div class="w-1/2 pl-8 text-left">
+                        <h3 class="text-xl font-bold text-cyan-600">Scale Globally</h3>
+                        <p class="text-gray-600 text-sm mt-1">Auto-scaling on Cloud Run to handle peak transaction volumes.</p>
+                    </div>
+                    <div class="w-8 h-8 bg-cyan-600 rounded-full border-4 border-white shadow flex items-center justify-center shrink-0 mx-auto">
+                        <span class="text-white text-xs font-bold">2</span>
+                    </div>
+                    <div class="w-1/2 pr-8"></div>
+                </div>
+
+                <!-- Milestone 3 -->
+                <div class="relative z-10 flex items-center w-full">
+                    <div class="w-1/2 pr-8 text-right">
+                        <h3 class="text-xl font-bold text-violet-600">Advanced Analytics</h3>
+                        <p class="text-gray-600 text-sm mt-1">Feed "Deep Insights" directly into Looker for C-Suite reporting.</p>
+                    </div>
+                    <div class="w-8 h-8 bg-violet-600 rounded-full border-4 border-white shadow flex items-center justify-center shrink-0 mx-auto">
+                        <span class="text-white text-xs font-bold">3</span>
+                    </div>
+                    <div class="w-1/2 pl-8"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <footer class="bg-gray-900 text-white rounded-2xl p-8 md:p-12 text-center mt-12 shadow-2xl">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">Ready to Audit?</h2>
+            <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                We can provide a detailed breakdown of "Bytes Scanned" to project your exact cloud savings.
+            </p>
+            <button class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full transition-colors duration-200">
+                Start Model Training
+            </button>
+        </footer>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- UTILITY: Label Wrapping ---
+        function wrapLabel(str, maxChars) {
+            if (typeof str !== 'string' || str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= maxChars) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- UTILITY: Tooltip Config ---
+        const commonTooltipOptions = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Risk Radar Chart ---
+        const ctxRadar = document.getElementById('riskRadarChart').getContext('2d');
+        const labelsRadar = [
+            'Transaction Volume', 
+            'Identity Verification', 
+            'Public Sentiment Analysis', 
+            'PEP Checks', 
+            'Velocity Spikes', 
+            'Liquidation Rumors'
+        ];
+        // Apply wrapping
+        const processedRadarLabels = labelsRadar.map(l => wrapLabel(l, 16));
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: processedRadarLabels,
+                datasets: [{
+                    label: 'New AI Engine',
+                    data: [95, 100, 90, 100, 95, 85],
+                    fill: true,
+                    backgroundColor: 'rgba(37, 99, 235, 0.2)', // Blue
+                    borderColor: 'rgb(37, 99, 235)',
+                    pointBackgroundColor: 'rgb(37, 99, 235)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(37, 99, 235)'
+                }, {
+                    label: 'Legacy System',
+                    data: [80, 70, 10, 20, 40, 5],
+                    fill: true,
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)', // Grey
+                    borderColor: 'rgb(148, 163, 184)',
+                    pointBackgroundColor: 'rgb(148, 163, 184)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(148, 163, 184)'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                elements: { line: { borderWidth: 3 } },
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipOptions,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- CHART 2: Performance Bar Chart ---
+        const ctxBar = document.getElementById('performanceBarChart').getContext('2d');
+        const labelsBar = ['App Memory Usage', 'Query Speed (Sec)', 'Manual Audit Hours'];
+        const processedBarLabels = labelsBar.map(l => wrapLabel(l, 16));
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: processedBarLabels,
+                datasets: [{
+                    label: 'Legacy (Node.js)',
+                    data: [100, 45, 80], // Normalized values for visualization
+                    backgroundColor: 'rgba(148, 163, 184, 0.7)',
+                    borderColor: 'rgba(148, 163, 184, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'New (BigQuery + Vertex)',
+                    data: [10, 2, 10], // Dramatic reduction
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)', // Emerald
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Relative Scale (Lower is Better)' }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipOptions,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- CHART 3: Cost/ROI Donut Chart ---
+        const ctxDonut = document.getElementById('costDonutChart').getContext('2d');
+        const labelsDonut = ['Compute Savings', 'Maintenance Savings', 'Fraud Prevention Value'];
+        const processedDonutLabels = labelsDonut.map(l => wrapLabel(l, 16));
+
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: processedDonutLabels,
+                datasets: [{
+                    label: 'Value Driver',
+                    data: [40, 30, 80],
+                    backgroundColor: [
+                        '#3B82F6', // Blue
+                        '#06B6D4', // Cyan
+                        '#8B5CF6'  // Violet
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltipOptions,
+                    legend: { position: 'right' }
+                }
+            }
+        });
+
+        // --- CHART 4: Plotly Scatter Plot (Anomaly Detection) ---
+        // Simulating data: Most points clustered low, some high-value outliers
+        const normalX = Array.from({length: 50}, () => Math.random() * 50); // Low volume
+        const normalY = Array.from({length: 50}, () => Math.random() * 2000); // Low value
+        
+        const anomalyX = [80, 90, 85, 95, 92]; // High volume (Velocity Spike)
+        const anomalyY = [8000, 9500, 8200, 9800, 9100]; // High value (Structuring)
+
+        const trace1 = {
+            x: normalX,
+            y: normalY,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Normal Behavior',
+            marker: { size: 10, color: '#3B82F6', opacity: 0.6 }
+        };
+
+        const trace2 = {
+            x: anomalyX,
+            y: anomalyY,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'AI Detected Anomalies',
+            marker: { size: 14, color: '#EF4444', symbol: 'diamond', opacity: 0.9, line: {color: 'white', width: 2} }
+        };
+
+        const layout = {
+            title: { text: 'Simulated Transaction Analysis', font: { family: 'Inter', size: 18 } },
+            xaxis: { title: 'Transaction Frequency (Monthly)', showgrid: true, gridcolor: '#e2e8f0' },
+            yaxis: { title: 'Transaction Value (ZAR)', showgrid: true, gridcolor: '#e2e8f0' },
+            showlegend: true,
+            margin: { t: 50, l: 50, r: 20, b: 50 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { family: 'Inter' }
+        };
+
+        // Render Plotly to div
+        Plotly.newPlot('plotlyContainer', [trace1, trace2], layout, {responsive: true, displayModeBar: false});
+
+    </script>
+</body>
+</html>

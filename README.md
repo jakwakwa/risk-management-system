@@ -1,108 +1,177 @@
+# 🛡️ StratCol Risk Management System
 
-# Risk Management System: Deep Insights Engine**
+> **A High-Assurance Automated Risk Screening Engine** for compliance professionals and financial institutions requiring demonstrable, continuous assurance.
 
-This repository contains the core risk analysis pipeline for the StratCol Risk platform. The architecture is designed to offload heavy data transformations to **BigQuery SQL** and leverage **Vertex AI** for behavioural pattern recognition, orchestrated via **Temporal.io**.
-
-## **🏗 Architecture Overview**
-
-The system follows a "Data-Warehouse-First" transformation pattern:
-
-1. **Ingest**: Raw transaction data is stored in BigQuery.  
-2. **Transform (SQL)**: A BigQuery Stored Procedure aggregates monthly behaviour (counts, totals, significant values).  
-3. **Predict (AI)**: A Temporal activity triggers a Vertex AI model using the pre-aggregated BigQuery metrics.  
-4. **Visualise**: A Next.js dashboard consumes the high-level client\_behaviour\_profiles for sub-second rendering.
-
-## **🚀 Deployment & Infrastructure**
-
-The infrastructure is managed via **Terraform** and deployed to **Google Cloud Run** using a private networking model.
-
-### **Prerequisites**
-
-* Google Cloud Project: stratcol-risk-analysis-engine  
-* Terraform installed locally.  
-* GCP APIs enabled:  
-  * vpcaccess.googleapis.com (Serverless VPC Access)  
-  * run.googleapis.com (Cloud Run)  
-  * aiplatform.googleapis.com (Vertex AI)
-
-### **1\. Infrastructure Provisioning**
-
-The Terraform configuration in /terraform handles the VPC Access Connector, Cloud Run private ingress, and IAM role bindings.
-
-Bash
-
-cd terraform  
-terraform init  
-terraform apply
-
-### **2\. Optimized Docker Build**
-
-We utilize a multi-stage Dockerfile with Next.js **standalone** output to minimize cold starts on Cloud Run.
-
-Bash
-
-\# Build and push to Artifact Registry  
-gcloud builds submit \--config cloudbuild.yaml .
-
-## **🛠 Core Components**
-
-### **BigQuery Transformation**
-
-Located in services/bigquery/sql/transform\_client\_metrics.sql.
-
-* **Logic**: Moves aggregation (SUM/MAX/COUNT) from Node.js memory to BigQuery's compute layer.  
-* **Procedure**: generate\_client\_metrics(clientId)
-
-### **Temporal Workflow**
-
-Located in services/temporal/risk-workflows.ts.  
-The RiskAnalysisWorkflow orchestrates the following DAG:
-
-* transformAndAnalyzeData: Triggers BQ SQL.  
-* predictRiskWithVertex: Fetches prediction from the AI endpoint.  
-* saveRiskProfile: Updates the system of record.
-
-### **Security & Networking**
-
-* **Ingress**: Set to INTERNAL\_ONLY. Only traffic from within the VPC (e.g., GKE-based Temporal Workers) can reach the engine.  
-* **Authentication**: Uses Google-signed **OIDC tokens**.  
-* **Egress**: All outbound traffic routes through the risk-engine-vpc-conn to ensure private database access.
-
-## **📈 Dashboard Integration**
-
-The Next.js dashboard is optimized to query the client\_behaviour\_profiles table directly. This prevents the UI from performing expensive "on-the-fly" calculations, ensuring a snappy user experience for risk officers.
-
-### ---
-
-**Maintenance Commands**
-
-* **Check Logs**: gcloud logging read "resource.type=cloud\_run\_revision AND resource.labels.service\_name=risk-analysis-service"  
-* **Update SQL**: bq query \--use\_legacy\_sql=false \< services/bigquery/sql/transform\_client\_metrics.sql
-
-
-## Technology Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
-- **Database**: PostgreSQL (with `pgvector` & `pg_trgm`)
-- **ORM**: Prisma
-- **Orchestration**: Temporal.io
-- **Infrastructure**: Google Cloud Run, BigQuery, Vertex AI
-- **Package Manager**: Bun
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
+[![Cloud Run](https://img.shields.io/badge/Cloud%20Run-GCP-4285F4?logo=google-cloud)](https://cloud.google.com/run)
 
 ---
 
-## Local Development Setup
+## 📋 Table of Contents
 
-### 1. Prerequisites
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Technology Stack](#%EF%B8%8F-technology-stack)
+- [Local Development](#-local-development)
+- [Production Deployment](#-production-deployment)
+- [Commands Reference](#-commands-reference)
+- [Core Components](#-core-components)
+- [Security & Networking](#-security--networking)
+
+---
+
+## 🎯 Overview
+
+The StratCol Risk Management System is an enterprise-grade risk analysis platform designed to provide **Negative Assurance**—the generation of affirmative, auditable evidence that a screening process occurred and yielded results, transforming the absence of an alert from a non-event into a tangible, auditable artifact.
+
+### Key Capabilities
+
+- **Automated Client Screening** against sanctions lists with configurable schedules
+- **Advanced Name Matching** using phonetic algorithms, fuzzy scoring, and semantic vector matching
+- **Real-time Risk Analytics** with interactive dashboards and heatmaps
+- **Immutable Audit Trails** with cryptographic chaining for tamper-evident compliance records
+- **AI-Powered Predictions** via Vertex AI for behavioural pattern recognition
+
+---
+
+## 🏗 Architecture
+
+The system follows a **"Data-Warehouse-First"** transformation pattern with a decoupled, event-driven microservices architecture organized into four distinct planes:
+
+```mermaid
+flowchart TB
+    subgraph Client["🖥️ Client Layer"]
+        UI[Next.js Dashboard<br/>React + TypeScript]
+    end
+
+    subgraph Orchestration["⏱️ Orchestration Plane"]
+        Temporal[Temporal.io<br/>Workflow Engine]
+        Scheduler[Schedule Manager<br/>Cron Jobs]
+    end
+
+    subgraph Screening["🔍 Screening Plane"]
+        Worker[Temporal Worker]
+        Matcher[Multi-Stage<br/>Matching Pipeline]
+        subgraph ML["AI/ML Services"]
+            Vertex[Vertex AI<br/>Risk Predictions]
+        end
+    end
+
+    subgraph Data["💾 Data Plane"]
+        PostgreSQL[(PostgreSQL<br/>pgvector + pg_trgm)]
+        BigQuery[(BigQuery<br/>Data Warehouse)]
+        Prisma[Prisma ORM]
+    end
+
+    subgraph Assurance["📋 Assurance Plane"]
+        Audit[Audit Logger<br/>Cryptographic Chain]
+        Reports[Report Generator<br/>PDF/Compliance]
+        GCS[Cloud Storage<br/>WORM]
+    end
+
+    subgraph Infrastructure["☁️ Google Cloud Platform"]
+        CloudRun[Cloud Run<br/>Containerized App]
+        VPC[VPC Connector<br/>Private Network]
+        IAM[Cloud IAM<br/>OIDC Auth]
+    end
+
+    UI --> CloudRun
+    CloudRun --> Prisma
+    Prisma --> PostgreSQL
+    
+    Scheduler --> Temporal
+    Temporal --> Worker
+    Worker --> Matcher
+    Worker --> Vertex
+    Worker --> BigQuery
+    
+    Matcher --> PostgreSQL
+    Vertex --> BigQuery
+    
+    Worker --> Audit
+    Audit --> GCS
+    Audit --> Reports
+    
+    CloudRun --> VPC
+    VPC --> BigQuery
+    IAM --> CloudRun
+
+    classDef primary fill:#4285F4,stroke:#1a73e8,color:#fff
+    classDef secondary fill:#34A853,stroke:#1e8e3e,color:#fff
+    classDef accent fill:#EA4335,stroke:#c5221f,color:#fff
+    classDef neutral fill:#5F6368,stroke:#3c4043,color:#fff
+    
+    class UI,CloudRun primary
+    class Temporal,Worker,Scheduler secondary
+    class Vertex,BigQuery accent
+    class PostgreSQL,Prisma,GCS neutral
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Risk Officer
+    participant Dashboard as 🖥️ Next.js Dashboard
+    participant API as 🔌 API Routes
+    participant Temporal as ⏱️ Temporal
+    participant BigQuery as 📊 BigQuery
+    participant Vertex as 🤖 Vertex AI
+    participant Prisma as 🗄️ PostgreSQL
+
+    User->>Dashboard: View Client Risk Profile
+    Dashboard->>API: GET /api/clients
+    API->>Prisma: Query client data
+    Prisma-->>API: Client records
+    API-->>Dashboard: Render dashboard
+    
+    Note over Temporal: Scheduled Screening Job
+    Temporal->>BigQuery: Transform client metrics
+    BigQuery-->>Temporal: Aggregated data
+    Temporal->>Vertex: Predict risk score
+    Vertex-->>Temporal: ML predictions
+    Temporal->>Prisma: Save risk profile
+    Temporal->>Prisma: Log audit record
+```
+
+### Architecture Principles
+
+| Plane | Responsibility | Key Technology |
+|-------|---------------|----------------|
+| **Orchestration** | Temporal management, job scheduling | Temporal.io |
+| **Screening** | Stateless compute, fuzzy matching, ML inference | Vertex AI |
+| **Data** | Source of truth, versioned sanctions data | BigQuery, PostgreSQL |
+| **Assurance** | Immutable audit logs, report generation | Cloud Storage (WORM) |
+
+---
+
+## 🛠️ Technology Stack
+
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript |
+| **Database** | PostgreSQL with `pgvector` & `pg_trgm` |
+| **ORM** | Prisma |
+| **Orchestration** | Temporal.io |
+| **Cloud Platform** | Google Cloud (Cloud Run, BigQuery, Vertex AI) |
+| **Infrastructure** | Terraform |
+| **Package Manager** | Bun |
+| **Styling** | Tailwind CSS + shadcn/ui |
+
+---
+
+## 🚀 Local Development
+
+### Prerequisites
 
 - **Bun** (v1.0+)
-- **Docker Desktop** (Required for local DB and Temporal server)
-- **Google Cloud SDK** (Optional, for deploying)
+- **Docker Desktop** (for local PostgreSQL and Temporal)
+- **Google Cloud SDK** (optional, for deployment)
 
-### 2. Installation
-
-Clone the repository and install dependencies:
+### 1. Clone & Install
 
 ```bash
 git clone <repository-url>
@@ -110,28 +179,28 @@ cd risk-management-system
 bun install
 ```
 
-### 3. Start Local Services
-
-Start PostgreSQL and the Temporal Dev Server using Docker Compose:
+### 2. Start Local Services
 
 ```bash
 docker compose up -d
 ```
 
 This starts:
-- **PostgreSQL** on port `5432` (User: `risk`, DB: `risk_db`)
-- **Temporal Server** on port `7233`
-- **Temporal UI** at `http://localhost:8233`
+| Service | Port | Description |
+|---------|------|-------------|
+| PostgreSQL | `5432` | Database (User: `risk`, DB: `risk_db`) |
+| Temporal Server | `7233` | Workflow engine |
+| Temporal UI | `8233` | Web interface at `http://localhost:8233` |
 
-### 4. Configure Environment
+### 3. Configure Environment
 
-Create a `.env` file in the root directory (copy from `.env.example` if available, or use the reference below):
+Create a `.env` file in the root directory:
 
 ```env
 # Database
 DATABASE_URL="postgresql://risk:risk@localhost:5432/risk_db?schema=public"
 
-# GCP Configuration (Required for Production, Optional for Local UI dev)
+# GCP Configuration
 GCP_PROJECT_ID="stratcol-risk-analysis-engine"
 GCS_BUCKET_NAME="compliance-reports-locked"
 CLOUD_TASKS_QUEUE="screening-queue"
@@ -143,65 +212,68 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 GOOGLE_GENERATIVE_AI_API_KEY="your-api-key"
 ```
 
-### 5. Initialize Database
-
-Push the Prisma schema to your local PostgreSQL instance:
+### 4. Initialize Database
 
 ```bash
 bun run prisma:push
 ```
 
-### 6. Start the Development Server
+### 5. Start Development Server
 
 ```bash
 bun run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+The application will be available at **http://localhost:3000**.
 
 ---
 
-## Production Deployment Guide
+## ☁️ Production Deployment
 
-This project is configured for deployment to **Google Cloud Run** with full IAM integration.
+This project is configured for deployment to **Google Cloud Run** with full IAM integration and private networking.
 
-### 1. Prerequisites
-- **Terraform** (v1.5+): For provisioning infrastructure.
-- **Google Cloud SDK**: For authentication and script execution.
+### Prerequisites
 
-### 2. Infrastructure Setup
-The infrastructure is managed via Terraform and shell scripts.
+- **Terraform** (v1.5+)
+- **Google Cloud SDK** (authenticated)
 
-#### Step 2.1: Enable APIs
-Enable the required Google Cloud APIs:
+### Step 1: Enable GCP APIs
+
 ```bash
-gcloud services enable vpcaccess.googleapis.com compute.googleapis.com run.googleapis.com --project=stratcol-risk-analysis-engine
+gcloud services enable \
+  vpcaccess.googleapis.com \
+  compute.googleapis.com \
+  run.googleapis.com \
+  aiplatform.googleapis.com \
+  --project=stratcol-risk-analysis-engine
 ```
 
-#### Step 2.2: IAM Setup
-Provision the Service Account and required IAM roles:
+### Step 2: IAM Setup
+
 ```bash
 chmod +x scripts/gcp-iam-setup.sh
 ./scripts/gcp-iam-setup.sh
 ```
 
-#### Step 2.3: Provision Resources
-1. Create a `terraform.tfvars` file in the `terraform/` directory:
-   ```hcl
-   project_id      = "stratcol-risk-analysis-engine"
-   region          = "europe-west1"
-   vertex_endpoint = "your-endpoint-id"
-   ```
+### Step 3: Provision Infrastructure
 
-2. Init and Apply:
-   ```bash
-   cd terraform
-   terraform init
-   terraform apply
-   ```
+1. Create `terraform/terraform.tfvars`:
 
-### 3. Deploy Application
-Push the application to Cloud Run using Cloud Build:
+```hcl
+project_id      = "stratcol-risk-analysis-engine"
+region          = "europe-west1"
+vertex_endpoint = "your-endpoint-id"
+```
+
+2. Apply Terraform:
+
+```bash
+cd terraform
+terraform init
+terraform apply
+```
+
+### Step 4: Deploy Application
 
 ```bash
 gcloud builds submit --config cloudbuild.yaml --project=stratcol-risk-analysis-engine .
@@ -209,13 +281,105 @@ gcloud builds submit --config cloudbuild.yaml --project=stratcol-risk-analysis-e
 
 ---
 
-## Commands Reference
+## 📖 Commands Reference
 
 | Command | Description |
-| copy | --- |
+|---------|-------------|
 | `bun run dev` | Start development server |
 | `bun run build` | Build for production |
 | `bun run lint` | Run Biome linter |
-| `bun run prisma:push` | Push schema changes to DB |
-| `bun run prisma:generate` | Generate Prisma client |
 | `bun run format` | Format code with Biome |
+| `bun run prisma:push` | Push schema changes to database |
+| `bun run prisma:generate` | Generate Prisma client |
+
+---
+
+## 🔧 Core Components
+
+### BigQuery Transformation
+
+Located in `services/bigquery/sql/transform_client_metrics.sql`
+
+- **Logic**: Offloads aggregation (SUM/MAX/COUNT) from Node.js to BigQuery's compute layer
+- **Procedure**: `generate_client_metrics(clientId)`
+
+### Temporal Workflows
+
+Located in `services/temporal/`
+
+The `RiskAnalysisWorkflow` orchestrates the following DAG:
+
+1. `transformAndAnalyzeData` → Triggers BigQuery SQL transformation
+2. `predictRiskWithVertex` → Fetches prediction from Vertex AI endpoint
+3. `saveRiskProfile` → Updates the system of record
+
+### Dashboard Components
+
+| Component | Purpose |
+|-----------|---------|
+| `clients-table.tsx` | Paginated client listing with risk indicators |
+| `risk-heatmap.tsx` | Visual risk distribution across segments |
+| `risk-alerts.tsx` | Real-time alert notifications |
+| `stats-overview.tsx` | KPI cards and metrics summary |
+
+---
+
+## 🔒 Security & Networking
+
+| Layer | Configuration |
+|-------|---------------|
+| **Ingress** | `INTERNAL_ONLY` — Only VPC traffic can reach the engine |
+| **Authentication** | Google-signed OIDC tokens |
+| **Egress** | All outbound traffic routes through `risk-engine-vpc-conn` |
+| **Data Security** | Blind indexing for encrypted PII with fuzzy search capability |
+
+### Operational Commands
+
+```bash
+# View Cloud Run logs
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=risk-analysis-service"
+
+# Update BigQuery SQL
+bq query --use_legacy_sql=false < services/bigquery/sql/transform_client_metrics.sql
+```
+
+---
+
+## 📁 Project Structure
+
+```
+risk-management-system/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes
+│   ├── clients/           # Client management pages
+│   ├── dashboard/         # Analytics dashboard
+│   ├── reports/           # Report generation
+│   ├── schedules/         # Screening schedules
+│   └── settings/          # Configuration
+├── components/            # React components
+│   ├── charts/           # Data visualization
+│   ├── scheduler/        # Scheduling UI
+│   └── ui/               # shadcn/ui components
+├── lib/                   # Utilities & clients
+│   ├── bigquery.ts       # BigQuery client
+│   ├── prisma.ts         # Prisma client
+│   └── security.ts       # Security utilities
+├── prisma/               # Database schema & migrations
+├── services/             # Backend services
+│   ├── bigquery/         # SQL transformations
+│   └── temporal/         # Workflow definitions
+├── scripts/              # Deployment scripts
+└── terraform/            # Infrastructure as Code
+```
+
+---
+
+## 📄 License
+
+Proprietary — StratCol Risk Solutions
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ for compliance professionals who demand excellence.</strong>
+</p>
