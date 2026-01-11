@@ -1,21 +1,25 @@
 import crypto from "crypto";
 
 const ALGORITHM = "aes-256-gcm";
-const SCOPED_KEY = process.env.PII_ENCRYPTION_KEY;
+function getKey(): Buffer {
+	const SCOPED_KEY = process.env.PII_ENCRYPTION_KEY;
 
-if (!SCOPED_KEY) {
-	throw new Error("PII_ENCRYPTION_KEY environment variable is not set");
-}
+	if (!SCOPED_KEY) {
+		throw new Error("PII_ENCRYPTION_KEY environment variable is not set");
+	}
 
-// Ensure key is 32 bytes
-const KEY = Buffer.from(SCOPED_KEY, "hex");
-if (KEY.length !== 32) {
-	throw new Error("PII_ENCRYPTION_KEY must be a 32-byte hex string");
+	// Ensure key is 32 bytes
+	const key = Buffer.from(SCOPED_KEY, "hex");
+	if (key.length !== 32) {
+		throw new Error("PII_ENCRYPTION_KEY must be a 32-byte hex string");
+	}
+
+	return key;
 }
 
 export function encrypt(text: string): string {
 	const iv = crypto.randomBytes(12); // 96-bit IV for GCM
-	const cipher = crypto.createCipheriv(ALGORITHM, KEY, iv);
+	const cipher = crypto.createCipheriv(ALGORITHM, getKey(), iv);
 
 	let encrypted = cipher.update(text, "utf8", "hex");
 	encrypted += cipher.final("hex");
@@ -36,7 +40,7 @@ export function decrypt(ciphertext: string): string {
 	const authTag = Buffer.from(parts[1], "hex");
 	const encryptedText = parts[2];
 
-	const decipher = crypto.createDecipheriv(ALGORITHM, KEY, widthIv);
+	const decipher = crypto.createDecipheriv(ALGORITHM, getKey(), widthIv);
 	decipher.setAuthTag(authTag);
 
 	let decrypted = decipher.update(encryptedText, "hex", "utf8");
@@ -66,7 +70,7 @@ export function generateBlindIndex(text: string): string[] {
 	// HMAC each n-gram
 	const hashes: string[] = [];
 	for (const gram of ngrams) {
-		const hmac = crypto.createHmac("sha256", KEY);
+		const hmac = crypto.createHmac("sha256", getKey());
 		hmac.update(gram);
 		hashes.push(hmac.digest("hex"));
 	}
