@@ -53,7 +53,7 @@ export default function RootLayout({
 	params: any; // Fix for Next.js generic type issue if needed
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<body className={`font-sans antialiased`} suppressHydrationWarning>
                 <div className="min-h-screen bg-background flex">
                     {/* Sidebar */}
