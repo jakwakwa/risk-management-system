@@ -12,6 +12,7 @@
     "prisma:push": "bunx prisma db push",
     "prisma:migrate": "bunx prisma migrate dev",
     "lint": "biome lint .",
+    "postinstall": "prisma generate",
     "lint:fix": "biome lint --write .",
     "start": "next start",
     "inngest": "inngest dev",
