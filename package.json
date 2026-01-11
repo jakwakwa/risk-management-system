@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "prisma db push && next build",
     "dev": "next dev",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
