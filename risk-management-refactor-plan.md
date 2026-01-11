@@ -1,125 +1,153 @@
-# **Risk Management System \- Refactoring Implementation Plan**
 
-**Objective:** Modernize the codebase architecture to improve scalability, performance, and developer experience. The focus is on standardizing data access, decoupling background services (Temporal), and enforcing strict component boundaries.
+The core shift is moving the "Transformation" logic out of your TypeScript code (Node.js) and into BigQuery SQL, as specified in your requirements: *"Utilise BigQuery's capabilities to transform... calculating total transaction counts."*
 
-## **Phase 1: Core Architecture & Configuration Cleanup**
+### **1\. Add: BigQuery Transformation Scripts (SQL)**
 
-### **1.1 Consolidate Database Clients**
+Location: Create a new folder services/bigquery/sql/ or scripts/sql/.  
+Why: Your requirements state that data preparation (calculating monthly totals, significant values) must happen in BigQuery, not in the application memory.  
+**Create file:** services/bigquery/sql/transform\_client\_metrics.sql
 
-Problem: The existence of both lib/db.ts and lib/prisma.ts creates ambiguity and risks multiple Prisma Client instances (connection pool exhaustion).  
-Action Plan:
+SQL
 
-1. **Select Master Client:** designate lib/prisma.ts as the single source of truth.  
-2. **Singleton Pattern:** Ensure lib/prisma.ts correctly implements the global singleton pattern to prevent hot-reloading connection leaks in development.  
-3. **Update References:** Search the entire project for imports from @/lib/db and update them to import from @/lib/prisma.  
-4. **Delete File:** Remove lib/db.ts once all references are updated.
+\-- This query performs the "Transform and Prepare" step defined in your requirements  
+CREATE OR REPLACE PROCEDURE \`stratcol\_risk.generate\_client\_metrics\`(clientId INT64)  
+BEGIN  
+  \-- 1\. Aggregating Monthly Behaviour (Moving logic from TS to SQL)  
+  CREATE OR REPLACE TEMP TABLE MonthlyStats AS  
+  SELECT  
+    FORMAT\_DATE('%Y-%m', transaction\_date) as month\_period,  
+    COUNT(\*) as total\_transaction\_count,  
+    SUM(amount) as total\_value,  
+    MAX(amount) as max\_significant\_transaction  
+  FROM \`stratcol\_risk.transactions\`  
+  WHERE client\_id \= clientId  
+  GROUP BY 1;
 
-### **1.2 Strict Environment Validation**
+  \-- 2\. Write these "Deep Insights" to a serving table for Next.js  
+  MERGE \`stratcol\_risk.client\_behaviour\_profiles\` T  
+  USING MonthlyStats S  
+  ON T.client\_id \= clientId AND T.month \= S.month\_period  
+  WHEN MATCHED THEN  
+    UPDATE SET   
+      total\_count \= S.total\_transaction\_count,  
+      total\_value \= S.total\_value,  
+      significant\_transaction \= S.max\_significant\_transaction  
+  WHEN NOT MATCHED THEN  
+    INSERT (client\_id, month, total\_count, total\_value, significant\_transaction)  
+    VALUES (clientId, S.month\_period, S.total\_transaction\_count, S.total\_value, S.max\_significant\_transaction);  
+END;
 
-Problem: Missing environment variables often cause runtime crashes deep in the application execution.  
-Action Plan:
+### **2\. Change: risk-activities.ts (The Transformation Layer)**
 
-1. **Create Validator:** Create a new file lib/env.ts.  
-2. **Implement Zod:** Use zod to define a schema for all required ENV variables (e.g., DATABASE\_URL, TEMPORAL\_ADDRESS, BIGQUERY\_CREDENTIALS).  
-3. **Early Exit:** Parse the process environment against this schema at build time (or app initialization). Fail fast with clear error messages if variables are missing.
+Location: services/temporal/risk-activities.ts  
+Why: Currently, your analyzeClientRisks function manually fetches rows and calculates averages in TypeScript (lines 16-32). This violates the requirement to "Utilise BigQuery's capabilities." We must delete the math logic and replace it with a call to the SQL procedure above.  
+**Update code:**
 
-## **Phase 2: Temporal.io Decoupling & Worker Strategy**
+TypeScript
 
-### **2.1 Separate the Worker Process**
+import { bqClient } from '@/lib/bigquery';
 
-Problem: Defining and running Temporal Workers inside Next.js API routes or app directories is an anti-pattern. Workers are long-running processes, while Next.js functions are ephemeral.  
-Action Plan:
+export async function transformAndAnalyzeData(bqClientId: number): Promise\<void\> {  
+    console.log(\`Triggering BigQuery Transformation for Client ${bqClientId}...\`);
 
-1. **Relocate Worker Code:** Move services/temporal/worker.ts to a standalone entry point, e.g., scripts/worker.ts or a dedicated worker/ directory at the root.  
-2. **Create Start Script:** Add a script to package.json (e.g., "start:worker": "tsx scripts/worker.ts") to run the worker independently of the Next.js dev server.  
-3. **Shared Types:** Ensure services/temporal/workflows.ts and activities.ts remain shared code that both the Next.js app (Client) and the independent Worker process can import.
+    // INSTEAD OF: fetching rows and doing Math.avg() in Node.js  
+    // WE DO: Trigger the BigQuery Stored Procedure  
+    const query \= \`CALL \\\`stratcol\_risk.generate\_client\_metrics\\\`(@clientId)\`;
 
-### **2.2 Standardize the Temporal Client**
+    await bqClient.query({  
+        query,  
+        params: { clientId: bqClientId },  
+    });
 
-Problem: Ad-hoc instantiation of the Temporal Client in UI components or API routes.  
-Action Plan:
+    // The data is now ready in the 'client\_behaviour\_profiles' table for Vertex AI to read  
+}
 
-1. **Singleton Client:** Ensure services/temporal/client.ts exports a singleton instance or a cached connection function for the Temporal Client.  
-2. **Server-Only Guard:** Mark this file with 'server-only' to prevent it from being accidentally bundled into Client Components.
+### **3\. Add: Vertex AI Prediction Activity**
 
-## **Phase 3: Data Layer & API Standardization**
+Location: services/temporal/risk-activities.ts  
+Why: The requirements state: "Use Vertex AI platform to build and train... models that analyse client behaviour patterns." You need a dedicated activity to trigger this prediction using the data we just transformed.  
+**Add code:**
 
-### **3.1 Unify Data Access Patterns**
+TypeScript
 
-Problem: The app currently uses a mix of Server Actions (app/actions/\*.ts) and API Routes (app/api/\*) for similar tasks.  
-Action Plan:
+import { PredictionServiceClient } from '@google-cloud/aiplatform';
 
-1. **Strategy Definition:**  
-   * **Use Server Actions (app/actions)** for: Form submissions, mutations (create/update/delete), and triggering workflows from the UI.  
-   * **Use API Routes (app/api)** for: External webhooks (e.g., 3rd party callbacks), Cron jobs (e.g., Vercel Cron), or publicly exposed REST endpoints.  
-   * **Use Server Components** for: Direct data fetching (GET) in page.tsx.  
-2. **Refactor:** Migrate any internal data-fetching API routes (e.g., app/api/engine/screen) to Server Actions if they are only consumed by your own UI.
+// Helper for Vertex AI Prediction  
+const predictionClient \= new PredictionServiceClient({  
+    apiEndpoint: 'us-central1-aiplatform.googleapis.com',  
+});
 
-### **3.2 Implement "DTO" Pattern for UI Data**
+export async function predictRiskWithVertex(bqClientId: number): Promise\<number\> {  
+    // 1\. Construct the instance from the BigQuery data we just prepared  
+    // (In a real scenario, you might use Batch Prediction, but for online scoring:)  
+    const instance \= {  
+        // Fetch the aggregated metrics from Step 1  
+        sql: \`SELECT \* FROM client\_behaviour\_profiles WHERE client\_id \= ${bqClientId} ORDER BY month DESC LIMIT 1\`  
+    };
 
-Problem: Passing raw Prisma objects (with Dates, BigInts, or decimals) directly to Client Components causes serialization warnings.  
-Action Plan:
+    // 2\. Call the Endpoint  
+    const \[response\] \= await predictionClient.predict({  
+        endpoint: process.env.VERTEX\_AI\_ENDPOINT\_ID, // e.g., projects/.../endpoints/...  
+        instances: \[instance\], // formatting depends on your specific model  
+    });
 
-1. **Transformer Utility:** Create a utility in lib/utils.ts to safely serialize Prisma results (e.g., converting Date to ISO string, Decimal to number/string) before passing them to Client Components.
+    // 3\. Extract Risk Score  
+    const riskScore \= response.predictions?.\[0\]?.structValue?.fields?.risk\_score?.numberValue || 0;  
+    return riskScore;  
+}
 
-## **Phase 4: Component Architecture & UI Performance**
+### **4\. Update: risk-workflows.ts (The Orchestration)**
 
-### **4.1 "Fat Page" Decomposition**
+Location: services/temporal/risk-workflows.ts  
+Why: The workflow must now orchestrate the new "Deep Insights" pipeline: Ingest \-\> Transform (SQL) \-\> Predict (Vertex) \-\> Visualize.  
+**Update code:**
 
-Problem: app/dashboard/page.tsx and app/analytics/page.tsx likely contain mixed logic: data fetching, state management, and UI rendering.  
-Action Plan:
+TypeScript
 
-1. **Container/Presenter Pattern:**  
-   * Keep page.tsx as the **Server Component**. It should *only* fetch data (using Prisma or Temporal Client) and pass it to a child component.  
-   * Create view.tsx (or \_components/DashboardView.tsx) as the **Client Component** (if interactivity is needed) or a pure UI component to render the data.  
-2. **Example Structure:**  
-   app/dashboard/  
-   ├── page.tsx (Fetches data, renders \<DashboardView data={...} /\>)  
-   └── \_components/  
-       └── dashboard-view.tsx (Receives data, arranges charts/tables)
+import { proxyActivities } from '@temporalio/workflow';  
+import type \* as activities from './risk-activities';
 
-### **4.2 Dynamic Chart Loading**
+const {   
+    transformAndAnalyzeData, // The BigQuery SQL Job  
+    predictRiskWithVertex,   // The Vertex AI Job  
+    saveRiskProfile          // The DB Update  
+} \= proxyActivities\<typeof activities\>({  
+    startToCloseTimeout: '10 minutes',  
+});
 
-Problem: Heavy charting libraries (likely in components/charts/) can block the main thread or increase First Contentful Paint (FCP).  
-Action Plan:
+export async function RiskAnalysisWorkflow(monitoringJobId: string, bqClientId: number): Promise\<string\> {  
+    // Step 1: Transform & Prepare (BigQuery)  
+    // "Utilise BigQuery's capabilities to transform... calculating total transaction counts"  
+    await transformAndAnalyzeData(bqClientId);
 
-1. **Lazy Loading:** Use next/dynamic to lazy load all chart components in app/analytics/page.tsx and app/dashboard/page.tsx.  
-   * Example: const TransactionVolumeChart \= dynamic(() \=\> import('@/components/charts/transaction-volume-chart'), { ssr: false, loading: () \=\> \<Skeleton /\> })  
-2. **SSR False:** Explicitly disable SSR for charts that depend on window or browser-only APIs.
+    // Step 2: AI Prediction (Vertex AI)  
+    // "Use Vertex AI platform to build and train machine learning models"  
+    const riskScore \= await predictRiskWithVertex(bqClientId);
 
-### **4.3 Standardize Loading & Error States**
+    // Step 3: Result Ingestion (Looker/Next.js Ready)  
+    await saveRiskProfile(monitoringJobId, {   
+        bqClientId,   
+        riskScore,   
+        // We no longer calculate anomalies here; they come from Vertex/BQ now  
+        anomalies: riskScore \> 80 ? \['Vertex AI Flagged High Risk'\] : \[\]   
+    });
 
-Problem: Inconsistent user feedback during data loading or crashes.  
-Action Plan:
+    return \`Deep Analysis completed for Client ${bqClientId}\`;  
+}
 
-1. **Global Loading:** Ensure app/loading.tsx exists for the root layout.  
-2. **Route-Specific Loading:** Create loading.tsx in heavy data routes like app/analytics/ and app/reports/ to show skeletons immediately while Server Components fetch data.  
-3. **Error Boundaries:** Create error.tsx in app/dashboard/ and app/reports/ to gracefully handle data fetching failures without crashing the entire app.
+### **5\. Change: Next.js Dashboard (The Looker Replacement)**
 
-## **Phase 5: Code Quality & Safety**
+Location: app/dashboard/page.tsx  
+Why: To act as Looker, the UI must visualize the results of the BigQuery aggregation, not just raw rows.
 
-### **5.1 Enforce Server Actions Validation**
+* **Remove:** Any simple db.transaction.findMany calls that try to graph raw data.  
+* **Add:** A query that fetches from the RiskProfile (which now contains the Vertex AI score) and the ClientBehaviourProfile (the BigQuery aggregated table) to render the "Transaction Trends" chart.
 
-Problem: Check if app/actions/config.ts blindly accepts input.  
-Action Plan:
+### **Summary of Changes**
 
-1. **Zod Schemas:** Define Zod schemas for all arguments passed to Server Actions.  
-2. **Input Parsing:** In every Server Action, run schema.parse(input) before interacting with the database or Temporal. Throw user-friendly errors if validation fails.
-
-### **5.2 Strict Type Checking**
-
-**Action Plan:**
-
-1. **No any:** Search the codebase for explicit : any and refactor to use proper interfaces or unknown with narrowing.  
-2. **Generated Types:** Heavily rely on Prisma.TransactionGetPayload\<{...}\> or inferred types from Zod schemas rather than manually writing interfaces that might drift from the schema.
-
-### **6. Update the README.md file**
-
-## **Summary of Work for AI Coder**
-
-1. **Consolidate DB:** Merge lib/db.ts into lib/prisma.ts.  
-2. **Worker Extraction:** Move services/temporal/worker.ts to scripts/worker.ts and update package.json.  
-3. **Component Split:** Refactor app/dashboard/page.tsx into a data-fetching wrapper and a pure UI view.  
-4. **Lazy Charts:** Wrap chart imports in app/analytics with next/dynamic.  
-5. **Env Validation:** Create lib/env.ts with Zod.  
-6. **Action Security:** Add Zod validation to app/actions/config.ts.
+| Component | Current State | Required Change |
+| :---- | :---- | :---- |
+| **Logic** | Calculating avg\_volume in Node.js (TypeScript) | **Move to BigQuery SQL** (CREATE PROCEDURE) to handle scale. |
+| **Activities** | analyzeClientRisks does everything | **Split into** transformAndAnalyzeData (SQL) and predictRiskWithVertex (AI). |
+| **Workflow** | Linear 2-step process | **Multi-step DAG:** Transform (BQ) \-\> Predict (Vertex) \-\> Save. |
+| **UI** | Displays raw data | Displays **Aggregated Insights** (Pre-calculated in Step 1). |
