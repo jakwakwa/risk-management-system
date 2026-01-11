@@ -37,7 +37,7 @@ export async function screenCandidate(jobId: string): Promise<ScreenResult> {
   let clientName: string;
   try {
       clientName = decrypt(job.clientName);
-  } catch (e) {
+  } catch (_e) {
       // Fallback if not encrypted (migration support)
       clientName = job.clientName;
   }
@@ -91,7 +91,7 @@ export async function screenCandidate(jobId: string): Promise<ScreenResult> {
           uniqueMatches.set(m.name, m);
       }
   }
-  const sortedMatches = Array.from(uniqueMatches.values()).sort((a: any, b: any) => b.score - a.score);
+  const sortedMatches = Array.from(uniqueMatches.values()).sort((a: MatchResult, b: MatchResult) => b.score - a.score);
 
   const result = sortedMatches.length > 0 && sortedMatches[0].score >= 0.7 ? 'MATCH' : 'CLEAR';
 
