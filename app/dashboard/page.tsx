@@ -1,16 +1,41 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { db } from '@/lib/db';
+import { bqClient, BQ_TABLES } from '@/lib/bigquery';
 import { ShieldCheck, Activity, Users, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { RiskHeatmap } from '@/components/risk-heatmap';
+import { TransactionTrends } from '@/components/charts/transaction-trends';
 
 export default async function DashboardPage() {
     const totalJobs = await db.monitoringJob.count();
     const totalScreens = await db.auditLog.count();
     const totalMatches = await db.auditLog.count({ where: { result: 'MATCH' } });
     
-    // Mock trend data for chart (Integrate Recharts client component in real implementation)
-    // For now we show high-level stats.
+    // Fetch Aggregated Insights from BigQuery
+    interface TrendMetric {
+        month: string;
+        transactions: number;
+        volume: number;
+    }
+    let trendsData: TrendMetric[] = [];
+    try {
+        const query = `
+            SELECT month, SUM(total_count) as transactions, SUM(total_value) as volume
+            FROM \`${BQ_TABLES.CLIENT_BEHAVIOUR_PROFILES}\`
+            GROUP BY month
+            ORDER BY month ASC
+            LIMIT 12
+        `;
+        const [rows] = await bqClient.query({ query });
+        trendsData = rows.map(row => ({
+            month: row.month,
+            transactions: Number(row.transactions),
+            volume: Number(row.volume),
+        }));
+    } catch (e) {
+        console.error("Failed to fetch BigQuery trends:", e);
+        // Fallback or empty
+    }
 
     return (
         <div className="container mx-auto p-8 space-y-8">
@@ -60,6 +85,10 @@ export default async function DashboardPage() {
                         <p className="text-xs text-muted-foreground">Temporal Workers Active</p>
                     </CardContent>
                 </Card>
+            </div>
+
+            <div className="grid gap-4">
+                <TransactionTrends data={trendsData} />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
