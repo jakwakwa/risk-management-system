@@ -10,13 +10,14 @@ datasource db {
 }
 
 model MonitoringJob {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   clientName     String
   cronExpression String
   nextRunAt      DateTime
   userId         String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  riskProfile    RiskProfile?
 
   @@index([nextRunAt])
 }
@@ -61,4 +62,30 @@ model SystemConfig {
   phoneticAlgorithm String   @default("BMPM") // BMPM or DoubleMetaphone
   semanticContext   String? // Optional context for vector search
   updatedAt         DateTime @updatedAt
+}
+
+model RiskProfile {
+  id              String        @id @default(cuid())
+  monitoringJobId String        @unique
+  monitoringJob   MonitoringJob @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
+
+  bqClientId       Int? // Reference to BigQuery Client ID
+  avgMonthlyVolume Decimal? @db.Decimal(12, 2)
+  volatilityScore  Decimal? @db.Decimal(5, 2)
+  riskScore        Float? // 0-100
+  lastAnalysed     DateTime @default(now())
+
+  alerts RiskAlert[]
+}
+
+model RiskAlert {
+  id            String      @id @default(cuid())
+  riskProfileId String
+  riskProfile   RiskProfile @relation(fields: [riskProfileId], references: [id], onDelete: Cascade)
+
+  type        String // e.g. "VOLUME_SPIKE", "NEWS_NEGATIVE"
+  severity    String // "LOW", "MEDIUM", "HIGH", "CRITICAL"
+  description String
+  metadata    Json?
+  createdAt   DateTime @default(now())
 }
