@@ -32,3 +32,4 @@ next-env.d.ts
 .terraform.lock.hcl
 *.tfstate
 *.tfstate.backup
+.DS_Store
