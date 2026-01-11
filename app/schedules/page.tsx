@@ -18,7 +18,7 @@ export default async function SchedulesPage() {
     const clientName = formData.get('clientName') as string;
     const cron = formData.get('cron') as string;
     const userId = 'user_123';
-    await createMonitoringJob(clientName, cron, userId);
+    await createMonitoringJob({ clientName, cronExpression: cron, userId });
   }
 
   async function deleteJob(formData: FormData) {

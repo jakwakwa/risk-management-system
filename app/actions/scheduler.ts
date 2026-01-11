@@ -6,10 +6,7 @@ import { createTemporalClient } from '@/services/temporal/client'
 import { generateBlindIndex, encrypt } from '@/lib/security'
 
 export async function createMonitoringJob(
-  clientName: string,
-  cronExpression: string,
-  userId: string
-) {
+{ clientName, cronExpression, userId }: { clientName: string; cronExpression: string; userId: string }) {
   // 1. Encrypt and Blind Index
   const encryptedName = encrypt(clientName)
   const blindHashes = generateBlindIndex(clientName)

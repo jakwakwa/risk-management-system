@@ -1,11 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { db } from '@/lib/db';
 import { CloudTasksClient } from "@google-cloud/tasks";
-import { createTemporalClient } from '@/services/temporal/client';
-// @ts-ignore
 import parser from "cron-parser";
 
-// DIRECT instantiation - NO factory, NO adapter
 const tasksClient = new CloudTasksClient();
 
 export async function POST(req: NextRequest) {
@@ -29,7 +26,7 @@ export async function POST(req: NextRequest) {
 	);
 
 	for (const job of dueJobs) {
-		const interval = parser.parseExpression(job.cronExpression, {
+		const interval = parser.parse(job.cronExpression, {
 			currentDate: job.nextRunAt,
 		});
 		const nextRunAt = interval.next().toDate();
