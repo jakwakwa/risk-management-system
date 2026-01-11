@@ -23,3 +23,5 @@ export async function RiskScreeningWorkflow(jobId: string): Promise<string> {
 
   return matchResult.result;
 }
+
+export * from './risk-workflows';

@@ -179,3 +179,5 @@ export async function auditLog(jobId: string, screenResult: ScreenResult, report
         }))
     });
 }
+
+export * from './risk-activities';
