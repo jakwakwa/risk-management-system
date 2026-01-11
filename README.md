@@ -410,6 +410,43 @@ graph LR
 
 ---
 
+## Production Deployment Guide
+
+This project is configured for deployment to **Google Cloud Run** with full IAM integration.
+
+### 1. Prerequisites
+- **Terraform** (v1.5+): For provisioning infrastructure.
+- **Google Cloud SDK**: For authentication and script execution.
+- **Docker**: For local build verification.
+
+### 2. Infrastructure Setup
+The infrastructure is managed via Terraform and shell scripts.
+
+#### Step 2.1: IAM Setup
+Provision the Service Account and required IAM roles:
+```bash
+chmod +x scripts/gcp-iam-setup.sh
+./scripts/gcp-iam-setup.sh
+```
+
+#### Step 2.2: Provision Resources
+Deploy the Network and Cloud Run service definitions:
+```bash
+cd terraform
+terraform init
+terraform apply
+```
+*Note: This creates the VPC Access Connector and the Cloud Run service placeholder.*
+
+### 3. Deploy Application
+Push the application to Cloud Run using Cloud Build:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml --project=stratcol-risk-analysis-engine .
+```
+
+---
+
 ## Summary
 
 - ✅ PostgreSQL runs locally in Docker with required extensions

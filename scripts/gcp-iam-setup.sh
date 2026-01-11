@@ -4,18 +4,19 @@ set -e
 # Configuration
 SERVICE_ACCOUNT_NAME="risk-engine-sa"
 DISPLAY_NAME="Risk Analysis Service Account"
-PROJECT_ID=$(gcloud config get-value project)
+PROJECT_ID="${GCP_PROJECT_ID:-stratcol-risk-analysis-engine}"
 REGION="europe-west1"
 
 echo "Using Project ID: $PROJECT_ID"
 
 # 1. Create the Service Account
-if gcloud iam service-accounts describe "${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" > /dev/null 2>&1; then
+if gcloud iam service-accounts describe "${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" --project "$PROJECT_ID" > /dev/null 2>&1; then
     echo "Service Account ${SERVICE_ACCOUNT_NAME} already exists."
 else
     echo "Creating Service Account: ${SERVICE_ACCOUNT_NAME}..."
     gcloud iam service-accounts create "${SERVICE_ACCOUNT_NAME}" \
-        --display-name="${DISPLAY_NAME}"
+        --display-name="${DISPLAY_NAME}" \
+        --project "$PROJECT_ID"
 fi
 
 SA_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
