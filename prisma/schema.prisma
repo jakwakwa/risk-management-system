@@ -140,3 +140,19 @@ model PublicDataAnalysis {
   @@index([status])
   @@index([overallRiskLevel])
 }
+
+model ManualInvestigativeReport {
+  id         String @id @default(cuid())
+  clientName String
+  analystId  String // User ID of the analyst
+
+  findings  String @db.Text
+  riskLevel String @default("PENDING") // LOW, MEDIUM, HIGH, CRITICAL, PENDING
+  status    String @default("DRAFT") // DRAFT, FINAL
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientName])
+  @@index([analystId])
+}
