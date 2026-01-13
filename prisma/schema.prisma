@@ -10,14 +10,15 @@ datasource db {
 }
 
 model MonitoringJob {
-  id             String       @id @default(cuid())
-  clientName     String
-  cronExpression String
-  nextRunAt      DateTime
-  userId         String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  riskProfile    RiskProfile?
+  id                 String               @id @default(cuid())
+  clientName         String
+  cronExpression     String
+  nextRunAt          DateTime
+  userId             String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  riskProfile        RiskProfile?
+  publicDataAnalyses PublicDataAnalysis[]
 
   @@index([nextRunAt])
 }
@@ -88,4 +89,54 @@ model RiskAlert {
   description String
   metadata    Json?
   createdAt   DateTime @default(now())
+}
+
+// ============================================
+// Public Data Analysis Models
+// ============================================
+
+model WatchListClient {
+  id        String   @id @default(cuid())
+  name      String
+  priority  String   @default("HIGH") // HIGH, CRITICAL
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  analyses PublicDataAnalysis[]
+
+  @@index([priority])
+}
+
+model PublicDataAnalysis {
+  id                String  @id @default(cuid())
+  monitoringJobId   String?
+  watchListClientId String?
+  clientName        String
+
+  // Research Status
+  status         String  @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED
+  firecrawlJobId String?
+
+  // Results (JSON for flexibility)
+  negativeMedia      Json?
+  pepScreening       Json?
+  financialHealth    Json?
+  statutoryEnquiries Json?
+  mergersActivity    Json?
+
+  // Aggregated Risk
+  overallRiskLevel String   @default("PENDING") // LOW, MEDIUM, HIGH, CRITICAL, PENDING
+  riskFlags        String[] @default([])
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  monitoringJob   MonitoringJob?   @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
+  watchListClient WatchListClient? @relation(fields: [watchListClientId], references: [id], onDelete: Cascade)
+
+  @@index([monitoringJobId])
+  @@index([watchListClientId])
+  @@index([status])
+  @@index([overallRiskLevel])
 }
