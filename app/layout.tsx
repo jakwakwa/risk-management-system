@@ -44,6 +44,8 @@ export const metadata: Metadata = {
 	},
 };
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -109,6 +111,7 @@ export default function RootLayout({
                         {children}
                     </main>
                 </div>
+                <Toaster />
 			</body>
 			
 		</html>
