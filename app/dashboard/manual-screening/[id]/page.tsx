@@ -1,4 +1,11 @@
+import { getManualReport } from '@/app/actions/manual-reporting';
 import { PrintButton } from '@/components/print-button';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export default async function ReportViewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
