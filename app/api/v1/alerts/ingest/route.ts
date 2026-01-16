@@ -16,16 +16,20 @@ const alertIngestSchema = z.object({
 
 export async function POST(req: NextRequest) {
   // 2. Security Middleware
-  const authHeader = req.headers.get('authorization');
-  if (authHeader !== process.env.GCP_OIDC_TOKEN) {
+  const authHeader = req.headers.get('authorization') || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '');
+
+  if (token !== process.env.GCP_OIDC_TOKEN) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const body = await req.json();
+    console.log('Incoming Ingest Payload:', JSON.stringify(body, null, 2)); // Debug 400
     const validation = alertIngestSchema.safeParse(body);
 
     if (!validation.success) {
+      console.error('Validation Error:', JSON.stringify(validation.error.format(), null, 2));
       return NextResponse.json(
         { error: 'Invalid payload', details: validation.error.format() },
         { status: 400 }
@@ -83,8 +87,19 @@ export async function POST(req: NextRequest) {
     // 5. Response Handling
     return NextResponse.json({ status: 'Accepted', message: 'Queued for processing' }, { status: 202 });
 
-  } catch (error) {
-    console.error('Ingestion Error:', error);
+  } catch (error: any) {
+    console.error('❌ BigQuery Ingestion Error (Detailed):');
+    if (error.errors) {
+      console.error(JSON.stringify(error.errors, null, 2));
+    } else {
+      console.error(JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    }
+    
+    // Also log response if available
+    if (error.response) {
+      console.error('❌ BigQuery Response:', JSON.stringify(error.response, null, 2));
+    }
+
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
