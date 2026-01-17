@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, AlertTriangle } from 'lucide-react';
+import { AlertCircle, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { type DashboardAlert } from "@/app/actions/dashboard";
 
@@ -8,38 +8,52 @@ interface AlertProps {
 }
 
 export function RiskAlerts({ alerts }: AlertProps) {
-  if (!alerts || alerts.length === 0) {
-      return (
-        <Card>
-            <CardHeader><CardTitle>Recent Alerts</CardTitle></CardHeader>
-            <CardContent>No recent anomalies detected.</CardContent>
-        </Card>
-      )
-  }
+	if (!alerts || alerts.length === 0) {
+		return (
+			<Card>
+				<CardHeader>
+					<CardTitle>Recent Alerts</CardTitle>
+				</CardHeader>
+				<CardContent>No recent anomalies detected.</CardContent>
+			</Card>
+		);
+	}
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Alerts</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <div key={alert.id} className="flex items-start space-x-4 border-b pb-4 last:border-0 last:pb-0">
-              {alert.severity === 'critical' ? (
-                 <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
-              ) : (
-                 <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
-              )}
-              <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">{alert.client}</p>
-                <p className="text-sm text-muted-foreground">{alert.description}</p>
-                <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(alert.time), { addSuffix: true })}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Recent Alerts</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div className="space-y-4">
+					{alerts.map(alert => (
+						<div
+							key={alert.id}
+							className="flex items-start space-x-4 border-b pb-4 last:border-0 last:pb-0">
+							{alert.severity === "critical" ? (
+								<AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
+							) : (
+								<AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+							)}
+							<div className="space-y-1">
+								<p className="text-sm font-medium leading-none">{alert.client}</p>
+								<p className="text-sm text-muted-foreground">{alert.description}</p>
+								<p className="text-xs text-muted-foreground">
+									{(() => {
+										try {
+											const date = new Date(alert.time);
+											if (isNaN(date.getTime())) return "Just now";
+											return formatDistanceToNow(date, { addSuffix: true });
+										} catch (e) {
+											return "Just now";
+										}
+									})()}
+								</p>
+							</div>
+						</div>
+					))}
+				</div>
+			</CardContent>
+		</Card>
+	);
 }

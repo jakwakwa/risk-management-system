@@ -1,5 +1,5 @@
 
-import { getMonitoringJobs, createMonitoringJob, deleteMonitoringJob, createSystemJob } from '../actions/scheduler';
+import { getMonitoringJobs, createMonitoringJob, deleteMonitoringJob, createSystemJob, triggerEtlPipeline, getPipelineStatus } from '../actions/scheduler';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,11 +12,15 @@ import { utcToSat, cronToHumanReadable } from '@/lib/cron-utils';
 import { PageContainer } from '@/components/shared/page-container';
 import { SectionHeader } from '@/components/shared/section-header';
 import { schedulesContent } from './content';
+import { Loader2 } from 'lucide-react';
 
 export default async function SchedulesPage() {
   const userId = 'user_123'; 
-  // Fetch all jobs (including system jobs)
-  const jobs = await getMonitoringJobs(userId);
+  // Fetch jobs and status
+  const [jobs, runningWorkflows] = await Promise.all([
+      getMonitoringJobs(userId),
+      getPipelineStatus()
+  ]);
   
   const systemJobs = jobs.filter(j => j.type !== 'CLIENT_MONITORING');
   const clientJobs = jobs.filter(j => j.type === 'CLIENT_MONITORING');
@@ -33,7 +37,12 @@ export default async function SchedulesPage() {
   async function createEtlJob() {
       'use server';
       // 5am SAT = 3am UTC
-      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '45 14 * * *' }); 
+      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '00 17 * * *' }); 
+  }
+
+  async function triggerEtlJob() {
+      'use server';
+      await triggerEtlPipeline();
   }
 
   async function createInferenceJob() {
@@ -79,7 +88,7 @@ export default async function SchedulesPage() {
                             <div className="space-y-2">
                                 <Label htmlFor="cron">{clients.createCard.labels.schedule}</Label>
                                 <CronPicker name="cron" defaultValue="45 14 * * *" /> 
-                                <p className="text-[10px] text-muted-foreground">{clients.createCard.labels.scheduleHelp}</p>
+                                 <p className="text-[10px] text-muted-foreground">{clients.createCard.labels.scheduleHelp}</p>
                             </div>
                             <Button type="submit" className="w-full">{clients.createCard.labels.submitButton}</Button>
                         </form>
@@ -142,10 +151,19 @@ export default async function SchedulesPage() {
                         <CardTitle className="text-sm font-medium text-muted-foreground">{system.quickActions.etl.label}</CardTitle>
                         <CardDescription className="text-lg font-semibold text-slate-900">{system.quickActions.etl.title}</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-3">
                         <form action={createEtlJob}>
                              <Button variant="secondary" className="w-full">{system.quickActions.etl.button}</Button>
                         </form>
+                        <form action={triggerEtlJob}>
+                             <Button variant="default" className="w-full">Trigger Pipeline Now</Button>
+                        </form>
+                        {runningWorkflows.length > 0 && (
+                             <div className="flex items-center gap-2 p-2 bg-blue-50 text-blue-700 rounded-md text-sm border border-blue-100">
+                                 <Loader2 className="w-4 h-4 animate-spin" />
+                                 {runningWorkflows.length} Pipeline(s) Running
+                             </div>
+                        )}
                     </CardContent>
                 </Card>
 

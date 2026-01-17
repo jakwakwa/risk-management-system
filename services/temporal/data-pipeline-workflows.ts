@@ -4,7 +4,8 @@ import type * as activities from './data-pipeline-activities';
 const {
   runBigQueryMLAnalysis,
   fetchDetectedAnomalies,
-  createRiskCases
+  createRiskCases,
+  saveDailyReport
 } = proxyActivities<typeof activities>({
   startToCloseTimeout: '10 minutes', // Extended for BQML training/inference time
 });
@@ -12,6 +13,8 @@ const {
 export async function runAnomalyAnalysisWorkflow(): Promise<string> {
   const jobId = await runBigQueryMLAnalysis(24);
   const anomalies = await fetchDetectedAnomalies();
+
+  await saveDailyReport(jobId, anomalies);
 
   if (anomalies.length > 0) {
     await createRiskCases(anomalies);

@@ -154,3 +154,14 @@ enum JobType {
   SYSTEM_ETL
   SYSTEM_INFERENCE
 }
+
+model AnomalyReport {
+  id           String   @id @default(cuid())
+  jobId        String
+  gcsPath      String
+  anomalyCount Int
+  status       String   @default("GENERATED")
+  createdAt    DateTime @default(now())
+
+  @@index([jobId])
+}

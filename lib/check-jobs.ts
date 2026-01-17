@@ -1,4 +1,4 @@
-import { db } from "./lib/db";
+import { db } from "./db";
 
 async function checkJobs() {
   const jobs = await db.monitoringJob.findMany();
