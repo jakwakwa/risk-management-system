@@ -28,37 +28,15 @@ const comparisonData = [
 		previous: "R2,283",
 		change: -0.4,
 	},
-	{
-		metric: "Dispute Rate",
-		current: "1.5%",
-		previous: "1.8%",
-		change: -16.7,
-	},
-	{
-		metric: "Bounce Rate",
-		current: "0.8%",
-		previous: "1.1%",
-		change: -27.3,
-	},
-	{
-		metric: "Active Clients",
-		current: "248",
-		previous: "236",
-		change: 5.1,
-	},
-	{
-		metric: "New Client Onboarding",
-		current: "12",
-		previous: "8",
-		change: 50.0,
-	},
 ];
 
 export function MonthlyComparisonTable() {
 	return (
 		<Card className="text-muted-foreground">
-			<CardHeader>
-				<CardTitle className="text-foreground">Month-over-Month Comparison</CardTitle>
+		
+				<CardHeader>
+						<CardTitle className="text-foreground">Industry Distribution</CardTitle>
+				
 				<CardDescription>
 					Key metrics comparison between current and previous month
 				</CardDescription>

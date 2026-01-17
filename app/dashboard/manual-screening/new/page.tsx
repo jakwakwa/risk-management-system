@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
 
 export default function NewManualReportPage() {
   const router = useRouter();
@@ -46,13 +48,11 @@ export default function NewManualReportPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">New Manual Report</h1>
-        <p className="text-muted-foreground">
-          Enter details for a new manual risk assessment.
-        </p>
-      </div>
+    <PageContainer className="max-w-2xl">
+      <SectionHeader
+        title="New Manual Report"
+        description="Enter details for a new manual risk assessment."
+      />
 
       <Card>
         <CardHeader>
@@ -139,6 +139,6 @@ export default function NewManualReportPage() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

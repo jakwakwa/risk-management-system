@@ -9,23 +9,17 @@ datasource db {
   extensions = [pg_trgm, vector]
 }
 
-enum JobType {
-  CLIENT_MONITORING
-  SYSTEM_ETL
-  SYSTEM_INFERENCE
-}
-
 model MonitoringJob {
   id                 String               @id @default(cuid())
-  type               JobType              @default(CLIENT_MONITORING)
   clientName         String
   cronExpression     String
   nextRunAt          DateTime
-  userId             String? // Optional for System Jobs
+  userId             String?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
-  riskProfile        RiskProfile?
+  type               JobType              @default(CLIENT_MONITORING)
   publicDataAnalyses PublicDataAnalysis[]
+  riskProfile        RiskProfile?
 
   @@index([nextRunAt])
 }
@@ -43,11 +37,11 @@ model AuditLog {
 }
 
 model SanctionEntity {
-  id        String                      @id @default(cuid())
+  id        String                 @id @default(cuid())
   name      String
   source    String
-  embedding Unsupported("vector(768)")?
-  createdAt DateTime                    @default(now())
+  embedding Unsupported("vector")?
+  createdAt DateTime               @default(now())
 
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
 }
@@ -65,82 +59,66 @@ model BlindIndex {
 
 model SystemConfig {
   id                String   @id @default(cuid())
-  key               String   @unique // e.g. "ENGINE_SETTINGS"
+  key               String   @unique
   fuzzyThreshold    Float    @default(0.7)
-  phoneticAlgorithm String   @default("BMPM") // BMPM or DoubleMetaphone
-  semanticContext   String? // Optional context for vector search
+  phoneticAlgorithm String   @default("BMPM")
+  semanticContext   String?
   updatedAt         DateTime @updatedAt
 }
 
 model RiskProfile {
-  id              String        @id @default(cuid())
-  monitoringJobId String        @unique
-  monitoringJob   MonitoringJob @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
-
-  bqClientId       Int? // Reference to BigQuery Client ID
-  avgMonthlyVolume Decimal? @db.Decimal(12, 2)
-  volatilityScore  Decimal? @db.Decimal(5, 2)
-  riskScore        Float? // 0-100
-  lastAnalysed     DateTime @default(now())
-
-  alerts RiskAlert[]
+  id               String        @id @default(cuid())
+  monitoringJobId  String        @unique
+  bqClientId       Int?
+  avgMonthlyVolume Decimal?      @db.Decimal(12, 2)
+  volatilityScore  Decimal?      @db.Decimal(5, 2)
+  riskScore        Float?
+  lastAnalysed     DateTime      @default(now())
+  alerts           RiskAlert[]
+  monitoringJob    MonitoringJob @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
 }
 
 model RiskAlert {
   id            String      @id @default(cuid())
   riskProfileId String
+  type          String
+  severity      String
+  description   String
+  metadata      Json?
+  createdAt     DateTime    @default(now())
   riskProfile   RiskProfile @relation(fields: [riskProfileId], references: [id], onDelete: Cascade)
-
-  type        String // e.g. "VOLUME_SPIKE", "NEWS_NEGATIVE"
-  severity    String // "LOW", "MEDIUM", "HIGH", "CRITICAL"
-  description String
-  metadata    Json?
-  createdAt   DateTime @default(now())
 }
 
-// ============================================
-// Public Data Analysis Models
-// ============================================
-
 model WatchListClient {
-  id        String   @id @default(cuid())
+  id        String               @id @default(cuid())
   name      String
-  priority  String   @default("HIGH") // HIGH, CRITICAL
+  priority  String               @default("HIGH")
   notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  analyses PublicDataAnalysis[]
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  analyses  PublicDataAnalysis[]
 
   @@index([priority])
 }
 
 model PublicDataAnalysis {
-  id                String  @id @default(cuid())
-  monitoringJobId   String?
-  watchListClientId String?
-  clientName        String
-
-  // Research Status
-  status         String  @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED
-  firecrawlJobId String?
-
-  // Results (JSON for flexibility)
+  id                 String           @id @default(cuid())
+  monitoringJobId    String?
+  watchListClientId  String?
+  clientName         String
+  status             String           @default("PENDING")
+  firecrawlJobId     String?
   negativeMedia      Json?
   pepScreening       Json?
   financialHealth    Json?
   statutoryEnquiries Json?
   mergersActivity    Json?
-
-  // Aggregated Risk
-  overallRiskLevel String   @default("PENDING") // LOW, MEDIUM, HIGH, CRITICAL, PENDING
-  riskFlags        String[] @default([])
-
-  createdAt   DateTime  @default(now())
-  completedAt DateTime?
-
-  monitoringJob   MonitoringJob?   @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
-  watchListClient WatchListClient? @relation(fields: [watchListClientId], references: [id], onDelete: Cascade)
+  overallRiskLevel   String           @default("PENDING")
+  riskFlags          String[]         @default([])
+  createdAt          DateTime         @default(now())
+  completedAt        DateTime?
+  monitoringJob      MonitoringJob?   @relation(fields: [monitoringJobId], references: [id], onDelete: Cascade)
+  watchListClient    WatchListClient? @relation(fields: [watchListClientId], references: [id], onDelete: Cascade)
 
   @@index([monitoringJobId])
   @@index([watchListClientId])
@@ -149,16 +127,14 @@ model PublicDataAnalysis {
 }
 
 model ManualInvestigativeReport {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   clientName String
-  analystId  String // User ID of the analyst
-
-  findings  String @db.Text
-  riskLevel String @default("PENDING") // LOW, MEDIUM, HIGH, CRITICAL, PENDING
-  status    String @default("DRAFT") // DRAFT, FINAL
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  analystId  String
+  findings   String
+  riskLevel  String   @default("PENDING")
+  status     String   @default("DRAFT")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([clientName])
   @@index([analystId])
@@ -171,4 +147,21 @@ model Sandbox {
   createdAt DateTime @default(now())
 
   @@index([alert_id])
+}
+
+enum JobType {
+  CLIENT_MONITORING
+  SYSTEM_ETL
+  SYSTEM_INFERENCE
+}
+
+model AnomalyReport {
+  id           String   @id @default(cuid())
+  jobId        String
+  gcsPath      String
+  anomalyCount Int
+  status       String   @default("GENERATED")
+  createdAt    DateTime @default(now())
+
+  @@index([jobId])
 }

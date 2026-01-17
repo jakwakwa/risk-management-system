@@ -68,6 +68,11 @@ export type ManualInvestigativeReport = $Result.DefaultSelection<Prisma.$ManualI
  * 
  */
 export type Sandbox = $Result.DefaultSelection<Prisma.$SandboxPayload>
+/**
+ * Model AnomalyReport
+ * 
+ */
+export type AnomalyReport = $Result.DefaultSelection<Prisma.$AnomalyReportPayload>
 
 /**
  * Enums
@@ -313,6 +318,16 @@ export class PrismaClient<
     * ```
     */
   get sandbox(): Prisma.SandboxDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.anomalyReport`: Exposes CRUD operations for the **AnomalyReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AnomalyReports
+    * const anomalyReports = await prisma.anomalyReport.findMany()
+    * ```
+    */
+  get anomalyReport(): Prisma.AnomalyReportDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -757,7 +772,8 @@ export namespace Prisma {
     WatchListClient: 'WatchListClient',
     PublicDataAnalysis: 'PublicDataAnalysis',
     ManualInvestigativeReport: 'ManualInvestigativeReport',
-    Sandbox: 'Sandbox'
+    Sandbox: 'Sandbox',
+    AnomalyReport: 'AnomalyReport'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -773,7 +789,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "monitoringJob" | "auditLog" | "sanctionEntity" | "blindIndex" | "systemConfig" | "riskProfile" | "riskAlert" | "watchListClient" | "publicDataAnalysis" | "manualInvestigativeReport" | "sandbox"
+      modelProps: "monitoringJob" | "auditLog" | "sanctionEntity" | "blindIndex" | "systemConfig" | "riskProfile" | "riskAlert" | "watchListClient" | "publicDataAnalysis" | "manualInvestigativeReport" | "sandbox" | "anomalyReport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1591,6 +1607,80 @@ export namespace Prisma {
           }
         }
       }
+      AnomalyReport: {
+        payload: Prisma.$AnomalyReportPayload<ExtArgs>
+        fields: Prisma.AnomalyReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AnomalyReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AnomalyReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          findFirst: {
+            args: Prisma.AnomalyReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AnomalyReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          findMany: {
+            args: Prisma.AnomalyReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>[]
+          }
+          create: {
+            args: Prisma.AnomalyReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          createMany: {
+            args: Prisma.AnomalyReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AnomalyReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>[]
+          }
+          delete: {
+            args: Prisma.AnomalyReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          update: {
+            args: Prisma.AnomalyReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.AnomalyReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AnomalyReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AnomalyReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.AnomalyReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AnomalyReportPayload>
+          }
+          aggregate: {
+            args: Prisma.AnomalyReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAnomalyReport>
+          }
+          groupBy: {
+            args: Prisma.AnomalyReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AnomalyReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AnomalyReportCountArgs<ExtArgs>
+            result: $Utils.Optional<AnomalyReportCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1710,6 +1800,7 @@ export namespace Prisma {
     publicDataAnalysis?: PublicDataAnalysisOmit
     manualInvestigativeReport?: ManualInvestigativeReportOmit
     sandbox?: SandboxOmit
+    anomalyReport?: AnomalyReportOmit
   }
 
   /* Types for Logging */
@@ -1894,70 +1985,70 @@ export namespace Prisma {
 
   export type MonitoringJobMinAggregateOutputType = {
     id: string | null
-    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    type: $Enums.JobType | null
   }
 
   export type MonitoringJobMaxAggregateOutputType = {
     id: string | null
-    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    type: $Enums.JobType | null
   }
 
   export type MonitoringJobCountAggregateOutputType = {
     id: number
-    type: number
     clientName: number
     cronExpression: number
     nextRunAt: number
     userId: number
     createdAt: number
     updatedAt: number
+    type: number
     _all: number
   }
 
 
   export type MonitoringJobMinAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
   }
 
   export type MonitoringJobMaxAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
   }
 
   export type MonitoringJobCountAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
     _all?: true
   }
 
@@ -2035,13 +2126,13 @@ export namespace Prisma {
 
   export type MonitoringJobGroupByOutputType = {
     id: string
-    type: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date
     userId: string | null
     createdAt: Date
     updatedAt: Date
+    type: $Enums.JobType
     _count: MonitoringJobCountAggregateOutputType | null
     _min: MonitoringJobMinAggregateOutputType | null
     _max: MonitoringJobMaxAggregateOutputType | null
@@ -2063,55 +2154,55 @@ export namespace Prisma {
 
   export type MonitoringJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
+    type?: boolean
     publicDataAnalyses?: boolean | MonitoringJob$publicDataAnalysesArgs<ExtArgs>
+    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     _count?: boolean | MonitoringJobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectScalar = {
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }
 
-  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["monitoringJob"]>
+  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt" | "type", ExtArgs["result"]["monitoringJob"]>
   export type MonitoringJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     publicDataAnalyses?: boolean | MonitoringJob$publicDataAnalysesArgs<ExtArgs>
+    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     _count?: boolean | MonitoringJobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitoringJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2120,18 +2211,18 @@ export namespace Prisma {
   export type $MonitoringJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "MonitoringJob"
     objects: {
-      riskProfile: Prisma.$RiskProfilePayload<ExtArgs> | null
       publicDataAnalyses: Prisma.$PublicDataAnalysisPayload<ExtArgs>[]
+      riskProfile: Prisma.$RiskProfilePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      type: $Enums.JobType
       clientName: string
       cronExpression: string
       nextRunAt: Date
       userId: string | null
       createdAt: Date
       updatedAt: Date
+      type: $Enums.JobType
     }, ExtArgs["result"]["monitoringJob"]>
     composites: {}
   }
@@ -2526,8 +2617,8 @@ export namespace Prisma {
    */
   export interface Prisma__MonitoringJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    riskProfile<T extends MonitoringJob$riskProfileArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$riskProfileArgs<ExtArgs>>): Prisma__RiskProfileClient<$Result.GetResult<Prisma.$RiskProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     publicDataAnalyses<T extends MonitoringJob$publicDataAnalysesArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$publicDataAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PublicDataAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    riskProfile<T extends MonitoringJob$riskProfileArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$riskProfileArgs<ExtArgs>>): Prisma__RiskProfileClient<$Result.GetResult<Prisma.$RiskProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2558,13 +2649,13 @@ export namespace Prisma {
    */
   interface MonitoringJobFieldRefs {
     readonly id: FieldRef<"MonitoringJob", 'String'>
-    readonly type: FieldRef<"MonitoringJob", 'JobType'>
     readonly clientName: FieldRef<"MonitoringJob", 'String'>
     readonly cronExpression: FieldRef<"MonitoringJob", 'String'>
     readonly nextRunAt: FieldRef<"MonitoringJob", 'DateTime'>
     readonly userId: FieldRef<"MonitoringJob", 'String'>
     readonly createdAt: FieldRef<"MonitoringJob", 'DateTime'>
     readonly updatedAt: FieldRef<"MonitoringJob", 'DateTime'>
+    readonly type: FieldRef<"MonitoringJob", 'JobType'>
   }
     
 
@@ -2953,25 +3044,6 @@ export namespace Prisma {
   }
 
   /**
-   * MonitoringJob.riskProfile
-   */
-  export type MonitoringJob$riskProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RiskProfile
-     */
-    select?: RiskProfileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RiskProfile
-     */
-    omit?: RiskProfileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RiskProfileInclude<ExtArgs> | null
-    where?: RiskProfileWhereInput
-  }
-
-  /**
    * MonitoringJob.publicDataAnalyses
    */
   export type MonitoringJob$publicDataAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2993,6 +3065,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PublicDataAnalysisScalarFieldEnum | PublicDataAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * MonitoringJob.riskProfile
+   */
+  export type MonitoringJob$riskProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskProfile
+     */
+    select?: RiskProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskProfile
+     */
+    omit?: RiskProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RiskProfileInclude<ExtArgs> | null
+    where?: RiskProfileWhereInput
   }
 
   /**
@@ -7280,8 +7371,8 @@ export namespace Prisma {
     volatilityScore?: boolean
     riskScore?: boolean
     lastAnalysed?: boolean
-    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     alerts?: boolean | RiskProfile$alertsArgs<ExtArgs>
+    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     _count?: boolean | RiskProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["riskProfile"]>
 
@@ -7319,8 +7410,8 @@ export namespace Prisma {
 
   export type RiskProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitoringJobId" | "bqClientId" | "avgMonthlyVolume" | "volatilityScore" | "riskScore" | "lastAnalysed", ExtArgs["result"]["riskProfile"]>
   export type RiskProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     alerts?: boolean | RiskProfile$alertsArgs<ExtArgs>
+    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     _count?: boolean | RiskProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RiskProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7333,8 +7424,8 @@ export namespace Prisma {
   export type $RiskProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RiskProfile"
     objects: {
-      monitoringJob: Prisma.$MonitoringJobPayload<ExtArgs>
       alerts: Prisma.$RiskAlertPayload<ExtArgs>[]
+      monitoringJob: Prisma.$MonitoringJobPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7738,8 +7829,8 @@ export namespace Prisma {
    */
   export interface Prisma__RiskProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    monitoringJob<T extends MonitoringJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJobDefaultArgs<ExtArgs>>): Prisma__MonitoringJobClient<$Result.GetResult<Prisma.$MonitoringJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     alerts<T extends RiskProfile$alertsArgs<ExtArgs> = {}>(args?: Subset<T, RiskProfile$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskAlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    monitoringJob<T extends MonitoringJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJobDefaultArgs<ExtArgs>>): Prisma__MonitoringJobClient<$Result.GetResult<Prisma.$MonitoringJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13600,6 +13691,1048 @@ export namespace Prisma {
 
 
   /**
+   * Model AnomalyReport
+   */
+
+  export type AggregateAnomalyReport = {
+    _count: AnomalyReportCountAggregateOutputType | null
+    _avg: AnomalyReportAvgAggregateOutputType | null
+    _sum: AnomalyReportSumAggregateOutputType | null
+    _min: AnomalyReportMinAggregateOutputType | null
+    _max: AnomalyReportMaxAggregateOutputType | null
+  }
+
+  export type AnomalyReportAvgAggregateOutputType = {
+    anomalyCount: number | null
+  }
+
+  export type AnomalyReportSumAggregateOutputType = {
+    anomalyCount: number | null
+  }
+
+  export type AnomalyReportMinAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    gcsPath: string | null
+    anomalyCount: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type AnomalyReportMaxAggregateOutputType = {
+    id: string | null
+    jobId: string | null
+    gcsPath: string | null
+    anomalyCount: number | null
+    status: string | null
+    createdAt: Date | null
+  }
+
+  export type AnomalyReportCountAggregateOutputType = {
+    id: number
+    jobId: number
+    gcsPath: number
+    anomalyCount: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AnomalyReportAvgAggregateInputType = {
+    anomalyCount?: true
+  }
+
+  export type AnomalyReportSumAggregateInputType = {
+    anomalyCount?: true
+  }
+
+  export type AnomalyReportMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    gcsPath?: true
+    anomalyCount?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type AnomalyReportMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    gcsPath?: true
+    anomalyCount?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type AnomalyReportCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    gcsPath?: true
+    anomalyCount?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AnomalyReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnomalyReport to aggregate.
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyReports to fetch.
+     */
+    orderBy?: AnomalyReportOrderByWithRelationInput | AnomalyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AnomalyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AnomalyReports
+    **/
+    _count?: true | AnomalyReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AnomalyReportAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AnomalyReportSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AnomalyReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AnomalyReportMaxAggregateInputType
+  }
+
+  export type GetAnomalyReportAggregateType<T extends AnomalyReportAggregateArgs> = {
+        [P in keyof T & keyof AggregateAnomalyReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAnomalyReport[P]>
+      : GetScalarType<T[P], AggregateAnomalyReport[P]>
+  }
+
+
+
+
+  export type AnomalyReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AnomalyReportWhereInput
+    orderBy?: AnomalyReportOrderByWithAggregationInput | AnomalyReportOrderByWithAggregationInput[]
+    by: AnomalyReportScalarFieldEnum[] | AnomalyReportScalarFieldEnum
+    having?: AnomalyReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AnomalyReportCountAggregateInputType | true
+    _avg?: AnomalyReportAvgAggregateInputType
+    _sum?: AnomalyReportSumAggregateInputType
+    _min?: AnomalyReportMinAggregateInputType
+    _max?: AnomalyReportMaxAggregateInputType
+  }
+
+  export type AnomalyReportGroupByOutputType = {
+    id: string
+    jobId: string
+    gcsPath: string
+    anomalyCount: number
+    status: string
+    createdAt: Date
+    _count: AnomalyReportCountAggregateOutputType | null
+    _avg: AnomalyReportAvgAggregateOutputType | null
+    _sum: AnomalyReportSumAggregateOutputType | null
+    _min: AnomalyReportMinAggregateOutputType | null
+    _max: AnomalyReportMaxAggregateOutputType | null
+  }
+
+  type GetAnomalyReportGroupByPayload<T extends AnomalyReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AnomalyReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AnomalyReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AnomalyReportGroupByOutputType[P]>
+            : GetScalarType<T[P], AnomalyReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AnomalyReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    gcsPath?: boolean
+    anomalyCount?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["anomalyReport"]>
+
+  export type AnomalyReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    gcsPath?: boolean
+    anomalyCount?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["anomalyReport"]>
+
+  export type AnomalyReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    gcsPath?: boolean
+    anomalyCount?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["anomalyReport"]>
+
+  export type AnomalyReportSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    gcsPath?: boolean
+    anomalyCount?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type AnomalyReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "gcsPath" | "anomalyCount" | "status" | "createdAt", ExtArgs["result"]["anomalyReport"]>
+
+  export type $AnomalyReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AnomalyReport"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      jobId: string
+      gcsPath: string
+      anomalyCount: number
+      status: string
+      createdAt: Date
+    }, ExtArgs["result"]["anomalyReport"]>
+    composites: {}
+  }
+
+  type AnomalyReportGetPayload<S extends boolean | null | undefined | AnomalyReportDefaultArgs> = $Result.GetResult<Prisma.$AnomalyReportPayload, S>
+
+  type AnomalyReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AnomalyReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AnomalyReportCountAggregateInputType | true
+    }
+
+  export interface AnomalyReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AnomalyReport'], meta: { name: 'AnomalyReport' } }
+    /**
+     * Find zero or one AnomalyReport that matches the filter.
+     * @param {AnomalyReportFindUniqueArgs} args - Arguments to find a AnomalyReport
+     * @example
+     * // Get one AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AnomalyReportFindUniqueArgs>(args: SelectSubset<T, AnomalyReportFindUniqueArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AnomalyReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AnomalyReportFindUniqueOrThrowArgs} args - Arguments to find a AnomalyReport
+     * @example
+     * // Get one AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AnomalyReportFindUniqueOrThrowArgs>(args: SelectSubset<T, AnomalyReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnomalyReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportFindFirstArgs} args - Arguments to find a AnomalyReport
+     * @example
+     * // Get one AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AnomalyReportFindFirstArgs>(args?: SelectSubset<T, AnomalyReportFindFirstArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AnomalyReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportFindFirstOrThrowArgs} args - Arguments to find a AnomalyReport
+     * @example
+     * // Get one AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AnomalyReportFindFirstOrThrowArgs>(args?: SelectSubset<T, AnomalyReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AnomalyReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AnomalyReports
+     * const anomalyReports = await prisma.anomalyReport.findMany()
+     * 
+     * // Get first 10 AnomalyReports
+     * const anomalyReports = await prisma.anomalyReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const anomalyReportWithIdOnly = await prisma.anomalyReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AnomalyReportFindManyArgs>(args?: SelectSubset<T, AnomalyReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AnomalyReport.
+     * @param {AnomalyReportCreateArgs} args - Arguments to create a AnomalyReport.
+     * @example
+     * // Create one AnomalyReport
+     * const AnomalyReport = await prisma.anomalyReport.create({
+     *   data: {
+     *     // ... data to create a AnomalyReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends AnomalyReportCreateArgs>(args: SelectSubset<T, AnomalyReportCreateArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AnomalyReports.
+     * @param {AnomalyReportCreateManyArgs} args - Arguments to create many AnomalyReports.
+     * @example
+     * // Create many AnomalyReports
+     * const anomalyReport = await prisma.anomalyReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AnomalyReportCreateManyArgs>(args?: SelectSubset<T, AnomalyReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AnomalyReports and returns the data saved in the database.
+     * @param {AnomalyReportCreateManyAndReturnArgs} args - Arguments to create many AnomalyReports.
+     * @example
+     * // Create many AnomalyReports
+     * const anomalyReport = await prisma.anomalyReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AnomalyReports and only return the `id`
+     * const anomalyReportWithIdOnly = await prisma.anomalyReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AnomalyReportCreateManyAndReturnArgs>(args?: SelectSubset<T, AnomalyReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AnomalyReport.
+     * @param {AnomalyReportDeleteArgs} args - Arguments to delete one AnomalyReport.
+     * @example
+     * // Delete one AnomalyReport
+     * const AnomalyReport = await prisma.anomalyReport.delete({
+     *   where: {
+     *     // ... filter to delete one AnomalyReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AnomalyReportDeleteArgs>(args: SelectSubset<T, AnomalyReportDeleteArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AnomalyReport.
+     * @param {AnomalyReportUpdateArgs} args - Arguments to update one AnomalyReport.
+     * @example
+     * // Update one AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AnomalyReportUpdateArgs>(args: SelectSubset<T, AnomalyReportUpdateArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AnomalyReports.
+     * @param {AnomalyReportDeleteManyArgs} args - Arguments to filter AnomalyReports to delete.
+     * @example
+     * // Delete a few AnomalyReports
+     * const { count } = await prisma.anomalyReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AnomalyReportDeleteManyArgs>(args?: SelectSubset<T, AnomalyReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnomalyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AnomalyReports
+     * const anomalyReport = await prisma.anomalyReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AnomalyReportUpdateManyArgs>(args: SelectSubset<T, AnomalyReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AnomalyReports and returns the data updated in the database.
+     * @param {AnomalyReportUpdateManyAndReturnArgs} args - Arguments to update many AnomalyReports.
+     * @example
+     * // Update many AnomalyReports
+     * const anomalyReport = await prisma.anomalyReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AnomalyReports and only return the `id`
+     * const anomalyReportWithIdOnly = await prisma.anomalyReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AnomalyReportUpdateManyAndReturnArgs>(args: SelectSubset<T, AnomalyReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AnomalyReport.
+     * @param {AnomalyReportUpsertArgs} args - Arguments to update or create a AnomalyReport.
+     * @example
+     * // Update or create a AnomalyReport
+     * const anomalyReport = await prisma.anomalyReport.upsert({
+     *   create: {
+     *     // ... data to create a AnomalyReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AnomalyReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AnomalyReportUpsertArgs>(args: SelectSubset<T, AnomalyReportUpsertArgs<ExtArgs>>): Prisma__AnomalyReportClient<$Result.GetResult<Prisma.$AnomalyReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AnomalyReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportCountArgs} args - Arguments to filter AnomalyReports to count.
+     * @example
+     * // Count the number of AnomalyReports
+     * const count = await prisma.anomalyReport.count({
+     *   where: {
+     *     // ... the filter for the AnomalyReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends AnomalyReportCountArgs>(
+      args?: Subset<T, AnomalyReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AnomalyReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AnomalyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AnomalyReportAggregateArgs>(args: Subset<T, AnomalyReportAggregateArgs>): Prisma.PrismaPromise<GetAnomalyReportAggregateType<T>>
+
+    /**
+     * Group by AnomalyReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AnomalyReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AnomalyReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AnomalyReportGroupByArgs['orderBy'] }
+        : { orderBy?: AnomalyReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AnomalyReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAnomalyReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AnomalyReport model
+   */
+  readonly fields: AnomalyReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AnomalyReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AnomalyReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AnomalyReport model
+   */
+  interface AnomalyReportFieldRefs {
+    readonly id: FieldRef<"AnomalyReport", 'String'>
+    readonly jobId: FieldRef<"AnomalyReport", 'String'>
+    readonly gcsPath: FieldRef<"AnomalyReport", 'String'>
+    readonly anomalyCount: FieldRef<"AnomalyReport", 'Int'>
+    readonly status: FieldRef<"AnomalyReport", 'String'>
+    readonly createdAt: FieldRef<"AnomalyReport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AnomalyReport findUnique
+   */
+  export type AnomalyReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnomalyReport to fetch.
+     */
+    where: AnomalyReportWhereUniqueInput
+  }
+
+  /**
+   * AnomalyReport findUniqueOrThrow
+   */
+  export type AnomalyReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnomalyReport to fetch.
+     */
+    where: AnomalyReportWhereUniqueInput
+  }
+
+  /**
+   * AnomalyReport findFirst
+   */
+  export type AnomalyReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnomalyReport to fetch.
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyReports to fetch.
+     */
+    orderBy?: AnomalyReportOrderByWithRelationInput | AnomalyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnomalyReports.
+     */
+    cursor?: AnomalyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnomalyReports.
+     */
+    distinct?: AnomalyReportScalarFieldEnum | AnomalyReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyReport findFirstOrThrow
+   */
+  export type AnomalyReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnomalyReport to fetch.
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyReports to fetch.
+     */
+    orderBy?: AnomalyReportOrderByWithRelationInput | AnomalyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AnomalyReports.
+     */
+    cursor?: AnomalyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AnomalyReports.
+     */
+    distinct?: AnomalyReportScalarFieldEnum | AnomalyReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyReport findMany
+   */
+  export type AnomalyReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter, which AnomalyReports to fetch.
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AnomalyReports to fetch.
+     */
+    orderBy?: AnomalyReportOrderByWithRelationInput | AnomalyReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AnomalyReports.
+     */
+    cursor?: AnomalyReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AnomalyReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AnomalyReports.
+     */
+    skip?: number
+    distinct?: AnomalyReportScalarFieldEnum | AnomalyReportScalarFieldEnum[]
+  }
+
+  /**
+   * AnomalyReport create
+   */
+  export type AnomalyReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AnomalyReport.
+     */
+    data: XOR<AnomalyReportCreateInput, AnomalyReportUncheckedCreateInput>
+  }
+
+  /**
+   * AnomalyReport createMany
+   */
+  export type AnomalyReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AnomalyReports.
+     */
+    data: AnomalyReportCreateManyInput | AnomalyReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnomalyReport createManyAndReturn
+   */
+  export type AnomalyReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many AnomalyReports.
+     */
+    data: AnomalyReportCreateManyInput | AnomalyReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AnomalyReport update
+   */
+  export type AnomalyReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AnomalyReport.
+     */
+    data: XOR<AnomalyReportUpdateInput, AnomalyReportUncheckedUpdateInput>
+    /**
+     * Choose, which AnomalyReport to update.
+     */
+    where: AnomalyReportWhereUniqueInput
+  }
+
+  /**
+   * AnomalyReport updateMany
+   */
+  export type AnomalyReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AnomalyReports.
+     */
+    data: XOR<AnomalyReportUpdateManyMutationInput, AnomalyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which AnomalyReports to update
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * Limit how many AnomalyReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnomalyReport updateManyAndReturn
+   */
+  export type AnomalyReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * The data used to update AnomalyReports.
+     */
+    data: XOR<AnomalyReportUpdateManyMutationInput, AnomalyReportUncheckedUpdateManyInput>
+    /**
+     * Filter which AnomalyReports to update
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * Limit how many AnomalyReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnomalyReport upsert
+   */
+  export type AnomalyReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AnomalyReport to update in case it exists.
+     */
+    where: AnomalyReportWhereUniqueInput
+    /**
+     * In case the AnomalyReport found by the `where` argument doesn't exist, create a new AnomalyReport with this data.
+     */
+    create: XOR<AnomalyReportCreateInput, AnomalyReportUncheckedCreateInput>
+    /**
+     * In case the AnomalyReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AnomalyReportUpdateInput, AnomalyReportUncheckedUpdateInput>
+  }
+
+  /**
+   * AnomalyReport delete
+   */
+  export type AnomalyReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+    /**
+     * Filter which AnomalyReport to delete.
+     */
+    where: AnomalyReportWhereUniqueInput
+  }
+
+  /**
+   * AnomalyReport deleteMany
+   */
+  export type AnomalyReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AnomalyReports to delete
+     */
+    where?: AnomalyReportWhereInput
+    /**
+     * Limit how many AnomalyReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AnomalyReport without action
+   */
+  export type AnomalyReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AnomalyReport
+     */
+    select?: AnomalyReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AnomalyReport
+     */
+    omit?: AnomalyReportOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13615,13 +14748,13 @@ export namespace Prisma {
 
   export const MonitoringJobScalarFieldEnum: {
     id: 'id',
-    type: 'type',
     clientName: 'clientName',
     cronExpression: 'cronExpression',
     nextRunAt: 'nextRunAt',
     userId: 'userId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    type: 'type'
   };
 
   export type MonitoringJobScalarFieldEnum = (typeof MonitoringJobScalarFieldEnum)[keyof typeof MonitoringJobScalarFieldEnum]
@@ -13756,6 +14889,18 @@ export namespace Prisma {
   export type SandboxScalarFieldEnum = (typeof SandboxScalarFieldEnum)[keyof typeof SandboxScalarFieldEnum]
 
 
+  export const AnomalyReportScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    gcsPath: 'gcsPath',
+    anomalyCount: 'anomalyCount',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type AnomalyReportScalarFieldEnum = (typeof AnomalyReportScalarFieldEnum)[keyof typeof AnomalyReportScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13817,20 +14962,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'JobType'
-   */
-  export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
-    
-
-
-  /**
-   * Reference to a field of type 'JobType[]'
-   */
-  export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -13841,6 +14972,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobType'
+   */
+  export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobType[]'
+   */
+  export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
     
 
 
@@ -13908,28 +15053,28 @@ export namespace Prisma {
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     id?: StringFilter<"MonitoringJob"> | string
-    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisListRelationFilter
+    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
   }
 
   export type MonitoringJobOrderByWithRelationInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    riskProfile?: RiskProfileOrderByWithRelationInput
+    type?: SortOrder
     publicDataAnalyses?: PublicDataAnalysisOrderByRelationAggregateInput
+    riskProfile?: RiskProfileOrderByWithRelationInput
   }
 
   export type MonitoringJobWhereUniqueInput = Prisma.AtLeast<{
@@ -13937,26 +15082,26 @@ export namespace Prisma {
     AND?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
-    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisListRelationFilter
+    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
   }, "id">
 
   export type MonitoringJobOrderByWithAggregationInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
     _count?: MonitoringJobCountOrderByAggregateInput
     _max?: MonitoringJobMaxOrderByAggregateInput
     _min?: MonitoringJobMinOrderByAggregateInput
@@ -13967,13 +15112,13 @@ export namespace Prisma {
     OR?: MonitoringJobScalarWhereWithAggregatesInput[]
     NOT?: MonitoringJobScalarWhereWithAggregatesInput | MonitoringJobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"MonitoringJob"> | string
-    type?: EnumJobTypeWithAggregatesFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringWithAggregatesFilter<"MonitoringJob"> | string
     cronExpression?: StringWithAggregatesFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableWithAggregatesFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
+    type?: EnumJobTypeWithAggregatesFilter<"MonitoringJob"> | $Enums.JobType
   }
 
   export type AuditLogWhereInput = {
@@ -14207,8 +15352,8 @@ export namespace Prisma {
     volatilityScore?: DecimalNullableFilter<"RiskProfile"> | Decimal | DecimalJsLike | number | string | null
     riskScore?: FloatNullableFilter<"RiskProfile"> | number | null
     lastAnalysed?: DateTimeFilter<"RiskProfile"> | Date | string
-    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
     alerts?: RiskAlertListRelationFilter
+    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
   }
 
   export type RiskProfileOrderByWithRelationInput = {
@@ -14219,8 +15364,8 @@ export namespace Prisma {
     volatilityScore?: SortOrderInput | SortOrder
     riskScore?: SortOrderInput | SortOrder
     lastAnalysed?: SortOrder
-    monitoringJob?: MonitoringJobOrderByWithRelationInput
     alerts?: RiskAlertOrderByRelationAggregateInput
+    monitoringJob?: MonitoringJobOrderByWithRelationInput
   }
 
   export type RiskProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -14234,8 +15379,8 @@ export namespace Prisma {
     volatilityScore?: DecimalNullableFilter<"RiskProfile"> | Decimal | DecimalJsLike | number | string | null
     riskScore?: FloatNullableFilter<"RiskProfile"> | number | null
     lastAnalysed?: DateTimeFilter<"RiskProfile"> | Date | string
-    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
     alerts?: RiskAlertListRelationFilter
+    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
   }, "id" | "monitoringJobId">
 
   export type RiskProfileOrderByWithAggregationInput = {
@@ -14613,89 +15758,148 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Sandbox"> | Date | string
   }
 
+  export type AnomalyReportWhereInput = {
+    AND?: AnomalyReportWhereInput | AnomalyReportWhereInput[]
+    OR?: AnomalyReportWhereInput[]
+    NOT?: AnomalyReportWhereInput | AnomalyReportWhereInput[]
+    id?: StringFilter<"AnomalyReport"> | string
+    jobId?: StringFilter<"AnomalyReport"> | string
+    gcsPath?: StringFilter<"AnomalyReport"> | string
+    anomalyCount?: IntFilter<"AnomalyReport"> | number
+    status?: StringFilter<"AnomalyReport"> | string
+    createdAt?: DateTimeFilter<"AnomalyReport"> | Date | string
+  }
+
+  export type AnomalyReportOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    gcsPath?: SortOrder
+    anomalyCount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnomalyReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AnomalyReportWhereInput | AnomalyReportWhereInput[]
+    OR?: AnomalyReportWhereInput[]
+    NOT?: AnomalyReportWhereInput | AnomalyReportWhereInput[]
+    jobId?: StringFilter<"AnomalyReport"> | string
+    gcsPath?: StringFilter<"AnomalyReport"> | string
+    anomalyCount?: IntFilter<"AnomalyReport"> | number
+    status?: StringFilter<"AnomalyReport"> | string
+    createdAt?: DateTimeFilter<"AnomalyReport"> | Date | string
+  }, "id">
+
+  export type AnomalyReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    gcsPath?: SortOrder
+    anomalyCount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: AnomalyReportCountOrderByAggregateInput
+    _avg?: AnomalyReportAvgOrderByAggregateInput
+    _max?: AnomalyReportMaxOrderByAggregateInput
+    _min?: AnomalyReportMinOrderByAggregateInput
+    _sum?: AnomalyReportSumOrderByAggregateInput
+  }
+
+  export type AnomalyReportScalarWhereWithAggregatesInput = {
+    AND?: AnomalyReportScalarWhereWithAggregatesInput | AnomalyReportScalarWhereWithAggregatesInput[]
+    OR?: AnomalyReportScalarWhereWithAggregatesInput[]
+    NOT?: AnomalyReportScalarWhereWithAggregatesInput | AnomalyReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AnomalyReport"> | string
+    jobId?: StringWithAggregatesFilter<"AnomalyReport"> | string
+    gcsPath?: StringWithAggregatesFilter<"AnomalyReport"> | string
+    anomalyCount?: IntWithAggregatesFilter<"AnomalyReport"> | number
+    status?: StringWithAggregatesFilter<"AnomalyReport"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AnomalyReport"> | Date | string
+  }
+
   export type MonitoringJobCreateInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
+    type?: $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+    riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUncheckedCreateInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
+    type?: $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+    riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
+    riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
+    riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobCreateManyInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
   }
 
   export type MonitoringJobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
   }
 
   export type MonitoringJobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
   }
 
   export type AuditLogCreateInput = {
@@ -14943,8 +16147,8 @@ export namespace Prisma {
     volatilityScore?: Decimal | DecimalJsLike | number | string | null
     riskScore?: number | null
     lastAnalysed?: Date | string
-    monitoringJob: MonitoringJobCreateNestedOneWithoutRiskProfileInput
     alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
+    monitoringJob: MonitoringJobCreateNestedOneWithoutRiskProfileInput
   }
 
   export type RiskProfileUncheckedCreateInput = {
@@ -14965,8 +16169,8 @@ export namespace Prisma {
     volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
     lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    monitoringJob?: MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput
     alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
+    monitoringJob?: MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput
   }
 
   export type RiskProfileUncheckedUpdateInput = {
@@ -15395,6 +16599,69 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AnomalyReportCreateInput = {
+    id?: string
+    jobId: string
+    gcsPath: string
+    anomalyCount: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type AnomalyReportUncheckedCreateInput = {
+    id?: string
+    jobId: string
+    gcsPath: string
+    anomalyCount: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type AnomalyReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    gcsPath?: StringFieldUpdateOperationsInput | string
+    anomalyCount?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    gcsPath?: StringFieldUpdateOperationsInput | string
+    anomalyCount?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyReportCreateManyInput = {
+    id?: string
+    jobId: string
+    gcsPath: string
+    anomalyCount: number
+    status?: string
+    createdAt?: Date | string
+  }
+
+  export type AnomalyReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    gcsPath?: StringFieldUpdateOperationsInput | string
+    anomalyCount?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AnomalyReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    gcsPath?: StringFieldUpdateOperationsInput | string
+    anomalyCount?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15408,13 +16675,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type EnumJobTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -15443,15 +16703,22 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type RiskProfileNullableScalarRelationFilter = {
-    is?: RiskProfileWhereInput | null
-    isNot?: RiskProfileWhereInput | null
+  export type EnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type PublicDataAnalysisListRelationFilter = {
     every?: PublicDataAnalysisWhereInput
     some?: PublicDataAnalysisWhereInput
     none?: PublicDataAnalysisWhereInput
+  }
+
+  export type RiskProfileNullableScalarRelationFilter = {
+    is?: RiskProfileWhereInput | null
+    isNot?: RiskProfileWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -15465,35 +16732,35 @@ export namespace Prisma {
 
   export type MonitoringJobCountOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type MonitoringJobMaxOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type MonitoringJobMinOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -15512,16 +16779,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumJobTypeFilter<$PrismaModel>
-    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15554,6 +16811,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type AuditLogCountOrderByAggregateInput = {
@@ -15726,15 +16993,15 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type MonitoringJobScalarRelationFilter = {
-    is?: MonitoringJobWhereInput
-    isNot?: MonitoringJobWhereInput
-  }
-
   export type RiskAlertListRelationFilter = {
     every?: RiskAlertWhereInput
     some?: RiskAlertWhereInput
     none?: RiskAlertWhereInput
+  }
+
+  export type MonitoringJobScalarRelationFilter = {
+    is?: MonitoringJobWhereInput
+    isNot?: MonitoringJobWhereInput
   }
 
   export type RiskAlertOrderByRelationAggregateInput = {
@@ -16079,10 +17346,66 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type RiskProfileCreateNestedOneWithoutMonitoringJobInput = {
-    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
-    connect?: RiskProfileWhereUniqueInput
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type AnomalyReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    gcsPath?: SortOrder
+    anomalyCount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnomalyReportAvgOrderByAggregateInput = {
+    anomalyCount?: SortOrder
+  }
+
+  export type AnomalyReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    gcsPath?: SortOrder
+    anomalyCount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnomalyReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    gcsPath?: SortOrder
+    anomalyCount?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AnomalyReportSumOrderByAggregateInput = {
+    anomalyCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput = {
@@ -16092,7 +17415,7 @@ export namespace Prisma {
     connect?: PublicDataAnalysisWhereUniqueInput | PublicDataAnalysisWhereUniqueInput[]
   }
 
-  export type RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput = {
+  export type RiskProfileCreateNestedOneWithoutMonitoringJobInput = {
     create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
     connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
     connect?: RiskProfileWhereUniqueInput
@@ -16105,12 +17428,14 @@ export namespace Prisma {
     connect?: PublicDataAnalysisWhereUniqueInput | PublicDataAnalysisWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
+  export type RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput = {
+    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
+    connect?: RiskProfileWhereUniqueInput
   }
 
-  export type EnumJobTypeFieldUpdateOperationsInput = {
-    set?: $Enums.JobType
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -16121,14 +17446,8 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type RiskProfileUpdateOneWithoutMonitoringJobNestedInput = {
-    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
-    upsert?: RiskProfileUpsertWithoutMonitoringJobInput
-    disconnect?: RiskProfileWhereInput | boolean
-    delete?: RiskProfileWhereInput | boolean
-    connect?: RiskProfileWhereUniqueInput
-    update?: XOR<XOR<RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput, RiskProfileUpdateWithoutMonitoringJobInput>, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  export type EnumJobTypeFieldUpdateOperationsInput = {
+    set?: $Enums.JobType
   }
 
   export type PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput = {
@@ -16145,7 +17464,7 @@ export namespace Prisma {
     deleteMany?: PublicDataAnalysisScalarWhereInput | PublicDataAnalysisScalarWhereInput[]
   }
 
-  export type RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput = {
+  export type RiskProfileUpdateOneWithoutMonitoringJobNestedInput = {
     create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
     connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
     upsert?: RiskProfileUpsertWithoutMonitoringJobInput
@@ -16169,6 +17488,16 @@ export namespace Prisma {
     deleteMany?: PublicDataAnalysisScalarWhereInput | PublicDataAnalysisScalarWhereInput[]
   }
 
+  export type RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput = {
+    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
+    upsert?: RiskProfileUpsertWithoutMonitoringJobInput
+    disconnect?: RiskProfileWhereInput | boolean
+    delete?: RiskProfileWhereInput | boolean
+    connect?: RiskProfileWhereUniqueInput
+    update?: XOR<XOR<RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput, RiskProfileUpdateWithoutMonitoringJobInput>, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -16177,17 +17506,17 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type MonitoringJobCreateNestedOneWithoutRiskProfileInput = {
-    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
-    connect?: MonitoringJobWhereUniqueInput
-  }
-
   export type RiskAlertCreateNestedManyWithoutRiskProfileInput = {
     create?: XOR<RiskAlertCreateWithoutRiskProfileInput, RiskAlertUncheckedCreateWithoutRiskProfileInput> | RiskAlertCreateWithoutRiskProfileInput[] | RiskAlertUncheckedCreateWithoutRiskProfileInput[]
     connectOrCreate?: RiskAlertCreateOrConnectWithoutRiskProfileInput | RiskAlertCreateOrConnectWithoutRiskProfileInput[]
     createMany?: RiskAlertCreateManyRiskProfileInputEnvelope
     connect?: RiskAlertWhereUniqueInput | RiskAlertWhereUniqueInput[]
+  }
+
+  export type MonitoringJobCreateNestedOneWithoutRiskProfileInput = {
+    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
+    connect?: MonitoringJobWhereUniqueInput
   }
 
   export type RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput = {
@@ -16221,14 +17550,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput = {
-    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
-    upsert?: MonitoringJobUpsertWithoutRiskProfileInput
-    connect?: MonitoringJobWhereUniqueInput
-    update?: XOR<XOR<MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput, MonitoringJobUpdateWithoutRiskProfileInput>, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
-  }
-
   export type RiskAlertUpdateManyWithoutRiskProfileNestedInput = {
     create?: XOR<RiskAlertCreateWithoutRiskProfileInput, RiskAlertUncheckedCreateWithoutRiskProfileInput> | RiskAlertCreateWithoutRiskProfileInput[] | RiskAlertUncheckedCreateWithoutRiskProfileInput[]
     connectOrCreate?: RiskAlertCreateOrConnectWithoutRiskProfileInput | RiskAlertCreateOrConnectWithoutRiskProfileInput[]
@@ -16241,6 +17562,14 @@ export namespace Prisma {
     update?: RiskAlertUpdateWithWhereUniqueWithoutRiskProfileInput | RiskAlertUpdateWithWhereUniqueWithoutRiskProfileInput[]
     updateMany?: RiskAlertUpdateManyWithWhereWithoutRiskProfileInput | RiskAlertUpdateManyWithWhereWithoutRiskProfileInput[]
     deleteMany?: RiskAlertScalarWhereInput | RiskAlertScalarWhereInput[]
+  }
+
+  export type MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput = {
+    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
+    upsert?: MonitoringJobUpsertWithoutRiskProfileInput
+    connect?: MonitoringJobWhereUniqueInput
+    update?: XOR<XOR<MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput, MonitoringJobUpdateWithoutRiskProfileInput>, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
   }
 
   export type RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput = {
@@ -16358,6 +17687,14 @@ export namespace Prisma {
     update?: XOR<XOR<WatchListClientUpdateToOneWithWhereWithoutAnalysesInput, WatchListClientUpdateWithoutAnalysesInput>, WatchListClientUncheckedUpdateWithoutAnalysesInput>
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -16370,13 +17707,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -16402,6 +17732,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16430,16 +17767,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumJobTypeFilter<$PrismaModel>
-    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -16482,6 +17809,16 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -16629,29 +17966,20 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type RiskProfileCreateWithoutMonitoringJobInput = {
-    id?: string
-    bqClientId?: number | null
-    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: Decimal | DecimalJsLike | number | string | null
-    riskScore?: number | null
-    lastAnalysed?: Date | string
-    alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
-  }
-
-  export type RiskProfileUncheckedCreateWithoutMonitoringJobInput = {
-    id?: string
-    bqClientId?: number | null
-    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: Decimal | DecimalJsLike | number | string | null
-    riskScore?: number | null
-    lastAnalysed?: Date | string
-    alerts?: RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput
-  }
-
-  export type RiskProfileCreateOrConnectWithoutMonitoringJobInput = {
-    where: RiskProfileWhereUniqueInput
-    create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type PublicDataAnalysisCreateWithoutMonitoringJobInput = {
@@ -16698,35 +18026,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type RiskProfileUpsertWithoutMonitoringJobInput = {
-    update: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  export type RiskProfileCreateWithoutMonitoringJobInput = {
+    id?: string
+    bqClientId?: number | null
+    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
+    lastAnalysed?: Date | string
+    alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
+  }
+
+  export type RiskProfileUncheckedCreateWithoutMonitoringJobInput = {
+    id?: string
+    bqClientId?: number | null
+    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
+    lastAnalysed?: Date | string
+    alerts?: RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput
+  }
+
+  export type RiskProfileCreateOrConnectWithoutMonitoringJobInput = {
+    where: RiskProfileWhereUniqueInput
     create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    where?: RiskProfileWhereInput
-  }
-
-  export type RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput = {
-    where?: RiskProfileWhereInput
-    data: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
-  }
-
-  export type RiskProfileUpdateWithoutMonitoringJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
-    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
-  }
-
-  export type RiskProfileUncheckedUpdateWithoutMonitoringJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
-    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    alerts?: RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput
   }
 
   export type PublicDataAnalysisUpsertWithWhereUniqueWithoutMonitoringJobInput = {
@@ -16766,33 +18088,35 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"PublicDataAnalysis"> | Date | string | null
   }
 
-  export type MonitoringJobCreateWithoutRiskProfileInput = {
-    id?: string
-    type?: $Enums.JobType
-    clientName: string
-    cronExpression: string
-    nextRunAt: Date | string
-    userId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+  export type RiskProfileUpsertWithoutMonitoringJobInput = {
+    update: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+    create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    where?: RiskProfileWhereInput
   }
 
-  export type MonitoringJobUncheckedCreateWithoutRiskProfileInput = {
-    id?: string
-    type?: $Enums.JobType
-    clientName: string
-    cronExpression: string
-    nextRunAt: Date | string
-    userId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+  export type RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput = {
+    where?: RiskProfileWhereInput
+    data: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
   }
 
-  export type MonitoringJobCreateOrConnectWithoutRiskProfileInput = {
-    where: MonitoringJobWhereUniqueInput
-    create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+  export type RiskProfileUpdateWithoutMonitoringJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
+    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
+    alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
+  }
+
+  export type RiskProfileUncheckedUpdateWithoutMonitoringJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
+    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
+    alerts?: RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput
   }
 
   export type RiskAlertCreateWithoutRiskProfileInput = {
@@ -16823,39 +18147,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type MonitoringJobUpsertWithoutRiskProfileInput = {
-    update: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+  export type MonitoringJobCreateWithoutRiskProfileInput = {
+    id?: string
+    clientName: string
+    cronExpression: string
+    nextRunAt: Date | string
+    userId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type?: $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+  }
+
+  export type MonitoringJobUncheckedCreateWithoutRiskProfileInput = {
+    id?: string
+    clientName: string
+    cronExpression: string
+    nextRunAt: Date | string
+    userId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type?: $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+  }
+
+  export type MonitoringJobCreateOrConnectWithoutRiskProfileInput = {
+    where: MonitoringJobWhereUniqueInput
     create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    where?: MonitoringJobWhereInput
-  }
-
-  export type MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput = {
-    where?: MonitoringJobWhereInput
-    data: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
-  }
-
-  export type MonitoringJobUpdateWithoutRiskProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    clientName?: StringFieldUpdateOperationsInput | string
-    cronExpression?: StringFieldUpdateOperationsInput | string
-    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
-  }
-
-  export type MonitoringJobUncheckedUpdateWithoutRiskProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    clientName?: StringFieldUpdateOperationsInput | string
-    cronExpression?: StringFieldUpdateOperationsInput | string
-    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
   }
 
   export type RiskAlertUpsertWithWhereUniqueWithoutRiskProfileInput = {
@@ -16885,6 +18203,41 @@ export namespace Prisma {
     description?: StringFilter<"RiskAlert"> | string
     metadata?: JsonNullableFilter<"RiskAlert">
     createdAt?: DateTimeFilter<"RiskAlert"> | Date | string
+  }
+
+  export type MonitoringJobUpsertWithoutRiskProfileInput = {
+    update: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+    create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    where?: MonitoringJobWhereInput
+  }
+
+  export type MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput = {
+    where?: MonitoringJobWhereInput
+    data: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+  }
+
+  export type MonitoringJobUpdateWithoutRiskProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
+  }
+
+  export type MonitoringJobUncheckedUpdateWithoutRiskProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
   }
 
   export type RiskProfileCreateWithoutAlertsInput = {
@@ -17005,25 +18358,25 @@ export namespace Prisma {
 
   export type MonitoringJobCreateWithoutPublicDataAnalysesInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
     riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUncheckedCreateWithoutPublicDataAnalysesInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
     riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
   }
 
@@ -17068,25 +18421,25 @@ export namespace Prisma {
 
   export type MonitoringJobUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobUncheckedUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
   }
 

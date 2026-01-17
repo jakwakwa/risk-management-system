@@ -1,86 +1,115 @@
-
-import { PrismaClient } from '@/generated/client';
-import { decrypt } from '@/lib/security';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+} from "@/components/ui/card";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { FileText, ShieldCheck, AlertTriangle } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { format } from "date-fns";
+import { PageContainer } from "@/components/shared/page-container";
+import { SectionHeader } from "@/components/shared/section-header";
+import { reportsIndexContent } from "./content";
 
-export default async function ReportsPage() {
-  const logs = await db.auditLog.findMany({
-      orderBy: { screened_at: 'desc' },
-      take: 50
-  });
+// Force dynamic rendering to ensure fresh data
+export const dynamic = "force-dynamic";
 
-  const decryptedLogs = logs.map(log => {
-      try {
-          return { ...log, clientName: decrypt(log.clientName) };
-      } catch {
-          return log;
-      }
-  });
+export default async function ReportsIndexPage() {
+	const reports = await prisma.anomalyReport.findMany({
+		orderBy: { createdAt: "desc" },
+		take: 50,
+	});
 
-  return (
-    <div className="container mx-auto p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Assurance Reports</h1>
-        <p className="text-muted-foreground mt-2">Immutable audit trail of all screening activities.</p>
-      </div>
+	const { title, description, recentRuns, table } = reportsIndexContent;
 
-      <Card>
-        <CardHeader>
-            <CardTitle>Recent Screening Logs</CardTitle>
-            <CardDescription>Showing last 50 entries. Includes both "MATCH" and "CLEAR" (Negative Assurance).</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Timestamp</TableHead>
-                        <TableHead>Client Name</TableHead>
-                        <TableHead>Result</TableHead>
-                        <TableHead>Report</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {decryptedLogs.map((log) => (
-                        <TableRow key={log.id}>
-                            <TableCell>{log.screened_at.toLocaleString()}</TableCell>
-                            <TableCell className="font-medium">{log.clientName}</TableCell>
-                            <TableCell>
-                                {log.result === 'CLEAR' ? (
-                                    <Badge variant="outline" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/50">
-                                        <ShieldCheck className="w-3 h-3 mr-1" /> CLEAR
-                                    </Badge>
-                                ) : (
-                                    <Badge variant="destructive">
-                                        <AlertTriangle className="w-3 h-3 mr-1" /> MATCH
-                                    </Badge>
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                <a href={log.gcsUrl} target="_blank" rel="noopener noreferrer">
-                                    <Button variant="ghost" size="sm">
-                                        <FileText className="w-4 h-4 mr-2" />
-                                        View PDF
-                                    </Button>
-                                </a>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </CardContent>
-      </Card>
-    </div>
-  );
+	return (
+		<PageContainer>
+			<SectionHeader title={title} description={description} />
+
+			<Card className="border-border bg-card/50">
+				<CardHeader>
+					<CardTitle>{recentRuns.title}</CardTitle>
+					<CardDescription>{recentRuns.description}</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{reports.length === 0 ? (
+						<div className="text-center py-10 text-muted-foreground">
+							{recentRuns.emptyState}
+						</div>
+					) : (
+						<Table>
+							<TableHeader>
+								<TableRow className="border-border hover:bg-muted/50">
+									<TableHead className="text-muted-foreground">
+										{table.headers.jobId}
+									</TableHead>
+									<TableHead className="text-muted-foreground">
+										{table.headers.date}
+									</TableHead>
+									<TableHead className="text-muted-foreground">
+										{table.headers.anomalies}
+									</TableHead>
+									<TableHead className="text-muted-foreground">
+										{table.headers.status}
+									</TableHead>
+									<TableHead className="text-right text-muted-foreground">
+										{table.headers.action}
+									</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{reports.map(report => (
+									<TableRow
+										key={report.id}
+										className="border-border transition-colors hover:bg-muted/50 group cursor-pointer relative">
+										<TableCell className="font-medium text-card-foreground">
+											<Link
+												href={`/reports/${report.jobId}`}
+												className="absolute inset-0 z-10"
+											/>
+											{report.jobId}
+										</TableCell>
+										<TableCell className="text-muted-foreground">
+											{format(new Date(report.createdAt), "MMM dd, yyyy HH:mm")}
+										</TableCell>
+										<TableCell>
+											<Badge
+												variant="outline"
+												className="border-border text-muted-foreground">
+												{report.anomalyCount} detected
+											</Badge>
+										</TableCell>
+										<TableCell>
+											<Badge
+												className={
+													report.status === "GENERATED"
+														? "bg-success/10 text-success hover:bg-success/20"
+														: "bg-muted text-muted-foreground"
+												}>
+												{report.status}
+											</Badge>
+										</TableCell>
+										<TableCell className="text-right">
+											<ChevronRight className="ml-auto h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					)}
+				</CardContent>
+			</Card>
+		</PageContainer>
+	);
 }

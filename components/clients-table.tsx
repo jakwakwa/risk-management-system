@@ -4,86 +4,20 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowUpDown, Filter, ChevronRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Search, ArrowUpDown, Filter, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 
-const clients = [
-	{
-		id: 1,
-		name: "Apex Trading Ltd",
-		industry: "Financial Services",
-		riskScore: 78,
-		riskTier: "High",
-		monthlyVolume: "R2.4M",
-		disputeRate: 2.1,
-		bounceRate: 1.8,
-		lastReview: "2025-01-05",
-	},
-	{
-		id: 2,
-		name: "Global Imports Co",
-		industry: "Wholesale",
-		riskScore: 92,
-		riskTier: "Critical",
-		monthlyVolume: "R1.8M",
-		disputeRate: 8.2,
-		bounceRate: 3.4,
-		lastReview: "2025-01-03",
-	},
-	{
-		id: 3,
-		name: "Tech Solutions Inc",
-		industry: "Technology",
-		riskScore: 45,
-		riskTier: "Medium",
-		monthlyVolume: "R3.2M",
-		disputeRate: 1.2,
-		bounceRate: 0.8,
-		lastReview: "2025-01-07",
-	},
-	{
-		id: 4,
-		name: "Metro Services",
-		industry: "Professional Services",
-		riskScore: 68,
-		riskTier: "High",
-		monthlyVolume: "R980K",
-		disputeRate: 3.5,
-		bounceRate: 2.1,
-		lastReview: "2025-01-04",
-	},
-	{
-		id: 5,
-		name: "Retail Partners LLC",
-		industry: "Retail",
-		riskScore: 38,
-		riskTier: "Medium",
-		monthlyVolume: "R1.5M",
-		disputeRate: 1.8,
-		bounceRate: 1.2,
-		lastReview: "2025-01-06",
-	},
-	{
-		id: 6,
-		name: "Digital Marketing Group",
-		industry: "Marketing",
-		riskScore: 22,
-		riskTier: "Low",
-		monthlyVolume: "R650K",
-		disputeRate: 0.5,
-		bounceRate: 0.3,
-		lastReview: "2025-01-08",
-	},
-];
+import type { DashboardClient } from "@/app/actions/dashboard";
 
 function getRiskColor(tier: string) {
-	switch (tier) {
-		case "Critical":
+	switch (tier.toLowerCase()) {
+		case "critical":
 			return "destructive";
-		case "High":
+		case "high":
 			return "secondary";
-		case "Medium":
+		case "medium":
 			return "outline";
-		case "Low":
+		case "low":
 			return "outline";
 		default:
 			return "outline";
@@ -96,11 +30,77 @@ function getRiskScoreColor(score: number) {
 	return "text-success";
 }
 
-export function ClientsTable() {
+interface ClientsTableProps {
+	clients: DashboardClient[];
+}
+
+export function ClientsTable({ clients }: ClientsTableProps) {
+	const [sortConfig, setSortConfig] = useState<{
+		key: keyof DashboardClient | null;
+		direction: "asc" | "desc";
+	}>({ key: null, direction: "asc" });
+	const [searchQuery, setSearchQuery] = useState("");
+
+	const requestSort = (key: keyof DashboardClient) => {
+		let direction: "asc" | "desc" = "asc";
+		if (sortConfig.key === key && sortConfig.direction === "asc") {
+			direction = "desc";
+		}
+		setSortConfig({ key, direction });
+	};
+
+	const filteredAndSortedClients = useMemo(() => {
+		let items = [...clients];
+
+		// Filter
+		if (searchQuery) {
+			const query = searchQuery.toLowerCase();
+			items = items.filter(
+				(client) =>
+					client.name.toLowerCase().includes(query) ||
+					client.industry.toLowerCase().includes(query)
+			);
+		}
+
+		// Sort
+		if (sortConfig.key) {
+			items.sort((a, b) => {
+				const aValue = a[sortConfig.key!];
+				const bValue = b[sortConfig.key!];
+
+				if (sortConfig.key === "monthlyVolume") {
+					// Parse Rxx.xK format for numeric sorting
+					const aNum = parseFloat(String(aValue).replace(/[R,K]/g, "")) || 0;
+					const bNum = parseFloat(String(bValue).replace(/[R,K]/g, "")) || 0;
+					return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
+				}
+
+				if (aValue < bValue) {
+					return sortConfig.direction === "asc" ? -1 : 1;
+				}
+				if (aValue > bValue) {
+					return sortConfig.direction === "asc" ? 1 : -1;
+				}
+				return 0;
+			});
+		}
+
+		return items;
+	}, [clients, sortConfig, searchQuery]);
+
+	const getSortIcon = (key: keyof DashboardClient) => {
+		if (sortConfig.key !== key) return <ArrowUpDown className="ml-2 h-3 w-3" />;
+		return sortConfig.direction === "asc" ? (
+			<ArrowUp className="ml-2 h-3 w-3 text-primary" />
+		) : (
+			<ArrowDown className="ml-2 h-3 w-3 text-primary" />
+		);
+	};
+
 	return (
 		<Card className="p-6 px-[26px] mx-0 rounded-3xl">
 			<div className="flex items-center justify-between mb-6">
-				<h2 className="font-semibold text-xl leading-[1.15rem] text-left text-primary">
+				<h2 className="font-semibold text-xl leading-[1.15rem] text-left text-muted-foregrund">
 					Client Overview
 				</h2>
 				<div className="flex items-center gap-2">
@@ -108,6 +108,8 @@ export function ClientsTable() {
 						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-chart-2" />
 						<Input
 							placeholder="Search clients..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
 							className="w-64 pl-10 rounded-xl shadow-md bg-sidebar-accent text-accent-foreground"
 						/>
 					</div>
@@ -127,63 +129,73 @@ export function ClientsTable() {
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("name")}
 									className="-ml-3 font-medium text-muted-foreground w-auto border rounded-none px-1 py-0 my-px mx-0 border-none font-sans text-xs h-[19px] text-left">
 									Client Name
-									<ArrowUpDown className="ml-2 h-3 w-3" />
+									{getSortIcon("name")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("industry")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Industry
+									{getSortIcon("industry")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("riskScore")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Risk Score
-									<ArrowUpDown className="ml-2 h-3 w-3" />
+									{getSortIcon("riskScore")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("monthlyVolume")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Monthly Volume
+									{getSortIcon("monthlyVolume")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("disputeRate")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Dispute Rate
+									{getSortIcon("disputeRate")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("lastReview")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Last Review
+									{getSortIcon("lastReview")}
 								</Button>
 							</th>
 							<th className="pb-3"></th>
 						</tr>
 					</thead>
 					<tbody>
-						{clients.map(client => (
+						{filteredAndSortedClients.map(client => (
 							<tr
 								key={client.id}
 								className="border-b border-border hover:bg-accent/50 transition-colors cursor-pointer">
-								<td className="py-4">
+								<td className="p-4">
 									<div>
-										<p className="font-medium text-foreground text-xs">{client.name}</p>
+										<p className="font-medium text-muted-foreground text-xs">{client.name}</p>
 										<Badge
 											variant={getRiskColor(client.riskTier)}
 											className="bg-card text-sidebar-ring border-input rounded-3xl py-0 mt-1.5 text-xs text-center leading-4">
@@ -245,7 +257,7 @@ export function ClientsTable() {
 				</table>
 			</div>
 			<div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-				<p className="text-sm text-muted">Showing 6 of 248 clients</p>
+				<p className="text-sm text-muted">Showing {filteredAndSortedClients.length} of {clients.length} clients</p>
 				<div className="flex items-center gap-2">
 					<Button className="bg-card" variant="outline" size="sm">
 						Previous

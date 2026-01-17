@@ -4,18 +4,18 @@ BEGIN
   -- 1. Aggregating Monthly Behaviour (Moving logic from TS to SQL)
   CREATE OR REPLACE TEMP TABLE MonthlyStats AS
   SELECT
-    FORMAT_DATE('%Y-%m', transaction_date) as month_period,
+    FORMAT_DATE('%Y-%m', DATE(created_at)) as month_period,
     COUNT(*) as total_transaction_count,
-    SUM(amount) as total_value,
-    MAX(amount) as max_significant_transaction
+    SUM(raw_amount) as total_value,
+    MAX(raw_amount) as max_significant_transaction
   FROM `stratcol-risk-analysis-engine.risk_analysis_engine.transactions`
-  WHERE client_id = clientId
+  WHERE identifier = CAST(clientId AS STRING)
   GROUP BY 1;
 
   -- 2. Write these "Deep Insights" to a serving table for Next.js
   MERGE `stratcol-risk-analysis-engine.risk_analysis_engine.client_behaviour_profiles` T
   USING MonthlyStats S
-  ON T.client_id = clientId AND T.month = S.month_period
+  ON T.client_id = CAST(clientId AS STRING) AND T.month = S.month_period
   WHEN MATCHED THEN
     UPDATE SET 
       total_count = S.total_transaction_count,
@@ -23,5 +23,5 @@ BEGIN
       significant_transaction = S.max_significant_transaction
   WHEN NOT MATCHED THEN
     INSERT (client_id, month, total_count, total_value, significant_transaction)
-    VALUES (clientId, S.month_period, S.total_transaction_count, S.total_value, S.max_significant_transaction);
+    VALUES (CAST(clientId AS STRING), S.month_period, S.total_transaction_count, S.total_value, S.max_significant_transaction);
 END;

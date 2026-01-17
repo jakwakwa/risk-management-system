@@ -2,6 +2,13 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { ClientsTable } from "@/components/clients-table";
 import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getDashboardData } from "@/app/actions/dashboard";
+import { Suspense } from "react";
+
+async function ClientsList() {
+	const { clients } = await getDashboardData();
+	return <ClientsTable clients={clients} />;
+}
 
 export default function ClientsPage() {
 	return (
@@ -26,7 +33,9 @@ export default function ClientsPage() {
 							Filters
 						</Button>
 					</div>
-					<ClientsTable />
+					<Suspense fallback={<div className="h-96 w-full bg-muted animate-pulse rounded-3xl" />}>
+						<ClientsList />
+					</Suspense>
 				</div>
 			</main>
 		</div>

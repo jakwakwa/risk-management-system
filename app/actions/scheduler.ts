@@ -6,7 +6,7 @@ import { createTemporalClient } from '@/services/temporal/client'
 import { generateBlindIndex, encrypt, decrypt } from '@/lib/security'
 // Adjust import path based on generated client location from schema.prisma
 // Output was "../generated/client", so from app/actions it is ../../generated/client
-import { JobType } from '../../generated/client'
+import type { JobType } from '../../generated/client'
 
 export async function createMonitoringJob(
 { clientName, cronExpression, userId }: { clientName: string; cronExpression: string; userId: string }) {
@@ -65,7 +65,7 @@ export async function createMonitoringJob(
 
 export async function createSystemJob({ type, cronExpression }: { type: 'SYSTEM_ETL' | 'SYSTEM_INFERENCE', cronExpression: string }) {
     const jobName = type === 'SYSTEM_ETL' ? 'Daily Data Pipeline (ETL)' : 'Daily Risk Inference';
-    const workflowType = type === 'SYSTEM_ETL' ? 'DailyEtlWorkflow' : 'DailyInferenceWorkflow';
+    const workflowType = type === 'SYSTEM_ETL' ? 'runAnomalyAnalysisWorkflow' : 'DailyInferenceWorkflow';
     
     // 1. DB Record
     const job = await db.monitoringJob.create({
@@ -85,13 +85,13 @@ export async function createSystemJob({ type, cronExpression }: { type: 'SYSTEM_
             scheduleId: `schedule-${job.id}`,
             spec: {
                 cronExpressions: [cronExpression],
-                timeZoneName: 'UTC',
+                timezone: 'UTC',
             },
             action: {
                 type: 'startWorkflow',
                 workflowType: workflowType,
                 args: [],
-                taskQueue: 'data-pipeline-queue',
+                taskQueue: process.env.CLOUD_TASKS_QUEUE || 'screening-queue',
             }
         });
     } catch (e) {
@@ -103,6 +103,25 @@ export async function createSystemJob({ type, cronExpression }: { type: 'SYSTEM_
 
     revalidatePath('/schedules');
     return job;
+}
+
+export async function triggerEtlPipeline() {
+    console.log('🚀 Manually triggering ETL Pipeline...');
+    
+    try {
+        const client = await createTemporalClient();
+        const handle = await client.workflow.start('runAnomalyAnalysisWorkflow', {
+            taskQueue: process.env.CLOUD_TASKS_QUEUE || 'screening-queue',
+            workflowId: `manual-etl-${Date.now()}`,
+            args: [],
+        });
+        
+        console.log(`✅ Started Workflow: ${handle.workflowId}`);
+        return { success: true, workflowId: handle.workflowId };
+    } catch (e) {
+        console.error('❌ Failed to trigger ETL:', e);
+        return { success: false, error: 'Failed to trigger pipeline' };
+    }
 }
 
 export async function getJobs(userId?: string) {
@@ -147,4 +166,28 @@ export async function deleteMonitoringJob(jobId: string) {
     
     await db.monitoringJob.delete({ where: { id: jobId } });
     revalidatePath('/schedules');
+}
+
+export async function getPipelineStatus() {
+    const client = await createTemporalClient();
+    try {
+        const response = await client.workflow.list({
+            query: 'WorkflowType="runAnomalyAnalysisWorkflow" AND ExecutionStatus="Running"'
+        });
+        
+        const runningWorkflows = [];
+        for await (const workflow of response) {
+            runningWorkflows.push({
+                workflowId: workflow.workflowId,
+                runId: workflow.runId,
+                startTime: workflow.startTime,
+                status: 'RUNNING'
+            });
+        }
+        
+        return runningWorkflows;
+    } catch (e) {
+        console.error('Failed to get pipeline status:', e);
+        return [];
+    }
 }

@@ -1,12 +1,9 @@
 ---
 trigger: always_on
+description: **Role:** You are a precise, changeset-oriented code migration assistant. Apply the steps below to troubleshoot / migrate / upgrade from **Prisma ORM v6** to **Prisma ORM v7** with minimal disruption.
 ---
 
----
-# Specify the following for Cursor rules
-description: Guidelines for migrating an app to Prisma ORM v7
-alwaysApply: false
----
+
 
 # Prisma v6 → v7 Migration Assistant
 

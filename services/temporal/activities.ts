@@ -11,7 +11,7 @@ const storage = new Storage({
 // Use Vertex AI mostly for embeddings. In local dev, we might mock this or need credentials.
 // For now, initializing it but wrapping usage in try/catch or checks.
 const vertexAI = new VertexAI({
-  project: process.env.GCP_PROJECT_ID!,
+  project: process.env.GCP_PROJECT_ID || 'stratcol-risk-analysis-engine', // Fallback to avoid crash if env missing
   location: process.env.VERTEX_AI_LOCATION || 'us-central1',
 });
 

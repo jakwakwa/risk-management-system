@@ -25,10 +25,11 @@ export async function RiskHeatmap() {
     return (
         <Card className="col-span-4">
             <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-orange-500" />
-                    High Risk Anomalies
-                </CardTitle>
+     				<CardTitle className="text-foreground flex gap-3">
+                        <AlertTriangle className="h-5 w-5 text-warning" />
+                    High Risk Anomalies</CardTitle>
+            
+              
                 <CardDescription>
                     Clients exhibiting unusual behavioral patterns or high risk scores.
                 </CardDescription>

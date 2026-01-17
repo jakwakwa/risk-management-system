@@ -1,5 +1,5 @@
 
-import { getMonitoringJobs, createMonitoringJob, deleteMonitoringJob, createSystemJob } from '../actions/scheduler';
+import { getMonitoringJobs, createMonitoringJob, deleteMonitoringJob, createSystemJob, triggerEtlPipeline, getPipelineStatus } from '../actions/scheduler';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,18 @@ import { Badge } from '@/components/ui/badge';
 import { CronPicker } from '@/components/scheduler/cron-picker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { utcToSat, cronToHumanReadable } from '@/lib/cron-utils';
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
+import { schedulesContent } from './content';
+import { Loader2 } from 'lucide-react';
 
 export default async function SchedulesPage() {
   const userId = 'user_123'; 
-  // Fetch all jobs (including system jobs)
-  const jobs = await getMonitoringJobs(userId);
+  // Fetch jobs and status
+  const [jobs, runningWorkflows] = await Promise.all([
+      getMonitoringJobs(userId),
+      getPipelineStatus()
+  ]);
   
   const systemJobs = jobs.filter(j => j.type !== 'CLIENT_MONITORING');
   const clientJobs = jobs.filter(j => j.type === 'CLIENT_MONITORING');
@@ -30,7 +37,12 @@ export default async function SchedulesPage() {
   async function createEtlJob() {
       'use server';
       // 5am SAT = 3am UTC
-      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '0 3 * * *' }); 
+      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '00 17 * * *' }); 
+  }
+
+  async function triggerEtlJob() {
+      'use server';
+      await triggerEtlPipeline();
   }
 
   async function createInferenceJob() {
@@ -45,56 +57,55 @@ export default async function SchedulesPage() {
       await deleteMonitoringJob(jobId);
   }
 
+  const { header, tabs, clients, system } = schedulesContent;
+
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-           <h1 className="text-3xl font-bold tracking-tight">Schedule Manager</h1>
-           <p className="text-muted-foreground mt-2">Manage automated risk screening and system pipelines. (Timezone: SAT/UTC+2)</p>
-        </div>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        title={header.title}
+        description={header.description}
+      />
 
       <Tabs defaultValue="clients" className="space-y-4">
         <TabsList>
-            <TabsTrigger value="clients">Client Monitoring</TabsTrigger>
-            <TabsTrigger value="system">System Pipelines</TabsTrigger>
+            <TabsTrigger value="clients">{tabs.clients}</TabsTrigger>
+            <TabsTrigger value="system">{tabs.system}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="clients" className="space-y-4">
             <div className="grid gap-8 md:grid-cols-3">
                 <Card className="md:col-span-1 h-fit">
                     <CardHeader>
-                        <CardTitle>Monitor Client</CardTitle>
-                        <CardDescription>Add a new client to the screening rotation.</CardDescription>
+                        <CardTitle>{clients.createCard.title}</CardTitle>
+                        <CardDescription>{clients.createCard.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form action={createClientJob} className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="clientName">Client Name</Label>
-                                <Input id="clientName" name="clientName" placeholder="e.g. Acme Corp" required />
+                                <Label htmlFor="clientName">{clients.createCard.labels.clientName}</Label>
+                                <Input id="clientName" name="clientName" placeholder={clients.createCard.labels.clientNamePlaceholder} required />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="cron">Schedule</Label>
-                                <CronPicker name="cron" defaultValue="0 4 * * *" /> 
-                                <p className="text-[10px] text-muted-foreground">Default: 6am SAT (4am UTC)</p>
+                                <Label htmlFor="cron">{clients.createCard.labels.schedule}</Label>
+                                <CronPicker name="cron" defaultValue="45 14 * * *" /> 
+                                 <p className="text-[10px] text-muted-foreground">{clients.createCard.labels.scheduleHelp}</p>
                             </div>
-                            <Button type="submit" className="w-full">Create Schedule</Button>
+                            <Button type="submit" className="w-full">{clients.createCard.labels.submitButton}</Button>
                         </form>
                     </CardContent>
                 </Card>
 
                 <Card className="md:col-span-2">
                     <CardHeader>
-                        <CardTitle>Active Client Schedules</CardTitle>
+                        <CardTitle>{clients.tableCard.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Client Name</TableHead>
-                                    <TableHead>Schedule (SAT)</TableHead>
-                                    <TableHead>Next Run</TableHead>
-                                    <TableHead>Actions</TableHead>
+                                    {clients.tableCard.headers.map((header) => (
+                                        <TableHead key={header}>{header}</TableHead>
+                                    ))}
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -114,7 +125,7 @@ export default async function SchedulesPage() {
                                         <TableCell>
                                             <form action={deleteJob}>
                                                 <input type="hidden" name="jobId" value={job.id} />
-                                                <Button variant="destructive" size="sm" type="submit">Delete</Button>
+                                                <Button variant="destructive" size="sm" type="submit">{clients.tableCard.deleteButton}</Button>
                                             </form>
                                         </TableCell>
                                     </TableRow>
@@ -122,7 +133,7 @@ export default async function SchedulesPage() {
                                 {clientJobs.length === 0 && (
                                     <TableRow>
                                         <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                                            No client schedules found.
+                                            {clients.tableCard.emptyState}
                                         </TableCell>
                                     </TableRow>
                                 )}
@@ -137,24 +148,33 @@ export default async function SchedulesPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card className="bg-slate-50 border-dashed border-2">
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Quick Action</CardTitle>
-                        <CardDescription className="text-lg font-semibold text-slate-900">Add Data Pipeline</CardDescription>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">{system.quickActions.etl.label}</CardTitle>
+                        <CardDescription className="text-lg font-semibold text-slate-900">{system.quickActions.etl.title}</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-3">
                         <form action={createEtlJob}>
-                             <Button variant="secondary" className="w-full">Enable Daily ETL (5am SAT)</Button>
+                             <Button variant="secondary" className="w-full">{system.quickActions.etl.button}</Button>
                         </form>
+                        <form action={triggerEtlJob}>
+                             <Button variant="default" className="w-full">Trigger Pipeline Now</Button>
+                        </form>
+                        {runningWorkflows.length > 0 && (
+                             <div className="flex items-center gap-2 p-2 bg-blue-50 text-blue-700 rounded-md text-sm border border-blue-100">
+                                 <Loader2 className="w-4 h-4 animate-spin" />
+                                 {runningWorkflows.length} Pipeline(s) Running
+                             </div>
+                        )}
                     </CardContent>
                 </Card>
 
                 <Card className="bg-slate-50 border-dashed border-2">
                     <CardHeader className="pb-3">
-                         <CardTitle className="text-sm font-medium text-muted-foreground">Quick Action</CardTitle>
-                         <CardDescription className="text-lg font-semibold text-slate-900">Add Inference Batch</CardDescription>
+                         <CardTitle className="text-sm font-medium text-muted-foreground">{system.quickActions.inference.label}</CardTitle>
+                         <CardDescription className="text-lg font-semibold text-slate-900">{system.quickActions.inference.title}</CardDescription>
                     </CardHeader>
                     <CardContent>
                          <form action={createInferenceJob}>
-                             <Button variant="secondary" className="w-full">Enable Daily Inference (9am SAT)</Button>
+                             <Button variant="secondary" className="w-full">{system.quickActions.inference.button}</Button>
                          </form>
                     </CardContent>
                 </Card>
@@ -162,17 +182,16 @@ export default async function SchedulesPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>System Job Schedules</CardTitle>
-                    <CardDescription>Automated maintenance and intelligence pipelines.</CardDescription>
+                    <CardTitle>{system.tableCard.title}</CardTitle>
+                    <CardDescription>{system.tableCard.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Job Name</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Schedule (SAT)</TableHead>
-                                <TableHead>Actions</TableHead>
+                                {system.tableCard.headers.map((header) => (
+                                    <TableHead key={header}>{header}</TableHead>
+                                ))}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -192,7 +211,7 @@ export default async function SchedulesPage() {
                                     <TableCell>
                                         <form action={deleteJob}>
                                             <input type="hidden" name="jobId" value={job.id} />
-                                            <Button variant="destructive" size="sm" type="submit">Delete</Button>
+                                            <Button variant="destructive" size="sm" type="submit">{system.tableCard.deleteButton}</Button>
                                         </form>
                                     </TableCell>
                                 </TableRow>
@@ -200,7 +219,7 @@ export default async function SchedulesPage() {
                             {systemJobs.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                                        No system jobs active.
+                                        {system.tableCard.emptyState}
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -210,7 +229,7 @@ export default async function SchedulesPage() {
             </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </PageContainer>
   );
 }
 

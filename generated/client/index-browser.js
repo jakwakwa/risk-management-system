@@ -122,13 +122,13 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.MonitoringJobScalarFieldEnum = {
   id: 'id',
-  type: 'type',
   clientName: 'clientName',
   cronExpression: 'cronExpression',
   nextRunAt: 'nextRunAt',
   userId: 'userId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  type: 'type'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -230,6 +230,15 @@ exports.Prisma.SandboxScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AnomalyReportScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  gcsPath: 'gcsPath',
+  anomalyCount: 'anomalyCount',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -272,7 +281,8 @@ exports.Prisma.ModelName = {
   WatchListClient: 'WatchListClient',
   PublicDataAnalysis: 'PublicDataAnalysis',
   ManualInvestigativeReport: 'ManualInvestigativeReport',
-  Sandbox: 'Sandbox'
+  Sandbox: 'Sandbox',
+  AnomalyReport: 'AnomalyReport'
 };
 
 /**
