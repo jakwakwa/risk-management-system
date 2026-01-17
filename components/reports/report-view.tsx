@@ -85,10 +85,10 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 				</Card>
 
 				{/* AI Summary Section */}
-				<Card className="border-border bg-card/50 flex flex-col">
+				<Card className="border-border bg-card/50 flex flex-col max-h-200 overflow-y-scroll">
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
-							<Sparkles className="h-5 w-5 text-primary" />
+							<Sparkles className="h-5 w-5 text-chart-1" />
 							AI Insight
 						</CardTitle>
 						<CardDescription>Powered by Gemini 2.5 Flash</CardDescription>
