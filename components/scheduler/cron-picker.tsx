@@ -12,27 +12,32 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { satToUtc, utcToSat } from '@/lib/cron-utils';
 
 interface CronPickerProps {
   name: string;
-  defaultValue?: string;
+  defaultValue?: string; // Expects UTC
 }
 
 export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps) {
+  // We work internally with SAT times for display
+  // defaultValue is UTC -> Convert to SAT for initial state
+  const satDefault = React.useMemo(() => defaultValue ? utcToSat(defaultValue) : '0 0 * * *', [defaultValue]);
+
   const [frequency, setFrequency] = React.useState<'daily' | 'weekly' | 'monthly' | 'custom'>('daily');
   const [time, setTime] = React.useState('00:00');
   const [selectedDays, setSelectedDays] = React.useState<number[]>([]);
   const [dayOfMonth, setDayOfMonth] = React.useState<number>(1);
-  const [customCron, setCustomCron] = React.useState(defaultValue);
+  const [customCron, setCustomCron] = React.useState(satDefault);
 
-  // Parse initial value
+  // Parse initial value (SAT)
   React.useEffect(() => {
-    if (!defaultValue) return;
-
-    const parts = defaultValue.split(' ');
+    // We parse the SAT version to set UI state
+    // so the user sees 8:00 if the DB has 6:00 UTC
+    const parts = satDefault.split(' ');
     if (parts.length !== 5) {
       setFrequency('custom');
-      setCustomCron(defaultValue);
+      setCustomCron(satDefault);
       return;
     }
 
@@ -41,7 +46,7 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
     // Check for Custom
     if (min !== '0' && !min.match(/^\d+$/)) {
          setFrequency('custom');
-         setCustomCron(defaultValue);
+         setCustomCron(satDefault);
          return;
     }
 
@@ -61,13 +66,13 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
       setDayOfMonth(Number(dom));
     } else {
       setFrequency('custom');
-      setCustomCron(defaultValue);
+      setCustomCron(satDefault);
     }
-  }, [defaultValue]);
+  }, [satDefault]);
 
 
-  // Generate Cron String
-  const cronExpression = React.useMemo(() => {
+  // Generate Cron String (SAT)
+  const satCronExpression = React.useMemo(() => {
     if (frequency === 'custom') return customCron;
 
     const [h, m] = time.split(':');
@@ -90,6 +95,9 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
     return customCron;
   }, [frequency, time, selectedDays, dayOfMonth, customCron]);
 
+  // Final Output: Convert SAT -> UTC
+  const utcCronExpression = React.useMemo(() => satToUtc(satCronExpression), [satCronExpression]);
+
   const toggleDay = (day: number) => {
     setSelectedDays(prev => 
       prev.includes(day) 
@@ -106,14 +114,19 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
     { label: 'Thu', value: 4 },
     { label: 'Fri', value: 5 },
     { label: 'Sat', value: 6 },
-  ];
+    { label: 'Sun', value: 7 }, // Handle both 0 and 7
+  ].filter((v,i,a) => a.findIndex(t=>(t.value === v.value))===i); // Unique
 
   return (
     <div className="space-y-4 border rounded-md p-4 bg-card text-card-foreground shadow-sm">
-      <input type="hidden" name={name} value={cronExpression} />
+      <input type="hidden" name={name} value={utcCronExpression} />
       
+      <div className="flex justify-between items-center">
+          <Label>Frequency</Label>
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">Timezone: SAT (UTC+2)</span>
+      </div>
+
       <div className="space-y-2">
-        <Label>Frequency</Label>
         <Select 
             value={frequency} 
             onValueChange={(v: any) => setFrequency(v)}
@@ -132,7 +145,7 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
 
       {frequency !== 'custom' && (
         <div className="space-y-2">
-            <Label>Time</Label>
+            <Label>Time (SAT)</Label>
             <Input 
                 type="time" 
                 value={time} 
@@ -146,7 +159,7 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
         <div className="space-y-2">
             <Label>Days of Week</Label>
             <div className="flex flex-wrap gap-2">
-                {weekDays.map((day) => (
+                {weekDays.filter(d=>d.value!==7).map((day) => (
                     <Button
                         key={day.value}
                         type="button"
@@ -190,13 +203,11 @@ export function CronPicker({ name, defaultValue = '0 0 * * *' }: CronPickerProps
                 onChange={(e) => setCustomCron(e.target.value)} 
                 placeholder="* * * * *"
             />
-            <p className="text-xs text-muted-foreground">Standard 5-part cron syntax.</p>
+            <p className="text-xs text-muted-foreground">Standard 5-part cron syntax (SAT).</p>
         </div>
       )}
 
-      <div className="pt-2 border-t">
-          <p className="text-xs text-muted-foreground font-mono">Output: {cronExpression}</p>
-      </div>
+
     </div>
   );
 }

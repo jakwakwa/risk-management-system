@@ -3,7 +3,10 @@
 import { db } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import { createTemporalClient } from '@/services/temporal/client'
-import { generateBlindIndex, encrypt } from '@/lib/security'
+import { generateBlindIndex, encrypt, decrypt } from '@/lib/security'
+// Adjust import path based on generated client location from schema.prisma
+// Output was "../generated/client", so from app/actions it is ../../generated/client
+import { JobType } from '../../generated/client'
 
 export async function createMonitoringJob(
 { clientName, cronExpression, userId }: { clientName: string; cronExpression: string; userId: string }) {
@@ -15,9 +18,10 @@ export async function createMonitoringJob(
   const job = await db.$transaction(async (tx) => {
       const j = await tx.monitoringJob.create({
           data: {
+              type: 'CLIENT_MONITORING',
               clientName: encryptedName,
               cronExpression,
-              nextRunAt: new Date(), // Temporal handles the schedule, this field might be redundant or for UI sorting
+              nextRunAt: new Date(), 
               userId
           }
       })
@@ -41,7 +45,7 @@ export async function createMonitoringJob(
           scheduleId: `schedule-${job.id}`,
           spec: {
               cronExpressions: [cronExpression],
-              jitter: '1m', // Requirements: "Jitter: Apply randomized delays"
+              jitter: '1m', 
           },
           action: {
               type: 'startWorkflow',
@@ -52,8 +56,6 @@ export async function createMonitoringJob(
       })
   } catch (e) {
       console.error('Failed to create Temporal Schedule:', e)
-      // Should we rollback DB? For now, we'll keep it but maybe mark as error.
-      // Or just throw to UI.
       throw e
   }
 
@@ -61,27 +63,79 @@ export async function createMonitoringJob(
   return job
 }
 
-export async function getMonitoringJobs(userId: string) {
-  // We return the jobs, but names are encrypted.
-  // The UI might need to search using Blind Index if we want to filter?
-  // Or if we want to display them, we might not be able to decrypt them in bulk quickly/securely if we don't want to expose keys to client.
-  // But this is a Server Action. We can decrypt here and send plaintext to the authenticated user.
+export async function createSystemJob({ type, cronExpression }: { type: 'SYSTEM_ETL' | 'SYSTEM_INFERENCE', cronExpression: string }) {
+    const jobName = type === 'SYSTEM_ETL' ? 'Daily Data Pipeline (ETL)' : 'Daily Risk Inference';
+    const workflowType = type === 'SYSTEM_ETL' ? 'DailyEtlWorkflow' : 'DailyInferenceWorkflow';
+    
+    // 1. DB Record
+    const job = await db.monitoringJob.create({
+        data: {
+            type: type as JobType,
+            clientName: jobName, // Plain text for system jobs
+            cronExpression,
+            nextRunAt: new Date(),
+            userId: null // System job
+        }
+    });
+
+    // 2. Temporal Schedule
+    try {
+        const client = await createTemporalClient();
+        await client.schedule.create({
+            scheduleId: `schedule-${job.id}`,
+            spec: {
+                cronExpressions: [cronExpression],
+                timeZoneName: 'UTC',
+            },
+            action: {
+                type: 'startWorkflow',
+                workflowType: workflowType,
+                args: [],
+                taskQueue: 'data-pipeline-queue',
+            }
+        });
+    } catch (e) {
+        console.error('Failed to create System Schedule:', e);
+        // Best effort cleanup
+        await db.monitoringJob.delete({ where: { id: job.id } });
+        throw e;
+    }
+
+    revalidatePath('/schedules');
+    return job;
+}
+
+export async function getJobs(userId?: string) {
+  // If userId provided, fetch user jobs. If not, fetch system jobs?
+  // Or fetch all for admin?
+  // For now, we'll fetch User Jobs + System Jobs separatedly or mapped.
   
+  const where = userId ? {
+      OR: [
+          { userId },
+          { type: { in: ['SYSTEM_ETL', 'SYSTEM_INFERENCE'] as JobType[] } }
+      ]
+  } : {};
+
   const jobs = await db.monitoringJob.findMany({
-    where: { userId },
+    where,
     orderBy: { createdAt: 'desc' },
   })
 
-  // Decrypt for UI
-  const { decrypt } = require('../../lib/security')
   return jobs.map(j => {
-      try {
-          return { ...j, clientName: decrypt(j.clientName) }
-      } catch {
-          return j // Return as is if decryption fails (e.g. legacy cleartext)
+      if (j.type === 'CLIENT_MONITORING') {
+          try {
+              return { ...j, clientName: decrypt(j.clientName) }
+          } catch {
+              return j 
+          }
       }
+      return j; // System jobs are plaintext
   })
 }
+
+// Alias for backward compatibility if page.tsx uses it specifically (it does)
+export const getMonitoringJobs = async (userId: string) => getJobs(userId);
 
 export async function deleteMonitoringJob(jobId: string) {
     const client = await createTemporalClient();

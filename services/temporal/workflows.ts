@@ -25,3 +25,4 @@ export async function RiskScreeningWorkflow(jobId: string): Promise<string> {
 }
 
 export * from './risk-workflows';
+export * from './data-pipeline-workflows';

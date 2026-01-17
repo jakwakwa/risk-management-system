@@ -2,7 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ShieldCheck, Calendar, FileText, Settings, LayoutDashboard } from 'lucide-react';
+import { ShieldCheck, Calendar, FileText, Settings, LayoutDashboard, ClipboardList } from 'lucide-react';
 
 import "./globals.css";
 
@@ -44,6 +44,8 @@ export const metadata: Metadata = {
 	},
 };
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -68,6 +70,12 @@ export default function RootLayout({
                                     <Button variant="ghost" className="w-full justify-start">
                                         <LayoutDashboard className="w-4 h-4 mr-2" />
                                         Dashboard
+                                    </Button>
+                                </Link>
+                                <Link href="/dashboard/manual-screening">
+                                    <Button variant="ghost" className="w-full justify-start">
+                                        <ClipboardList className="w-4 h-4 mr-2" />
+                                        Manual Screening
                                     </Button>
                                 </Link>
                                 <Link href="/schedules">
@@ -103,6 +111,7 @@ export default function RootLayout({
                         {children}
                     </main>
                 </div>
+                <Toaster />
 			</body>
 			
 		</html>
