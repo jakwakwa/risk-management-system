@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { decrypt } from "@/lib/security";
+import { bqClient, BQ_TABLES } from "@/lib/bigquery";
 
 export type DashboardClient = {
   id: string;
@@ -25,28 +26,40 @@ export type DashboardAlert = {
 
 export async function getDashboardData() {
   try {
-    const clients = await db.monitoringJob.findMany({
+    // 1. Fetch Aggregated Clients from BigQuery Transactions
+    // We source subject_name and aggregate volume/count
+    const [bqClients] = await bqClient.query({
+      query: `
+        SELECT 
+          subject_name as name, 
+          COUNT(*) as transaction_count, 
+          SUM(raw_amount) as total_volume,
+          MAX(created_at) as last_seen
+        FROM \`${BQ_TABLES.TRANSACTIONS}\`
+        GROUP BY 1
+        ORDER BY total_volume DESC
+      `,
+    });
+
+    // 2. Fetch All Monitoring Jobs/Profiles for matching
+    // We'll need to decrypt names to match with BQ
+    const monitoringJobs = await db.monitoringJob.findMany({
+      where: { type: "CLIENT_MONITORING" },
       include: {
         riskProfile: {
           include: {
             alerts: {
-              orderBy: {
-                createdAt: "desc",
-              },
+              orderBy: { createdAt: "desc" },
               take: 5,
             },
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
     });
 
+    // 3. Fetch Recent Alerts for the feed
     const recentAlerts = await db.riskAlert.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
       take: 10,
       include: {
         riskProfile: {
@@ -57,40 +70,45 @@ export async function getDashboardData() {
       },
     });
 
-    return {
-      clients: clients.map((job) => {
-        let name = job.clientName;
-        if (job.type === "CLIENT_MONITORING") {
-          try {
-            name = decrypt(job.clientName);
-          } catch (e) {
-            console.error(`Failed to decrypt client name for job ${job.id}`);
-          }
+    // 4. Map BQ Transactions to Dashboard Format
+    const clients = bqClients.map((bqData: any) => {
+      // Find matching job by name
+      const job = monitoringJobs.find((j) => {
+        try {
+          return decrypt(j.clientName) === bqData.name;
+        } catch {
+          return false;
         }
+      });
 
-        const score = job.riskProfile?.riskScore ?? 0;
+      const profile = job?.riskProfile;
+      const score = profile?.riskScore ?? 0;
 
-        return {
-          id: job.id,
-          name,
-          industry: "Financial Services", // Placeholder
-          riskScore: score,
-          riskTier: getRiskTier(score),
-          monthlyVolume: `R${(Number(job.riskProfile?.avgMonthlyVolume || 0) / 1000).toFixed(0)}K`,
-          disputeRate: 0, // Placeholder
-          bounceRate: 0, // Placeholder
-          lastReview:
-            job.riskProfile?.lastAnalysed.toISOString().split("T")[0] ??
-            job.updatedAt.toISOString().split("T")[0],
-        };
-      }),
+      return {
+        id: bqData.name, // Use name as ID for now since it's unique in this set
+        name: bqData.name,
+        industry: "Finance", // Default or derived if possible
+        riskScore: score,
+        riskTier: getRiskTier(score),
+        monthlyVolume: `R${(Number(bqData.total_volume || 0) / 1000).toFixed(1)}K`,
+        disputeRate: Number(bqData.transaction_count || 0), // Using count as a filler for now
+        bounceRate: 0,
+        lastReview: bqData.last_seen ? new Date(bqData.last_seen.value).toISOString().split("T")[0] : "N/A",
+      };
+    });
+
+    return {
+      clients,
       alerts: recentAlerts.map((alert) => ({
         id: alert.id,
         client:
           alert.riskProfile?.monitoringJob?.clientName && alert.riskProfile?.monitoringJob?.type === "CLIENT_MONITORING"
-            ? (function() {
-                try { return decrypt(alert.riskProfile.monitoringJob.clientName); }
-                catch(e) { return "Unknown Client"; }
+            ? (function () {
+                try {
+                  return decrypt(alert.riskProfile.monitoringJob.clientName);
+                } catch (e) {
+                  return "Unknown Client";
+                }
               })()
             : alert.riskProfile?.monitoringJob?.clientName ?? "System",
         description: alert.description,
