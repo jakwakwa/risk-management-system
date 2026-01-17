@@ -19,17 +19,16 @@ SELECT
     -- We aggregate data into hourly bins for the model training
     TIMESTAMP_TRUNC(created_at, HOUR) as time_bin,
     SUM(raw_amount) as total_amount
-FROM `stratcol-risk-analysis-engine.risk_analysis_engine.TRANSACTIONS`
+FROM `stratcol-risk-analysis-engine.risk_analysis_engine.transactions`
 GROUP BY 1
 ORDER BY 1 ASC;
 
--- 3. (Optional) Create a View for the Dashboard
--- This prevents the "404 Not Found" error you saw in the logs earlier
-CREATE OR REPLACE VIEW `stratcol-risk-analysis-engine.risk_analysis_engine.client_behaviour_profiles` AS
-SELECT 
-  identifier as clientId,
-  AVG(raw_amount) as avg_transaction_value,
-  COUNT(*) as total_transactions,
-  MAX(created_at) as last_activity
-FROM `stratcol-risk-analysis-engine.risk_analysis_engine.TRANSACTIONS`
-GROUP BY 1;
+-- 3. Create Serving Table for Dashboard (Replaces old View)
+-- This table is populated by the 'generate_client_metrics' stored procedure
+CREATE TABLE IF NOT EXISTS `stratcol-risk-analysis-engine.risk_analysis_engine.client_behaviour_profiles` (
+  client_id STRING,
+  month STRING,
+  total_count INT64,
+  total_value FLOAT64,
+  significant_transaction FLOAT64
+);
