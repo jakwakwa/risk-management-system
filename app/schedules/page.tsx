@@ -33,7 +33,7 @@ export default async function SchedulesPage() {
   async function createEtlJob() {
       'use server';
       // 5am SAT = 3am UTC
-      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '0 3 * * *' }); 
+      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '45 14 * * *' }); 
   }
 
   async function createInferenceJob() {
@@ -78,7 +78,7 @@ export default async function SchedulesPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="cron">{clients.createCard.labels.schedule}</Label>
-                                <CronPicker name="cron" defaultValue="0 4 * * *" /> 
+                                <CronPicker name="cron" defaultValue="45 14 * * *" /> 
                                 <p className="text-[10px] text-muted-foreground">{clients.createCard.labels.scheduleHelp}</p>
                             </div>
                             <Button type="submit" className="w-full">{clients.createCard.labels.submitButton}</Button>
