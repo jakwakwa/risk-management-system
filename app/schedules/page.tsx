@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { CronPicker } from '@/components/scheduler/cron-picker';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { utcToSat, cronToHumanReadable } from '@/lib/cron-utils';
 
 export default async function SchedulesPage() {
   const userId = 'user_123'; 
@@ -22,17 +23,20 @@ export default async function SchedulesPage() {
     const clientName = formData.get('clientName') as string;
     const cron = formData.get('cron') as string;
     const userId = 'user_123';
+    // Cron is already converted to UTC by CronPicker
     await createMonitoringJob({ clientName, cronExpression: cron, userId });
   }
 
   async function createEtlJob() {
       'use server';
-      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '0 2 * * *' }); // 2am Default
+      // 5am SAT = 3am UTC
+      await createSystemJob({ type: 'SYSTEM_ETL', cronExpression: '0 3 * * *' }); 
   }
 
   async function createInferenceJob() {
       'use server';
-      await createSystemJob({ type: 'SYSTEM_INFERENCE', cronExpression: '0 6 * * *' }); // 6am Default
+      // 9am SAT = 7am UTC
+      await createSystemJob({ type: 'SYSTEM_INFERENCE', cronExpression: '0 7 * * *' }); 
   }
 
   async function deleteJob(formData: FormData) {
@@ -46,7 +50,7 @@ export default async function SchedulesPage() {
       <div className="flex justify-between items-center">
         <div>
            <h1 className="text-3xl font-bold tracking-tight">Schedule Manager</h1>
-           <p className="text-muted-foreground mt-2">Manage automated risk screening and system pipelines.</p>
+           <p className="text-muted-foreground mt-2">Manage automated risk screening and system pipelines. (Timezone: SAT/UTC+2)</p>
         </div>
       </div>
 
@@ -71,7 +75,8 @@ export default async function SchedulesPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="cron">Schedule</Label>
-                                <CronPicker name="cron" defaultValue="0 0 * * *" />
+                                <CronPicker name="cron" defaultValue="0 4 * * *" /> 
+                                <p className="text-[10px] text-muted-foreground">Default: 6am SAT (4am UTC)</p>
                             </div>
                             <Button type="submit" className="w-full">Create Schedule</Button>
                         </form>
@@ -87,7 +92,7 @@ export default async function SchedulesPage() {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Client Name</TableHead>
-                                    <TableHead>Schedule (Cron)</TableHead>
+                                    <TableHead>Schedule (SAT)</TableHead>
                                     <TableHead>Next Run</TableHead>
                                     <TableHead>Actions</TableHead>
                                 </TableRow>
@@ -96,11 +101,13 @@ export default async function SchedulesPage() {
                                 {clientJobs.map((job) => (
                                     <TableRow key={job.id}>
                                         <TableCell className="font-medium">{job.clientName}</TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className="font-mono">
-                                                {job.cronExpression}
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <Badge variant="secondary" className="w-fit">
+                                                {cronToHumanReadable(utcToSat(job.cronExpression))}
                                             </Badge>
-                                        </TableCell>
+                                        </div>
+                                    </TableCell>
                                         <TableCell className="text-muted-foreground text-sm">
                                             {job.nextRunAt?.toLocaleDateString()}
                                         </TableCell>
@@ -135,7 +142,7 @@ export default async function SchedulesPage() {
                     </CardHeader>
                     <CardContent>
                         <form action={createEtlJob}>
-                             <Button variant="secondary" className="w-full">Enable Daily ETL (2am)</Button>
+                             <Button variant="secondary" className="w-full">Enable Daily ETL (5am SAT)</Button>
                         </form>
                     </CardContent>
                 </Card>
@@ -147,7 +154,7 @@ export default async function SchedulesPage() {
                     </CardHeader>
                     <CardContent>
                          <form action={createInferenceJob}>
-                             <Button variant="secondary" className="w-full">Enable Daily Inference (6am)</Button>
+                             <Button variant="secondary" className="w-full">Enable Daily Inference (9am SAT)</Button>
                          </form>
                     </CardContent>
                 </Card>
@@ -164,7 +171,7 @@ export default async function SchedulesPage() {
                             <TableRow>
                                 <TableHead>Job Name</TableHead>
                                 <TableHead>Type</TableHead>
-                                <TableHead>Schedule (Cron)</TableHead>
+                                <TableHead>Schedule (SAT)</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -176,9 +183,11 @@ export default async function SchedulesPage() {
                                         <Badge>{job.type}</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="font-mono">
-                                            {job.cronExpression}
-                                        </Badge>
+                                        <div className="flex flex-col">
+                                            <Badge variant="secondary" className="w-fit">
+                                                {cronToHumanReadable(utcToSat(job.cronExpression))}
+                                            </Badge>
+                                        </div>
                                     </TableCell>
                                     <TableCell>
                                         <form action={deleteJob}>
@@ -204,3 +213,4 @@ export default async function SchedulesPage() {
     </div>
   );
 }
+
