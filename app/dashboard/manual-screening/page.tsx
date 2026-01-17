@@ -5,26 +5,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PlusCircle, Search } from 'lucide-react';
 import Link from 'next/link';
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
 
 export default async function ManualScreeningPage() {
   const { data: reports } = await getManualReports();
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Manual Screening</h1>
-          <p className="text-muted-foreground">
-            Manage and view manual investigative reports.
-          </p>
-        </div>
+    <PageContainer>
+      <SectionHeader
+        title="Manual Screening"
+        description="Manage and view manual investigative reports."
+      >
         <Link href="/dashboard/manual-screening/new">
           <Button className="gap-2">
             <PlusCircle className="h-4 w-4" />
             New Report
           </Button>
         </Link>
-      </div>
+      </SectionHeader>
 
       <Card>
         <CardHeader>
@@ -81,7 +80,7 @@ export default async function ManualScreeningPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }
 

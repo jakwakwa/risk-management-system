@@ -55,14 +55,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`font-sans antialiased`} suppressHydrationWarning>
+			<body className={`font-sans antialiased`} suppressHydrationWarning> 
                 <div className="min-h-screen bg-background flex">
                     {/* Sidebar */}
                     <aside className="w-64 border-r bg-muted/80 hidden md:block">
                         <div className="flex flex-col h-full">
                             <div className="h-14 flex items-center px-4 border-b">
-                                <ShieldCheck className="w-6 h-6 mr-2 text-primary" />
-                                <span className="font-bold text-lg">RiskEngine</span>
+                                <ShieldCheck className="w-6 h-6 mr-2 text-chart-1" />
+                                <span className="font-bold text-lg text-stone-100">SC RiskEngine</span>
                             </div>
                             
                             <nav className="flex-1 p-4 space-y-1">

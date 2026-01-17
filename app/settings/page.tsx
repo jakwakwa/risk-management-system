@@ -11,26 +11,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
+import { settingsContent } from './content';
 
 export default async function SettingsPage() {
   const config = await getSystemConfig();
+  const { header, matchingCard } = settingsContent;
+  const { form } = matchingCard;
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Engine Tuning</h1>
-        <p className="text-muted-foreground mt-2">Configure matching algorithms and risk thresholds.</p>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        title={header.title}
+        description={header.description}
+      />
 
       <Card className="max-w-2xl">
         <CardHeader>
-            <CardTitle>Matching Parameters</CardTitle>
-            <CardDescription>Adjust how the engine identifies potential risks.</CardDescription>
+            <CardTitle>{matchingCard.title}</CardTitle>
+            <CardDescription>{matchingCard.description}</CardDescription>
         </CardHeader>
         <CardContent>
             <form action={updateSystemConfig} className="space-y-6">
                 <div className="space-y-2">
-                    <Label htmlFor="fuzzyThreshold">Fuzzy Match Threshold (0.0 - 1.0)</Label>
+                    <Label htmlFor="fuzzyThreshold">{form.fuzzyThreshold.label}</Label>
                     <Input 
                         id="fuzzyThreshold" 
                         name="fuzzyThreshold" 
@@ -42,44 +47,44 @@ export default async function SettingsPage() {
                         required 
                     />
                     <p className="text-xs text-muted-foreground">
-                        Higher values require closer spelling matches. Recommended: 0.7
+                        {form.fuzzyThreshold.helpText}
                     </p>
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="phoneticAlgorithm">Phonetic Algorithm</Label>
+                    <Label htmlFor="phoneticAlgorithm">{form.phoneticAlgorithm.label}</Label>
                     <Select name="phoneticAlgorithm" defaultValue={config.phoneticAlgorithm}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select algorithm" />
+                            <SelectValue placeholder={form.phoneticAlgorithm.placeholder} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="BMPM">Beider-Morse (BMPM) - Recommended</SelectItem>
-                            <SelectItem value="DoubleMetaphone">Double Metaphone</SelectItem>
-                            <SelectItem value="Soundex">Soundex (Legacy)</SelectItem>
+                            <SelectItem value="BMPM">{form.phoneticAlgorithm.options.bmpm}</SelectItem>
+                            <SelectItem value="DoubleMetaphone">{form.phoneticAlgorithm.options.doubleMetaphone}</SelectItem>
+                            <SelectItem value="Soundex">{form.phoneticAlgorithm.options.soundex}</SelectItem>
                         </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                        Algorithm used to index names by sound. BMPM is superior for non-English names.
+                        {form.phoneticAlgorithm.helpText}
                     </p>
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="semanticContext">Semantic Context</Label>
+                    <Label htmlFor="semanticContext">{form.semanticContext.label}</Label>
                     <Input 
                         id="semanticContext" 
                         name="semanticContext" 
-                        placeholder="e.g. Finance, Banking, AML" 
+                        placeholder={form.semanticContext.placeholder}
                         defaultValue={config.semanticContext || ''} 
                     />
                     <p className="text-xs text-muted-foreground">
-                        Optional context prompt injected into Vector Search embeddings.
+                        {form.semanticContext.helpText}
                     </p>
                 </div>
 
-                <Button type="submit">Save Configuration</Button>
+                <Button type="submit">{form.submitButton}</Button>
             </form>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

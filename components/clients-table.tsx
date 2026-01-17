@@ -100,7 +100,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 	return (
 		<Card className="p-6 px-[26px] mx-0 rounded-3xl">
 			<div className="flex items-center justify-between mb-6">
-				<h2 className="font-semibold text-xl leading-[1.15rem] text-left text-primary">
+				<h2 className="font-semibold text-xl leading-[1.15rem] text-left text-muted-foregrund">
 					Client Overview
 				</h2>
 				<div className="flex items-center gap-2">
@@ -193,9 +193,9 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 							<tr
 								key={client.id}
 								className="border-b border-border hover:bg-accent/50 transition-colors cursor-pointer">
-								<td className="py-4">
+								<td className="p-4">
 									<div>
-										<p className="font-medium text-foreground text-xs">{client.name}</p>
+										<p className="font-medium text-muted-foreground text-xs">{client.name}</p>
 										<Badge
 											variant={getRiskColor(client.riskTier)}
 											className="bg-card text-sidebar-ring border-input rounded-3xl py-0 mt-1.5 text-xs text-center leading-4">

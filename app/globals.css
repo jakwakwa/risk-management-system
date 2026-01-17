@@ -5,43 +5,42 @@
 
 :root {
   /* Updated color scheme for professional risk management dashboard */
-  --background: rgb(235, 233, 225);
-  --foreground: rgb(62, 59, 47);
-  --card: rgb(248, 247, 243);
-  --card-foreground: rgb(190, 133, 26);
-  --popover: rgb(66, 56, 45);
-  --popover-foreground: rgb(230, 218, 186);
-  --primary: rgb(104, 84, 39);
-  --primary-foreground: oklch(0.99 0.003 264.542);
-  --secondary: rgb(214, 206, 158);
-  --secondary-foreground: rgb(131, 100, 61);
-  --muted: rgb(5, 5, 4);
-  --muted-foreground: rgb(104, 104, 79);
-  --accent: rgb(207, 194, 171);
-  --accent-foreground: rgb(59, 61, 65);
-  --destructive: rgb(255, 101, 121);
+  --background: rgb(70, 69, 68);
+  --foreground: rgba(189, 155, 92, 0.966);
+  --card:rgba(37, 34, 34, 0.549);
+  --card-foreground: rgba(215, 203, 166, 0.983);
+  --popover: rgb(227, 210, 186);
+  --popover-foreground: rgb(58, 55, 46);
+  --primary: #100e07;
+  --secondary: rgba(191, 165, 16, 0.594);
+  --secondary-foreground: rgba(231, 230, 213, 0.67);
+  --muted: rgb(27, 30, 32);
+  --muted-foreground:   #a7a29af6;
+  --accent: rgba(114, 113, 99, 0.152);
+  --accent-foreground:s rgb(170, 170, 232);
+  --destructive: rgba(232, 99, 117, 0.983);
   --destructive-foreground: rgb(252, 177, 164);
-  --success: oklch(0.646 0.155 165.614);
+  --success: oklch(72.386% 0.15358 163.792);
   --success-foreground: oklch(0.99 0.003 264.542);
-  --warning: oklch(0.769 0.188 70.08);
-  --warning-foreground: oklch(0.215 0.015 264.542);
-  --border: rgb(240, 236, 228);
-  --input: rgb(206, 203, 189);
-  --ring: rgb(171, 144, 43);
-  --chart-1: rgb(216, 173, 15);
-  --chart-2: rgba(204, 194, 59, 0.673);
+  --warning: oklch(82.149% 0.13988 96.444 / 0.573);
+  --warning-foreground: oklch(83.065% 0.11273 66.88);
+  --border: rgba(129, 129, 113, 0.155);
+  --input: rgba(114, 98, 79, 0.867);
+  --ring: rgb(31, 27, 15);
+  --chart-1: rgb(196, 159, 78);
+  --chart-2: rgba(130, 120, 107, 0.673);
   --chart-3: rgb(134, 151, 237);
-  --chart-4: rgb(35, 230, 77);
-  --chart-5: rgba(207, 203, 183, 0.181);
+  --chart-4: #eddfab;
+  --chart-5: rgba(247, 215, 37, 0.201);
   --radius: 0.5rem;
-  --sidebar: oklch(22.399% 0.00365 48.289 / 0.901);
-  --sidebar-foreground: rgb(58, 46, 20);
-  --sidebar-primary: rgb(146, 143, 140);
-  --sidebar-primary-foreground: rgb(173, 154, 62);
-  --sidebar-accent: oklch(0.94 0.007 264.542);
-  --sidebar-accent-foreground: rgb(204, 164, 42);
-  --sidebar-border: oklch(0.922 0.005 264.542);
-  --sidebar-ring: rgb(184, 149, 18);
+  --sidebar: oklch(22.325% 0.00647 78.145 / 0.316);
+  --sidebar-foreground: rgba(57, 54, 46, 0.045);
+  --sidebar-primary: rgb(232, 205, 179);
+  --sidebar-primary-foreground: rgb(160, 155, 131);
+  --sidebar-accent: oklch(39.035% 0.01954 107.315);
+  --sidebar-accent-foreground: rgb(229, 205, 130);
+  --sidebar-border: oklch(78.944% 0.01018 273.311);
+  --sidebar-ring: rgba(147, 130, 85, 0.821);
 }
 
 .dark {

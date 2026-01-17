@@ -66,7 +66,7 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 							color: "var(--chart-3)",
 						},
 					}}
-					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-foreground w-full bg-sidebar rounded-lg shadow-black/50 shadow-xl">
+					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-foreground w-full bg-sidebar rounded-lg shadow-black/20 shadow-lg">
 					<ResponsiveContainer width="100%" height="100%">
 						<LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
 							<CartesianGrid strokeDasharray="3 3" stroke="var(--chart-5)" />

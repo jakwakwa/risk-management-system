@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, ShieldCheck, AlertTriangle } from "lucide-react";
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
 
 export default async function ReportsPage() {
   const logs = await db.auditLog.findMany({
@@ -30,11 +32,11 @@ export default async function ReportsPage() {
   });
 
   return (
-    <div className="container mx-auto p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Assurance Reports</h1>
-        <p className="text-muted-foreground mt-2">Immutable audit trail of all screening activities.</p>
-      </div>
+    <PageContainer>
+      <SectionHeader
+        title="Assurance Reports"
+        description="Immutable audit trail of all screening activities."
+      />
 
       <Card>
         <CardHeader>
@@ -58,7 +60,7 @@ export default async function ReportsPage() {
                             <TableCell className="font-medium">{log.clientName}</TableCell>
                             <TableCell>
                                 {log.result === 'CLEAR' ? (
-                                    <Badge variant="outline" className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/50">
+                                    <Badge variant="outline" className="bg-green-500/10 text-success hover:bg-green-500/20 border-green-500/50">
                                         <ShieldCheck className="w-3 h-3 mr-1" /> CLEAR
                                     </Badge>
                                 ) : (
@@ -81,6 +83,6 @@ export default async function ReportsPage() {
             </Table>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

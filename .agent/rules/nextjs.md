@@ -1,56 +1,16 @@
 ---
 trigger: always_on
-description: -  You are an expert full-stack developer proficient in TypeScript, React, Next.js, and modern UI/UX frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI). Your task is to produce the most optimized and maintainable Next.js code, following best practi
 ---
 
-# description:
--  You are an expert full-stack developer proficient in TypeScript, React, Next.js, and modern UI/UX frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI). Your task is to produce the most optimized and maintainable Next.js code, following best practices and adhering to the principles of clean code and robust architecture.
-
-### PACKAGEM MANAGER: `bun` is the only valid package manager you may use
-
-`bun i`
-`bun run dev`
-`bun run lint`
-`bun run build`
-
-    ### Code Style and Structure
-    - Write concise, technical TypeScript code 
-    - Use functional and declarative programming patterns; avoid classes.
-    - Favor iteration and modularization over code duplication.
-    - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
-    - Structure files with exported components, subcomponents, helpers, static content, and types.
-    - Use lowercase with dashes for directory names (e.g., `components/auth-wizard`).
-
-    ### Optimization and Best Practices
-    - Minimize the use of `'use client'`, `useEffect`, and `setState`; favor React Server Components (RSC) and Next.js SSR features.
-    - Implement dynamic imports for code splitting and optimization.
-    - Use responsive design with a mobile-first approach.
-    - Optimize images: use WebP format, include size data, implement lazy loading.
-
-    ### Error Handling and Validation
-    - Prioritize error handling and edge cases:
-      - Use early returns for error conditions.
-      - Implement guard clauses to handle preconditions and invalid states early.
-      - Use custom error types for consistent error handling.
-
-    ### UI and Styling
-    - Use modern UI frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI) for styling.
-    - Implement consistent design and responsive patterns across platforms.
-
-    ### State Management and Data Fetching
-    - Use modern state management solutions (e.g., Zustand, TanStack React Query) to handle global state and data fetching.
-    - Implement validation using Zod for schema validation.
-
-    ### Security and Performance
-    - Implement proper error handling, user input validation, and secure coding practices.
-    - Follow performance optimization techniques, such as reducing load times and improving rendering efficiency.
-
-
-### How to use Next.js as a backend for your frontend
+# How to use Next.js as a backend for your frontend
 @doc-version: 16.1.3
+@last-updated: 2025-10-17
 
 
 Next.js supports the "Backend for Frontend" pattern. This lets you create public endpoints to handle HTTP requests and return any content type—not just HTML. You can also access data sources and perform side effects like updating remote data.
+
+If you are starting a new project, using `create-next-app` with the `--api` flag automatically includes an example `route.ts` in your new project’s `app/` folder, demonstrating how to create an API endpoint.
+
 
 
 > **Good to know**: Next.js backend capabilities are not a full backend replacement. They serve as an API layer that:
@@ -365,4 +325,71 @@ export async function POST(request) {
 
 ## Proxying to a backend
 
-You can use a Route Handle
+You can use a Route Handler as a `proxy` to another backend. Add validation logic before forwarding the request.
+
+```ts filename="/app/api/[...slug]/route.ts" switcher
+import { isValidRequest } from '@/lib/utils'
+
+export async function POST(request: Request, { params }) {
+  const clonedRequest = request.clone()
+  const isValid = await isValidRequest(clonedRequest)
+
+  if (!isValid) {
+    return new Response(null, { status: 400, statusText: 'Bad Request' })
+  }
+
+  const { slug } = await params
+  const pathname = slug.join('/')
+  const proxyURL = new URL(pathname, 'https://nextjs.org')
+  const proxyRequest = new Request(proxyURL, request)
+
+  try {
+    return fetch(proxyRequest)
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : 'Unexpected exception'
+
+    return new Response(message, { status: 500 })
+  }
+}
+```
+
+```js filename="/app/api/[...slug]/route.js" switcher
+import { isValidRequest } from '@/lib/utils'
+
+export async function POST(request, { params }) {
+  const clonedRequest = request.clone()
+  const isValid = await isValidRequest(clonedRequest)
+
+  if (!isValid) {
+    return new Response(null, { status: 400, statusText: 'Bad Request' })
+  }
+
+  const { slug } = await params
+  const pathname = slug.join('/')
+  const proxyURL = new URL(pathname, 'https://nextjs.org')
+  const proxyRequest = new Request(proxyURL, request)
+
+  try {
+    return fetch(proxyRequest)
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : 'Unexpected exception'
+
+    return new Response(message, { status: 500 })
+  }
+}
+```
+
+Or use:
+
+* `proxy` [rewrites](#proxy)
+* [`rewrites`](/docs/app/api-reference/config/next-config-js/rewrites.md) in `next.config.js`.
+
+## NextRequest and NextResponse
+
+Next.js extends the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) and [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) Web APIs with methods that simplify common operations. These extensions are available in both Route Handlers and Proxy.
+
+Both provide methods for reading and manipulating cookies.
+
+`NextRequest` includes the [`nextUrl`](/docs/app/api-reference/functions/next-request.md#nexturl) property, which exposes parsed values from the incoming request, for examp

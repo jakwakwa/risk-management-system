@@ -2,8 +2,7 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
-	CardTitle,
-	CardDescription,
+	CardTitle
 } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { bqClient } from "@/lib/bigquery";
@@ -12,8 +11,10 @@ import { RiskHeatmap } from "@/components/risk-heatmap";
 import { TransactionTrends } from "@/components/charts/transaction-trends";
 import { RiskAlerts } from "@/components/risk-alerts";
 import { MonthlyComparisonTable } from "@/components/charts/monthly-comparison-table";
-import { ClientsTable } from "@/components/clients-table";
 import { getDashboardData } from "@/app/actions/dashboard";
+import { PageContainer } from '@/components/shared/page-container';
+import { SectionHeader } from '@/components/shared/section-header';
+import { ClientsTable } from '@/components/clients-table';
 
 export default async function DashboardPage() {
 	// 0. Fetch Dashboard Core Data (Clients, etc)
@@ -82,13 +83,11 @@ export default async function DashboardPage() {
 	}
 
 	return (
-		<div className="container mx-auto p-8 space-y-8">
-			<div>
-				<h1 className="text-4xl font-bold tracking-tight">Risk Analysis Engine</h1>
-				<p className="text-muted-foreground mt-2 text-lg">
-					Operational Overview & Risk Signals
-				</p>
-			</div>
+		<PageContainer>
+			<SectionHeader
+				title="Risk Analysis Engine"
+				description="Operational Overview & Risk Signals"
+			/>
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				<Card>
@@ -124,10 +123,10 @@ export default async function DashboardPage() {
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">System Status</CardTitle>
-						<ShieldCheck className="h-4 w-4 text-green-500" />
+						<ShieldCheck className="h-4 w-4 text-success" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold text-green-500">Operational</div>
+						<div className="text-2xl font-bold text-success">Operational</div>
 						<p className="text-xs text-muted-foreground">BigQuery ML Active</p>
 					</CardContent>
 				</Card>
@@ -157,6 +156,6 @@ export default async function DashboardPage() {
 			<div className="grid gap-4">
 				<ClientsTable clients={clients} />
 			</div>
-		</div>
+		</PageContainer>
 	);
 }
