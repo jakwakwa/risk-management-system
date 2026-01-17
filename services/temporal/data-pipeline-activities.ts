@@ -1,123 +1,100 @@
-
-import { bqClient, BQ_TABLES } from '@/lib/bigquery';
-import { db } from '@/lib/db';
+import { bqClient } from '@/lib/bigquery';
+import { prisma } from '@/lib/prisma';
 import { Context } from '@temporalio/activity';
 
-// Types
-interface Transaction {
-  id: string;
-  amount: number;
-  status: string;
-  transactionDate: string; // ISO
-  clientId: string;
-  metadata?: any;
-}
-
-export interface EtlResult {
-  count: number;
-  status: 'SUCCESS' | 'FAILURE' | 'PARTIAL';
-  error?: string;
-}
-
 // =================================================================================================
-// ETL Activities
+// 🧠 ORCHESTRATION ACTIVITIES (Triggering Cloud AI)
 // =================================================================================================
 
-export async function fetchPreviousDayTransactions(): Promise<Transaction[]> {
-  // TODO: Connect to actual "Turso" or Operational DB.
-  // For now, we simulate fetching from an external source or a local raw table.
-  // If Turso is used, we'd need @libsql/client. 
-  
-  Context.current().log.info('Fetching transactions from Operational DB (Mock/Turso)...');
-  
-  // Mock data for demonstration
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  
-  return [
-    {
-      id: 'tx_mock_1',
-      amount: 100.50,
-      status: 'PAID',
-      transactionDate: yesterday.toISOString(),
-      clientId: 'client_123',
-    },
-    {
-      id: 'tx_mock_2',
-      amount: 2500.00,
-      status: 'PAID',
-      transactionDate: yesterday.toISOString(),
-      clientId: 'client_456',
-    }
-  ];
-}
+/**
+ * 1. Triggers the BigQuery ML job.
+ * We do NOT pull raw data here. We tell BigQuery to run the model on the data we just ingested.
+ */
+export async function runBigQueryMLAnalysis(timeWindowHours: number = 24): Promise<string> {
+  const jobId = `analysis-${Date.now()}`;
+  Context.current().log.info(`🚀 Triggering BigQuery ML Job: ${jobId}`);
 
-export async function transformToBigQuerySchema(rawTransactions: Transaction[]): Promise<any[]> {
-  return rawTransactions.map(t => ({
-    amount: t.amount,
-    status: t.status,
-    transactionDate: t.transactionDate, // BQ expects ISO string or specialized format
-    client_id: t.clientId, // Logic to map string clientId to BQ integer ID might be needed
-    ingested_at: new Date().toISOString(),
-    metadata: JSON.stringify(t.metadata || {}),
-  }));
-}
+  // This SQL runs entirely inside Google Cloud.
+  // It uses your ML model to detect anomalies on the 'TRANSACTIONS' table.
+  // We write the results to a temporary 'ANOMALIES_DAILY' table.
+  const query = `
+    CREATE OR REPLACE TABLE \`stratcol-risk-analysis-engine.risk_analysis_engine.ANOMALIES_DAILY\` AS
+    SELECT *
+    FROM ML.DETECT_ANOMALIES(
+      MODEL \`stratcol-risk-analysis-engine.risk_analysis_engine.transaction_volume_model\`,
+      STRUCT(${1 - 0.05} AS contamination),
+      (
+        SELECT identifier, raw_amount, created_at
+        FROM \`stratcol-risk-analysis-engine.risk_analysis_engine.transactions\`
+        WHERE created_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${timeWindowHours} HOUR)
+      )
+    )
+    WHERE is_anomaly = TRUE;
+  `;
 
-export async function loadToBigQuery(rows: any[]): Promise<void> {
-  if (rows.length === 0) return;
-  
-  const [datasetId, tableId] = BQ_TABLES.TRANSACTIONS.split('.').slice(1); // Assuming dataset.table format
-  // Adjust based on how BQ_TABLES is defined (project.dataset.table or dataset.table)
-  // safe parse
-  const tableRef = bqClient.dataset(datasetId || 'risk_analysis_engine').table(tableId || 'transactions');
-  
   try {
-    await tableRef.insert(rows);
-    Context.current().log.info(`Inserted ${rows.length} rows into BigQuery.`);
-  } catch (e) {
-    Context.current().log.error('BigQuery Insert Failed', { error: e });
-    throw e;
+    // We start the job and wait for BQ to finish the heavy lifting
+    const [job] = await bqClient.createQueryJob({ query, location: 'US' });
+    Context.current().log.info(`Job ${job.id} started. Waiting for BQML completion...`);
+
+    await job.getQueryResults(); // Waits for completion
+
+    Context.current().log.info(`✅ BQML Analysis Complete.`);
+    return job.id || 'unknown';
+  } catch (error) {
+    Context.current().log.error('❌ BQML Job Failed', { error });
+    throw error;
   }
 }
 
-// =================================================================================================
-// Inference Activities
-// =================================================================================================
+/**
+ * 2. Fetches ONLY the anomalies found by the ML model.
+ * This ensures we only move "interesting" data over the network, not the bulk data.
+ */
+export async function fetchDetectedAnomalies(): Promise<any[]> {
+  const query = `
+    SELECT identifier, raw_amount, anomaly_probability, created_at
+    FROM \`stratcol-risk-analysis-engine.risk_analysis_engine.ANOMALIES_DAILY\`
+    ORDER BY anomaly_probability DESC
+    LIMIT 100
+  `;
 
-export async function runBatchInference(): Promise<any> {
-    Context.current().log.info('Running Daily Batch Inference on BigQuery...');
-
-    // 1. Run BQ Query to get features for all active clients
-    // 2. Send to Vertex AI (or use BQ ML PREDICT)
-    // 3. Store results in Postgres `RiskProfile`
-    
-    // Simulating the process:
-    const query = `
-        SELECT * FROM \`${BQ_TABLES.CLIENT_BEHAVIOUR_PROFILES}\`
-        WHERE month = DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH)
-    `;
-    Context.current().log.info(`Simulated Query: ${query}`);
-    
-    // In a real implementation:
-    const [rows] = await bqClient.query(query);
-    Context.current().log.info(`Batch Inference: Fetched ${rows.length} client profiles.`);
-    
-    // For each row -> predict -> save
-    // TODO: Implement actual Vertex AI prediction loop here.
-    
-    return { processed: rows.length, alerts: 0 };
+  const [rows] = await bqClient.query(query);
+  Context.current().log.info(`🔎 Found ${rows.length} confirmed anomalies from ML Engine.`);
+  return rows;
 }
 
-export async function sendSlackAlert(message: string): Promise<void> {
-    const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-    if (!webhookUrl) {
-        Context.current().log.warn('No SLACK_WEBHOOK_URL configured.');
-        return;
+/**
+ * 3. Operationalize: Create cases in Postgres for the human team.
+ */
+export async function createRiskCases(anomalies: any[]): Promise<void> {
+  if (anomalies.length === 0) return;
+
+  Context.current().log.info(`📝 Creating ${anomalies.length} Risk Cases in Dashboard...`);
+
+  for (const anomaly of anomalies) {
+    // Idempotency: Ensure we don't create duplicate cases for the same anomaly event
+    // Using a composite key of identifier + timestamp
+    const caseId = `CASE-${anomaly.identifier}-${new Date(anomaly.created_at.value).getTime()}`;
+
+    // Check local Postgres via Prisma
+    const existing = await prisma.sandbox.findUnique({ where: { alert_id: caseId } });
+
+    if (!existing) {
+        await prisma.sandbox.create({
+        data: {
+            alert_id: caseId,
+            // Storing the anomaly details in the JSON payload
+            payload: {
+              type: 'ML_ANOMALY',
+              confidence: anomaly.anomaly_probability,
+              raw_amount: anomaly.raw_amount,
+              status: 'OPEN',
+              detected_by: 'VertexAI/BQML',
+              timestamp: anomaly.created_at.value
+            }
+        }
+        });
     }
-    
-    await fetch(webhookUrl, {
-        method: 'POST',
-        body: JSON.stringify({ text: message }),
-        headers: { 'Content-Type': 'application/json' }
-    });
+  }
 }

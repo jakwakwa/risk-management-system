@@ -1,37 +1,28 @@
-
 import { proxyActivities } from '@temporalio/workflow';
+// Import the TYPE of your new activities
 import type * as activities from './data-pipeline-activities';
 
-const { 
-  fetchPreviousDayTransactions, 
-  transformToBigQuerySchema, 
-  loadToBigQuery,
-  runBatchInference,
-  sendSlackAlert
+const {
+  runBigQueryMLAnalysis,
+  fetchDetectedAnomalies,
+  createRiskCases
 } = proxyActivities<typeof activities>({
-  startToCloseTimeout: '1 hour',
+  startToCloseTimeout: '5 minutes', // Give BQ time to run the model
 });
 
-export async function DailyEtlWorkflow(): Promise<string> {
-  const transactions = await fetchPreviousDayTransactions();
-  
-  if (transactions.length === 0) {
-      return 'No transactions to process.';
+export async function runAnomalyAnalysisWorkflow(): Promise<string> {
+  // 1. Orchestrate: Tell BigQuery to run the ML job
+  // We scan the last 24 hours by default
+  const jobId = await runBigQueryMLAnalysis(24);
+
+  // 2. Retrieve: Get only the flagged anomalies
+  const anomalies = await fetchDetectedAnomalies();
+
+  // 3. Operationalize: Create cases if anomalies exist
+  if (anomalies.length > 0) {
+    await createRiskCases(anomalies);
+    return `Analysis Complete. Job ${jobId}. Anomalies detected: ${anomalies.length}`;
   }
 
-  const bqRows = await transformToBigQuerySchema(transactions);
-  await loadToBigQuery(bqRows);
-
-  return `Successfully processed ${bqRows.length} transactions.`;
-}
-
-export async function DailyInferenceWorkflow(): Promise<string> {
-    const result = await runBatchInference();
-    
-    // Example Alert Logic
-    if (result.alerts > 0) {
-        await sendSlackAlert(`⚠️ High Risk Alert: ${result.alerts} clients flagged in daily batch.`);
-    }
-
-    return `Inference complete. Processed: ${result.processed}, Alerts: ${result.alerts}`;
+  return `Analysis Complete. Job ${jobId}. No anomalies found.`;
 }
