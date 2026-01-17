@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { type DashboardAlert } from "@/app/actions/dashboard";
+import type { DashboardAlert } from "@/app/actions/dashboard";
 
 interface AlertProps {
 	alerts: DashboardAlert[];
@@ -20,7 +20,7 @@ export function RiskAlerts({ alerts }: AlertProps) {
 	}
 
 	return (
-		<Card>
+		<Card className="max-h-[calc(100vh-20rem)] overflow-y-scroll">
 			<CardHeader>
 				<CardTitle>Recent Alerts</CardTitle>
 			</CardHeader>

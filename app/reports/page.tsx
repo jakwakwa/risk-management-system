@@ -37,7 +37,7 @@ export default async function ReportsIndexPage() {
 		<PageContainer>
 			<SectionHeader title={title} description={description} />
 
-			<Card className="border-border bg-card/50">
+			<Card className="border-border bg-card">
 				<CardHeader>
 					<CardTitle>{recentRuns.title}</CardTitle>
 					<CardDescription>{recentRuns.description}</CardDescription>

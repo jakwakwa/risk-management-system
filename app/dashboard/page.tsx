@@ -1,9 +1,4 @@
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { bqClient } from "@/lib/bigquery";
 import { ShieldCheck, Activity, Users, AlertCircle } from "lucide-react";
@@ -12,9 +7,9 @@ import { TransactionTrends } from "@/components/charts/transaction-trends";
 import { RiskAlerts } from "@/components/risk-alerts";
 import { MonthlyComparisonTable } from "@/components/charts/monthly-comparison-table";
 import { getDashboardData } from "@/app/actions/dashboard";
-import { PageContainer } from '@/components/shared/page-container';
-import { SectionHeader } from '@/components/shared/section-header';
-import { ClientsTable } from '@/components/clients-table';
+import { PageContainer } from "@/components/shared/page-container";
+import { SectionHeader } from "@/components/shared/section-header";
+import { ClientsTable } from "@/components/clients-table";
 
 export default async function DashboardPage() {
 	// 0. Fetch Dashboard Core Data (Clients, etc)

@@ -32,11 +32,10 @@ const comparisonData = [
 
 export function MonthlyComparisonTable() {
 	return (
-		<Card className="text-muted-foreground">
-		
-				<CardHeader>
-						<CardTitle className="text-foreground">Industry Distribution</CardTitle>
-				
+		<Card className="text-muted-foreground rounded-b-none">
+			<CardHeader>
+				<CardTitle className="text-foreground">Industry Distribution</CardTitle>
+
 				<CardDescription>
 					Key metrics comparison between current and previous month
 				</CardDescription>

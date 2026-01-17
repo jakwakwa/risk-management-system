@@ -35,7 +35,7 @@ const data = [
 
 export function DisputeBounceChart() {
 	return (
-		<Card className="px-px">
+		<Card className="px-px rounded-t-none">
 			<CardHeader>
 				<CardTitle className="text-foreground">Dispute & Bounce Rate Analysis</CardTitle>
 				<CardDescription>Monthly dispute and bounce rate percentages</CardDescription>
@@ -45,30 +45,31 @@ export function DisputeBounceChart() {
 					config={{
 						disputeRate: {
 							label: "Dispute Rate (%)",
-							color: "hsl(var(--chart-3))",
+							color: "var(--chart-1)",
 						},
 						bounceRate: {
 							label: "Bounce Rate (%)",
-							color: "hsl(var(--chart-4))",
+							color: "var(--chart-2)",
 						},
 					}}
 					className="h-[350px] w-full border rounded-3xl px-1.5 py-3.5 border-input shadow-lg">
 					<ResponsiveContainer width="100%" height="100%">
-						<BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-							<CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+						<BarChart data={data} margin={{ top: 5, right: 1, left: 1, bottom: 5 }}>
+							<CartesianGrid strokeDasharray="3 3" className="stroke-black" />
 							<XAxis dataKey="month" className="text-xs" />
 							<YAxis className="text-xs" />
 							<ChartTooltip content={<ChartTooltipContent labelKey="month" />} />
 							<Legend />
 							<Bar
 								dataKey="disputeRate"
-								fill="var(--color-disputeRate)"
+								// fill="var(--color-chart-3)"
+								fill="var(--color-zinc-900)"
 								radius={[4, 4, 0, 0]}
 								name="Dispute Rate (%)"
 							/>
 							<Bar
 								dataKey="bounceRate"
-								fill="var(--color-bounceRate)"
+								fill="var(--color-zinc-800)"
 								radius={[4, 4, 0, 0]}
 								name="Bounce Rate (%)"
 							/>

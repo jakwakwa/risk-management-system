@@ -1,28 +1,71 @@
 "use client";
 
-import { Search, Bell, Settings } from "lucide-react";
+import {
+	Search,
+	Bell,
+	Settings,
+	Calendar,
+	ClipboardList,
+	FileText,
+	LayoutDashboard,
+	HomeIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export function DashboardHeader() {
 	return (
-		<header className="border-b border-border bg-accent-foreground">
-			<div className="container mx-auto flex h-16 items-center justify-between px-6 text-secondary">
-				<div className="flex items-center gap-8 text-background">
-					<h1 className="text-xl font-semibold text-card">StratCol Risk</h1>
-					<nav className="hidden md:flex items-center gap-6">
-						<a href="/" className="text-sm font-medium text-primary">
-							Overview
-						</a>
-						<a href="/clients" className="text-sm hover:text-foreground text-secondary">
+		<header className="border-b border-border bg-accent-foreground w-screen">
+			<div className=" mx-auto flex h-16 items-center justify-between px-6 text-secondary">
+				<div className="flex items-center gap-2 text-background">
+					<nav className="hidden md:flex items-center gap-2">
+						<Link href="/" className="text-sm font-medium text-primary">
+							<Button variant="ghost" className="w-full justify-start">
+								<HomeIcon className="w-4 h-4 mr-2" />
+							</Button>
+						</Link>
+						{/* <Link
+							href="/clients"
+							className="text-sm hover:text-foreground text-secondary">
 							Clients
-						</a>
-						<a href="/analytics" className="text-sm hover:text-foreground text-secondary">
+						</Link> */}
+						<Link
+							href="/analytics"
+							className="text-sm hover:text-foreground text-secondary">
 							Analytics
-						</a>
-						<a href="/reports" className="text-sm hover:text-foreground text-secondary">
-							Reports
-						</a>
+						</Link>
+
+						<Link href="/dashboard">
+							<Button variant="ghost" className="w-full justify-start">
+								<LayoutDashboard className="w-4 h-4 mr-2" />
+								Anamolies
+							</Button>
+						</Link>
+						<Link href="/dashboard/manual-screening">
+							<Button variant="ghost" className="w-full justify-start">
+								<ClipboardList className="w-4 h-4 mr-2" />
+								Screening
+							</Button>
+						</Link>
+						<Link href="/schedules">
+							<Button variant="ghost" className="w-full justify-start">
+								<Calendar className="w-4 h-4 mr-2" />
+								Schedules
+							</Button>
+						</Link>
+						<Link href="/reports">
+							<Button variant="ghost" className="w-full justify-start">
+								<FileText className="w-4 h-4 mr-2" />
+								Reports
+							</Button>
+						</Link>
+						{/* <Link href="/settings">
+							<Button variant="ghost" className="w-full justify-start">
+								<Settings className="w-4 h-4 mr-2" />
+								Engine Tuning
+							</Button>
+						</Link> */}
 					</nav>
 				</div>
 				<div className="flex items-center gap-4">

@@ -5,7 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo } from "react";
-import { Search, ArrowUpDown, Filter, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
+import {
+	Search,
+	ArrowUpDown,
+	Filter,
+	ChevronRight,
+	ArrowUp,
+	ArrowDown,
+} from "lucide-react";
 
 import type { DashboardClient } from "@/app/actions/dashboard";
 
@@ -56,7 +63,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 		if (searchQuery) {
 			const query = searchQuery.toLowerCase();
 			items = items.filter(
-				(client) =>
+				client =>
 					client.name.toLowerCase().includes(query) ||
 					client.industry.toLowerCase().includes(query)
 			);
@@ -109,12 +116,12 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 						<Input
 							placeholder="Search clients..."
 							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="w-64 pl-10 rounded-xl shadow-md bg-sidebar-accent text-accent-foreground"
+							onChange={e => setSearchQuery(e.target.value)}
+							className="w-64 pl-10 rounded-xl shadow-md bg-input text-input-foreground"
 						/>
 					</div>
 					<Button
-						className="bg-muted-foreground rounded-lg border-none shadow-sm"
+						className="bg-sidebar text-muted-foreground rounded-lg border-none shadow-sm"
 						variant="outline"
 						size="icon">
 						<Filter className="h-4 w-4" />
@@ -195,7 +202,9 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 								className="border-b border-border hover:bg-accent/50 transition-colors cursor-pointer">
 								<td className="p-4">
 									<div>
-										<p className="font-medium text-muted-foreground text-xs">{client.name}</p>
+										<p className="font-medium text-muted-foreground text-xs">
+											{client.name}
+										</p>
 										<Badge
 											variant={getRiskColor(client.riskTier)}
 											className="bg-card text-sidebar-ring border-input rounded-3xl py-0 mt-1.5 text-xs text-center leading-4">
@@ -257,12 +266,17 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 				</table>
 			</div>
 			<div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-				<p className="text-sm text-muted">Showing {filteredAndSortedClients.length} of {clients.length} clients</p>
+				<p className="text-sm text-foreground-muted/30">
+					Showing {filteredAndSortedClients.length} of {clients.length} clients
+				</p>
 				<div className="flex items-center gap-2">
 					<Button className="bg-card" variant="outline" size="sm">
 						Previous
 					</Button>
-					<Button className="bg-muted-foreground rounded-lg" variant="outline" size="sm">
+					<Button
+						className="bg-primary text-primary-foreground rounded-lg"
+						variant="outline"
+						size="sm">
 						Next
 					</Button>
 				</div>
