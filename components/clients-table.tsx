@@ -4,9 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowUpDown, Filter, ChevronRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Search, ArrowUpDown, Filter, ChevronRight, ArrowUp, ArrowDown } from "lucide-react";
 
-import { type DashboardClient } from "@/app/actions/dashboard";
+import type { DashboardClient } from "@/app/actions/dashboard";
 
 function getRiskColor(tier: string) {
 	switch (tier.toLowerCase()) {
@@ -34,6 +35,68 @@ interface ClientsTableProps {
 }
 
 export function ClientsTable({ clients }: ClientsTableProps) {
+	const [sortConfig, setSortConfig] = useState<{
+		key: keyof DashboardClient | null;
+		direction: "asc" | "desc";
+	}>({ key: null, direction: "asc" });
+	const [searchQuery, setSearchQuery] = useState("");
+
+	const requestSort = (key: keyof DashboardClient) => {
+		let direction: "asc" | "desc" = "asc";
+		if (sortConfig.key === key && sortConfig.direction === "asc") {
+			direction = "desc";
+		}
+		setSortConfig({ key, direction });
+	};
+
+	const filteredAndSortedClients = useMemo(() => {
+		let items = [...clients];
+
+		// Filter
+		if (searchQuery) {
+			const query = searchQuery.toLowerCase();
+			items = items.filter(
+				(client) =>
+					client.name.toLowerCase().includes(query) ||
+					client.industry.toLowerCase().includes(query)
+			);
+		}
+
+		// Sort
+		if (sortConfig.key) {
+			items.sort((a, b) => {
+				const aValue = a[sortConfig.key!];
+				const bValue = b[sortConfig.key!];
+
+				if (sortConfig.key === "monthlyVolume") {
+					// Parse Rxx.xK format for numeric sorting
+					const aNum = parseFloat(String(aValue).replace(/[R,K]/g, "")) || 0;
+					const bNum = parseFloat(String(bValue).replace(/[R,K]/g, "")) || 0;
+					return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
+				}
+
+				if (aValue < bValue) {
+					return sortConfig.direction === "asc" ? -1 : 1;
+				}
+				if (aValue > bValue) {
+					return sortConfig.direction === "asc" ? 1 : -1;
+				}
+				return 0;
+			});
+		}
+
+		return items;
+	}, [clients, sortConfig, searchQuery]);
+
+	const getSortIcon = (key: keyof DashboardClient) => {
+		if (sortConfig.key !== key) return <ArrowUpDown className="ml-2 h-3 w-3" />;
+		return sortConfig.direction === "asc" ? (
+			<ArrowUp className="ml-2 h-3 w-3 text-primary" />
+		) : (
+			<ArrowDown className="ml-2 h-3 w-3 text-primary" />
+		);
+	};
+
 	return (
 		<Card className="p-6 px-[26px] mx-0 rounded-3xl">
 			<div className="flex items-center justify-between mb-6">
@@ -45,6 +108,8 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 						<Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-chart-2" />
 						<Input
 							placeholder="Search clients..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
 							className="w-64 pl-10 rounded-xl shadow-md bg-sidebar-accent text-accent-foreground"
 						/>
 					</div>
@@ -64,57 +129,67 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("name")}
 									className="-ml-3 font-medium text-muted-foreground w-auto border rounded-none px-1 py-0 my-px mx-0 border-none font-sans text-xs h-[19px] text-left">
 									Client Name
-									<ArrowUpDown className="ml-2 h-3 w-3" />
+									{getSortIcon("name")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("industry")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Industry
+									{getSortIcon("industry")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("riskScore")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Risk Score
-									<ArrowUpDown className="ml-2 h-3 w-3" />
+									{getSortIcon("riskScore")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("monthlyVolume")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Monthly Volume
+									{getSortIcon("monthlyVolume")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("disputeRate")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Dispute Rate
+									{getSortIcon("disputeRate")}
 								</Button>
 							</th>
 							<th className="pb-3 text-left">
 								<Button
 									variant="ghost"
 									size="sm"
+									onClick={() => requestSort("lastReview")}
 									className="h-8 -ml-3 text-xs font-medium text-muted-foreground">
 									Last Review
+									{getSortIcon("lastReview")}
 								</Button>
 							</th>
 							<th className="pb-3"></th>
 						</tr>
 					</thead>
 					<tbody>
-						{clients.map(client => (
+						{filteredAndSortedClients.map(client => (
 							<tr
 								key={client.id}
 								className="border-b border-border hover:bg-accent/50 transition-colors cursor-pointer">
@@ -182,7 +257,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 				</table>
 			</div>
 			<div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-				<p className="text-sm text-muted">Showing {clients.length} clients</p>
+				<p className="text-sm text-muted">Showing {filteredAndSortedClients.length} of {clients.length} clients</p>
 				<div className="flex items-center gap-2">
 					<Button className="bg-card" variant="outline" size="sm">
 						Previous
