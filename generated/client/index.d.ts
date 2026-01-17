@@ -70,6 +70,24 @@ export type ManualInvestigativeReport = $Result.DefaultSelection<Prisma.$ManualI
 export type Sandbox = $Result.DefaultSelection<Prisma.$SandboxPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const JobType: {
+  CLIENT_MONITORING: 'CLIENT_MONITORING',
+  SYSTEM_ETL: 'SYSTEM_ETL',
+  SYSTEM_INFERENCE: 'SYSTEM_INFERENCE'
+};
+
+export type JobType = (typeof JobType)[keyof typeof JobType]
+
+}
+
+export type JobType = $Enums.JobType
+
+export const JobType: typeof $Enums.JobType
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -1876,6 +1894,7 @@ export namespace Prisma {
 
   export type MonitoringJobMinAggregateOutputType = {
     id: string | null
+    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
@@ -1886,6 +1905,7 @@ export namespace Prisma {
 
   export type MonitoringJobMaxAggregateOutputType = {
     id: string | null
+    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
@@ -1896,6 +1916,7 @@ export namespace Prisma {
 
   export type MonitoringJobCountAggregateOutputType = {
     id: number
+    type: number
     clientName: number
     cronExpression: number
     nextRunAt: number
@@ -1908,6 +1929,7 @@ export namespace Prisma {
 
   export type MonitoringJobMinAggregateInputType = {
     id?: true
+    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
@@ -1918,6 +1940,7 @@ export namespace Prisma {
 
   export type MonitoringJobMaxAggregateInputType = {
     id?: true
+    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
@@ -1928,6 +1951,7 @@ export namespace Prisma {
 
   export type MonitoringJobCountAggregateInputType = {
     id?: true
+    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
@@ -2011,10 +2035,11 @@ export namespace Prisma {
 
   export type MonitoringJobGroupByOutputType = {
     id: string
+    type: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date
-    userId: string
+    userId: string | null
     createdAt: Date
     updatedAt: Date
     _count: MonitoringJobCountAggregateOutputType | null
@@ -2038,6 +2063,7 @@ export namespace Prisma {
 
   export type MonitoringJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
@@ -2051,6 +2077,7 @@ export namespace Prisma {
 
   export type MonitoringJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
@@ -2061,6 +2088,7 @@ export namespace Prisma {
 
   export type MonitoringJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
@@ -2071,6 +2099,7 @@ export namespace Prisma {
 
   export type MonitoringJobSelectScalar = {
     id?: boolean
+    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
@@ -2079,7 +2108,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["monitoringJob"]>
+  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["monitoringJob"]>
   export type MonitoringJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     publicDataAnalyses?: boolean | MonitoringJob$publicDataAnalysesArgs<ExtArgs>
@@ -2096,10 +2125,11 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      type: $Enums.JobType
       clientName: string
       cronExpression: string
       nextRunAt: Date
-      userId: string
+      userId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["monitoringJob"]>
@@ -2528,6 +2558,7 @@ export namespace Prisma {
    */
   interface MonitoringJobFieldRefs {
     readonly id: FieldRef<"MonitoringJob", 'String'>
+    readonly type: FieldRef<"MonitoringJob", 'JobType'>
     readonly clientName: FieldRef<"MonitoringJob", 'String'>
     readonly cronExpression: FieldRef<"MonitoringJob", 'String'>
     readonly nextRunAt: FieldRef<"MonitoringJob", 'DateTime'>
@@ -13584,6 +13615,7 @@ export namespace Prisma {
 
   export const MonitoringJobScalarFieldEnum: {
     id: 'id',
+    type: 'type',
     clientName: 'clientName',
     cronExpression: 'cronExpression',
     nextRunAt: 'nextRunAt',
@@ -13785,6 +13817,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'JobType'
+   */
+  export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobType[]'
+   */
+  export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -13862,10 +13908,11 @@ export namespace Prisma {
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     id?: StringFilter<"MonitoringJob"> | string
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    userId?: StringFilter<"MonitoringJob"> | string
+    userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
@@ -13874,10 +13921,11 @@ export namespace Prisma {
 
   export type MonitoringJobOrderByWithRelationInput = {
     id?: SortOrder
+    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     riskProfile?: RiskProfileOrderByWithRelationInput
@@ -13889,10 +13937,11 @@ export namespace Prisma {
     AND?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    userId?: StringFilter<"MonitoringJob"> | string
+    userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
@@ -13901,10 +13950,11 @@ export namespace Prisma {
 
   export type MonitoringJobOrderByWithAggregationInput = {
     id?: SortOrder
+    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
-    userId?: SortOrder
+    userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: MonitoringJobCountOrderByAggregateInput
@@ -13917,10 +13967,11 @@ export namespace Prisma {
     OR?: MonitoringJobScalarWhereWithAggregatesInput[]
     NOT?: MonitoringJobScalarWhereWithAggregatesInput | MonitoringJobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"MonitoringJob"> | string
+    type?: EnumJobTypeWithAggregatesFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringWithAggregatesFilter<"MonitoringJob"> | string
     cronExpression?: StringWithAggregatesFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
-    userId?: StringWithAggregatesFilter<"MonitoringJob"> | string
+    userId?: StringNullableWithAggregatesFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
   }
@@ -14564,10 +14615,11 @@ export namespace Prisma {
 
   export type MonitoringJobCreateInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
@@ -14576,10 +14628,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedCreateInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
@@ -14588,10 +14641,11 @@ export namespace Prisma {
 
   export type MonitoringJobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
@@ -14600,10 +14654,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
@@ -14612,30 +14667,33 @@ export namespace Prisma {
 
   export type MonitoringJobCreateManyInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type MonitoringJobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MonitoringJobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15352,6 +15410,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15361,6 +15426,21 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type RiskProfileNullableScalarRelationFilter = {
@@ -15374,12 +15454,18 @@ export namespace Prisma {
     none?: PublicDataAnalysisWhereInput
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type PublicDataAnalysisOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type MonitoringJobCountOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
@@ -15390,6 +15476,7 @@ export namespace Prisma {
 
   export type MonitoringJobMaxOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
@@ -15400,6 +15487,7 @@ export namespace Prisma {
 
   export type MonitoringJobMinOrderByAggregateInput = {
     id?: SortOrder
+    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
@@ -15426,6 +15514,16 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15438,6 +15536,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type AuditLogCountOrderByAggregateInput = {
@@ -15526,26 +15642,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type SystemConfigCountOrderByAggregateInput = {
     id?: SortOrder
     key?: SortOrder
@@ -15595,24 +15691,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -16031,8 +16109,16 @@ export namespace Prisma {
     set?: string
   }
 
+  export type EnumJobTypeFieldUpdateOperationsInput = {
+    set?: $Enums.JobType
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type RiskProfileUpdateOneWithoutMonitoringJobNestedInput = {
@@ -16089,10 +16175,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type MonitoringJobCreateNestedOneWithoutRiskProfileInput = {
@@ -16290,6 +16372,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -16299,6 +16388,20 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16329,6 +16432,16 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -16341,47 +16454,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -16410,6 +16482,33 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -16669,10 +16768,11 @@ export namespace Prisma {
 
   export type MonitoringJobCreateWithoutRiskProfileInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
@@ -16680,10 +16780,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedCreateWithoutRiskProfileInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
@@ -16735,10 +16836,11 @@ export namespace Prisma {
 
   export type MonitoringJobUpdateWithoutRiskProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
@@ -16746,10 +16848,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedUpdateWithoutRiskProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
@@ -16902,10 +17005,11 @@ export namespace Prisma {
 
   export type MonitoringJobCreateWithoutPublicDataAnalysesInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
@@ -16913,10 +17017,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedCreateWithoutPublicDataAnalysesInput = {
     id?: string
+    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
-    userId: string
+    userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
@@ -16963,10 +17068,11 @@ export namespace Prisma {
 
   export type MonitoringJobUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
@@ -16974,10 +17080,11 @@ export namespace Prisma {
 
   export type MonitoringJobUncheckedUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput

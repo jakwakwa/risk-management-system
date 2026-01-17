@@ -122,6 +122,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.MonitoringJobScalarFieldEnum = {
   id: 'id',
+  type: 'type',
   clientName: 'clientName',
   cronExpression: 'cronExpression',
   nextRunAt: 'nextRunAt',
@@ -254,7 +255,11 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-
+exports.JobType = exports.$Enums.JobType = {
+  CLIENT_MONITORING: 'CLIENT_MONITORING',
+  SYSTEM_ETL: 'SYSTEM_ETL',
+  SYSTEM_INFERENCE: 'SYSTEM_INFERENCE'
+};
 
 exports.Prisma.ModelName = {
   MonitoringJob: 'MonitoringJob',

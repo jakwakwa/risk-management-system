@@ -9,12 +9,19 @@ datasource db {
   extensions = [pg_trgm, vector]
 }
 
+enum JobType {
+  CLIENT_MONITORING
+  SYSTEM_ETL
+  SYSTEM_INFERENCE
+}
+
 model MonitoringJob {
   id                 String               @id @default(cuid())
+  type               JobType              @default(CLIENT_MONITORING)
   clientName         String
   cronExpression     String
   nextRunAt          DateTime
-  userId             String
+  userId             String? // Optional for System Jobs
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   riskProfile        RiskProfile?
