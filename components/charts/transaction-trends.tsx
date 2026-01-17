@@ -26,6 +26,25 @@ interface TransactionTrendsProps {
     }[];
 }
 
+const CustomYAxisTick = (props: any) => {
+    const { x, y, payload, textAnchor } = props;
+    return (
+        <g transform={`translate(${x},${y})`}>
+            <text 
+                x={0} 
+                y={0} 
+                dy={4} 
+                textAnchor={textAnchor} 
+                fill="text-stone-300" 
+                fontSize={12}
+                className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-2)/80 font-light stroke-1"
+            >
+                <tspan>{payload.value}</tspan>
+            </text>
+        </g>
+    );
+};
+
 export function TransactionTrends({ data }: TransactionTrendsProps) {
 	return (
 		<Card className="col-span-4">
@@ -40,28 +59,28 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 					config={{
 						volume: {
 							label: "Total Value (R)",
-							color: "hsl(var(--chart-1))",
+							color: "var(--chart-1)",
 						},
 						transactions: {
 							label: "Transaction Count",
-							color: "hsl(var(--chart-2))",
+							color: "var(--chart-3)",
 						},
 					}}
-					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-foreground w-full bg-sidebar-border rounded-3xl shadow-lg">
+					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-foreground w-full bg-sidebar rounded-lg shadow-black/50 shadow-xl">
 					<ResponsiveContainer width="100%" height="100%">
 						<LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-							<CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+							<CartesianGrid strokeDasharray="3 3" stroke="var(--chart-5)" />
 							<XAxis dataKey="month" className="text-xs" />
-							<YAxis yAxisId="left" className="text-xs" />
-							<YAxis yAxisId="right" orientation="right" className="text-xs" />
+							<YAxis yAxisId="left" tick={<CustomYAxisTick />} />
+							<YAxis yAxisId="right" orientation="right" tick={<CustomYAxisTick />} />
 							<ChartTooltip content={<ChartTooltipContent labelKey="month" />} />
-							<Legend />
+							<Legend wrapperStyle={{ color: 'var(--chart-3)' }} />
 							<Line
 								yAxisId="left"
 								type="monotone"
 								dataKey="volume"
-								stroke="var(--color-volume)"
-								strokeWidth={2}
+								stroke="var(--chart-1)"
+								strokeWidth={4}
 								dot={{ r: 4 }}
 								name="Total Value"
 							/>
@@ -69,8 +88,8 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 								yAxisId="right"
 								type="monotone"
 								dataKey="transactions"
-								stroke="var(--color-transactions)"
-								strokeWidth={2}
+								stroke="var(--chart-3)"
+								strokeWidth={4}
 								dot={{ r: 4 }}
 								name="Count"
 							/>
