@@ -122,13 +122,13 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.MonitoringJobScalarFieldEnum = {
   id: 'id',
-  type: 'type',
   clientName: 'clientName',
   cronExpression: 'cronExpression',
   nextRunAt: 'nextRunAt',
   userId: 'userId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  type: 'type'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {

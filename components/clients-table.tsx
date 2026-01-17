@@ -6,84 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowUpDown, Filter, ChevronRight } from "lucide-react";
 
-const clients = [
-	{
-		id: 1,
-		name: "Apex Trading Ltd",
-		industry: "Financial Services",
-		riskScore: 78,
-		riskTier: "High",
-		monthlyVolume: "R2.4M",
-		disputeRate: 2.1,
-		bounceRate: 1.8,
-		lastReview: "2025-01-05",
-	},
-	{
-		id: 2,
-		name: "Global Imports Co",
-		industry: "Wholesale",
-		riskScore: 92,
-		riskTier: "Critical",
-		monthlyVolume: "R1.8M",
-		disputeRate: 8.2,
-		bounceRate: 3.4,
-		lastReview: "2025-01-03",
-	},
-	{
-		id: 3,
-		name: "Tech Solutions Inc",
-		industry: "Technology",
-		riskScore: 45,
-		riskTier: "Medium",
-		monthlyVolume: "R3.2M",
-		disputeRate: 1.2,
-		bounceRate: 0.8,
-		lastReview: "2025-01-07",
-	},
-	{
-		id: 4,
-		name: "Metro Services",
-		industry: "Professional Services",
-		riskScore: 68,
-		riskTier: "High",
-		monthlyVolume: "R980K",
-		disputeRate: 3.5,
-		bounceRate: 2.1,
-		lastReview: "2025-01-04",
-	},
-	{
-		id: 5,
-		name: "Retail Partners LLC",
-		industry: "Retail",
-		riskScore: 38,
-		riskTier: "Medium",
-		monthlyVolume: "R1.5M",
-		disputeRate: 1.8,
-		bounceRate: 1.2,
-		lastReview: "2025-01-06",
-	},
-	{
-		id: 6,
-		name: "Digital Marketing Group",
-		industry: "Marketing",
-		riskScore: 22,
-		riskTier: "Low",
-		monthlyVolume: "R650K",
-		disputeRate: 0.5,
-		bounceRate: 0.3,
-		lastReview: "2025-01-08",
-	},
-];
+import { type DashboardClient } from "@/app/actions/dashboard";
 
 function getRiskColor(tier: string) {
-	switch (tier) {
-		case "Critical":
+	switch (tier.toLowerCase()) {
+		case "critical":
 			return "destructive";
-		case "High":
+		case "high":
 			return "secondary";
-		case "Medium":
+		case "medium":
 			return "outline";
-		case "Low":
+		case "low":
 			return "outline";
 		default:
 			return "outline";
@@ -96,7 +29,11 @@ function getRiskScoreColor(score: number) {
 	return "text-success";
 }
 
-export function ClientsTable() {
+interface ClientsTableProps {
+	clients: DashboardClient[];
+}
+
+export function ClientsTable({ clients }: ClientsTableProps) {
 	return (
 		<Card className="p-6 px-[26px] mx-0 rounded-3xl">
 			<div className="flex items-center justify-between mb-6">
@@ -245,7 +182,7 @@ export function ClientsTable() {
 				</table>
 			</div>
 			<div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-				<p className="text-sm text-muted">Showing 6 of 248 clients</p>
+				<p className="text-sm text-muted">Showing {clients.length} clients</p>
 				<div className="flex items-center gap-2">
 					<Button className="bg-card" variant="outline" size="sm">
 						Previous

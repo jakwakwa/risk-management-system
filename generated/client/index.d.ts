@@ -1894,70 +1894,70 @@ export namespace Prisma {
 
   export type MonitoringJobMinAggregateOutputType = {
     id: string | null
-    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    type: $Enums.JobType | null
   }
 
   export type MonitoringJobMaxAggregateOutputType = {
     id: string | null
-    type: $Enums.JobType | null
     clientName: string | null
     cronExpression: string | null
     nextRunAt: Date | null
     userId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    type: $Enums.JobType | null
   }
 
   export type MonitoringJobCountAggregateOutputType = {
     id: number
-    type: number
     clientName: number
     cronExpression: number
     nextRunAt: number
     userId: number
     createdAt: number
     updatedAt: number
+    type: number
     _all: number
   }
 
 
   export type MonitoringJobMinAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
   }
 
   export type MonitoringJobMaxAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
   }
 
   export type MonitoringJobCountAggregateInputType = {
     id?: true
-    type?: true
     clientName?: true
     cronExpression?: true
     nextRunAt?: true
     userId?: true
     createdAt?: true
     updatedAt?: true
+    type?: true
     _all?: true
   }
 
@@ -2035,13 +2035,13 @@ export namespace Prisma {
 
   export type MonitoringJobGroupByOutputType = {
     id: string
-    type: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date
     userId: string | null
     createdAt: Date
     updatedAt: Date
+    type: $Enums.JobType
     _count: MonitoringJobCountAggregateOutputType | null
     _min: MonitoringJobMinAggregateOutputType | null
     _max: MonitoringJobMaxAggregateOutputType | null
@@ -2063,55 +2063,55 @@ export namespace Prisma {
 
   export type MonitoringJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
+    type?: boolean
     publicDataAnalyses?: boolean | MonitoringJob$publicDataAnalysesArgs<ExtArgs>
+    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     _count?: boolean | MonitoringJobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }, ExtArgs["result"]["monitoringJob"]>
 
   export type MonitoringJobSelectScalar = {
     id?: boolean
-    type?: boolean
     clientName?: boolean
     cronExpression?: boolean
     nextRunAt?: boolean
     userId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    type?: boolean
   }
 
-  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["monitoringJob"]>
+  export type MonitoringJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clientName" | "cronExpression" | "nextRunAt" | "userId" | "createdAt" | "updatedAt" | "type", ExtArgs["result"]["monitoringJob"]>
   export type MonitoringJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     publicDataAnalyses?: boolean | MonitoringJob$publicDataAnalysesArgs<ExtArgs>
+    riskProfile?: boolean | MonitoringJob$riskProfileArgs<ExtArgs>
     _count?: boolean | MonitoringJobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MonitoringJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2120,18 +2120,18 @@ export namespace Prisma {
   export type $MonitoringJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "MonitoringJob"
     objects: {
-      riskProfile: Prisma.$RiskProfilePayload<ExtArgs> | null
       publicDataAnalyses: Prisma.$PublicDataAnalysisPayload<ExtArgs>[]
+      riskProfile: Prisma.$RiskProfilePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      type: $Enums.JobType
       clientName: string
       cronExpression: string
       nextRunAt: Date
       userId: string | null
       createdAt: Date
       updatedAt: Date
+      type: $Enums.JobType
     }, ExtArgs["result"]["monitoringJob"]>
     composites: {}
   }
@@ -2526,8 +2526,8 @@ export namespace Prisma {
    */
   export interface Prisma__MonitoringJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    riskProfile<T extends MonitoringJob$riskProfileArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$riskProfileArgs<ExtArgs>>): Prisma__RiskProfileClient<$Result.GetResult<Prisma.$RiskProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     publicDataAnalyses<T extends MonitoringJob$publicDataAnalysesArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$publicDataAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PublicDataAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    riskProfile<T extends MonitoringJob$riskProfileArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJob$riskProfileArgs<ExtArgs>>): Prisma__RiskProfileClient<$Result.GetResult<Prisma.$RiskProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2558,13 +2558,13 @@ export namespace Prisma {
    */
   interface MonitoringJobFieldRefs {
     readonly id: FieldRef<"MonitoringJob", 'String'>
-    readonly type: FieldRef<"MonitoringJob", 'JobType'>
     readonly clientName: FieldRef<"MonitoringJob", 'String'>
     readonly cronExpression: FieldRef<"MonitoringJob", 'String'>
     readonly nextRunAt: FieldRef<"MonitoringJob", 'DateTime'>
     readonly userId: FieldRef<"MonitoringJob", 'String'>
     readonly createdAt: FieldRef<"MonitoringJob", 'DateTime'>
     readonly updatedAt: FieldRef<"MonitoringJob", 'DateTime'>
+    readonly type: FieldRef<"MonitoringJob", 'JobType'>
   }
     
 
@@ -2953,25 +2953,6 @@ export namespace Prisma {
   }
 
   /**
-   * MonitoringJob.riskProfile
-   */
-  export type MonitoringJob$riskProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RiskProfile
-     */
-    select?: RiskProfileSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RiskProfile
-     */
-    omit?: RiskProfileOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RiskProfileInclude<ExtArgs> | null
-    where?: RiskProfileWhereInput
-  }
-
-  /**
    * MonitoringJob.publicDataAnalyses
    */
   export type MonitoringJob$publicDataAnalysesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2993,6 +2974,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PublicDataAnalysisScalarFieldEnum | PublicDataAnalysisScalarFieldEnum[]
+  }
+
+  /**
+   * MonitoringJob.riskProfile
+   */
+  export type MonitoringJob$riskProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskProfile
+     */
+    select?: RiskProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskProfile
+     */
+    omit?: RiskProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RiskProfileInclude<ExtArgs> | null
+    where?: RiskProfileWhereInput
   }
 
   /**
@@ -7280,8 +7280,8 @@ export namespace Prisma {
     volatilityScore?: boolean
     riskScore?: boolean
     lastAnalysed?: boolean
-    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     alerts?: boolean | RiskProfile$alertsArgs<ExtArgs>
+    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     _count?: boolean | RiskProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["riskProfile"]>
 
@@ -7319,8 +7319,8 @@ export namespace Prisma {
 
   export type RiskProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "monitoringJobId" | "bqClientId" | "avgMonthlyVolume" | "volatilityScore" | "riskScore" | "lastAnalysed", ExtArgs["result"]["riskProfile"]>
   export type RiskProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     alerts?: boolean | RiskProfile$alertsArgs<ExtArgs>
+    monitoringJob?: boolean | MonitoringJobDefaultArgs<ExtArgs>
     _count?: boolean | RiskProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RiskProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7333,8 +7333,8 @@ export namespace Prisma {
   export type $RiskProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "RiskProfile"
     objects: {
-      monitoringJob: Prisma.$MonitoringJobPayload<ExtArgs>
       alerts: Prisma.$RiskAlertPayload<ExtArgs>[]
+      monitoringJob: Prisma.$MonitoringJobPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7738,8 +7738,8 @@ export namespace Prisma {
    */
   export interface Prisma__RiskProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    monitoringJob<T extends MonitoringJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJobDefaultArgs<ExtArgs>>): Prisma__MonitoringJobClient<$Result.GetResult<Prisma.$MonitoringJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     alerts<T extends RiskProfile$alertsArgs<ExtArgs> = {}>(args?: Subset<T, RiskProfile$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskAlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    monitoringJob<T extends MonitoringJobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MonitoringJobDefaultArgs<ExtArgs>>): Prisma__MonitoringJobClient<$Result.GetResult<Prisma.$MonitoringJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13615,13 +13615,13 @@ export namespace Prisma {
 
   export const MonitoringJobScalarFieldEnum: {
     id: 'id',
-    type: 'type',
     clientName: 'clientName',
     cronExpression: 'cronExpression',
     nextRunAt: 'nextRunAt',
     userId: 'userId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    type: 'type'
   };
 
   export type MonitoringJobScalarFieldEnum = (typeof MonitoringJobScalarFieldEnum)[keyof typeof MonitoringJobScalarFieldEnum]
@@ -13817,20 +13817,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'JobType'
-   */
-  export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
-    
-
-
-  /**
-   * Reference to a field of type 'JobType[]'
-   */
-  export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -13841,6 +13827,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobType'
+   */
+  export type EnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType'>
+    
+
+
+  /**
+   * Reference to a field of type 'JobType[]'
+   */
+  export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
     
 
 
@@ -13908,28 +13908,28 @@ export namespace Prisma {
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     id?: StringFilter<"MonitoringJob"> | string
-    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisListRelationFilter
+    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
   }
 
   export type MonitoringJobOrderByWithRelationInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    riskProfile?: RiskProfileOrderByWithRelationInput
+    type?: SortOrder
     publicDataAnalyses?: PublicDataAnalysisOrderByRelationAggregateInput
+    riskProfile?: RiskProfileOrderByWithRelationInput
   }
 
   export type MonitoringJobWhereUniqueInput = Prisma.AtLeast<{
@@ -13937,26 +13937,26 @@ export namespace Prisma {
     AND?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
     OR?: MonitoringJobWhereInput[]
     NOT?: MonitoringJobWhereInput | MonitoringJobWhereInput[]
-    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringFilter<"MonitoringJob"> | string
     cronExpression?: StringFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeFilter<"MonitoringJob"> | Date | string
-    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
+    type?: EnumJobTypeFilter<"MonitoringJob"> | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisListRelationFilter
+    riskProfile?: XOR<RiskProfileNullableScalarRelationFilter, RiskProfileWhereInput> | null
   }, "id">
 
   export type MonitoringJobOrderByWithAggregationInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
     _count?: MonitoringJobCountOrderByAggregateInput
     _max?: MonitoringJobMaxOrderByAggregateInput
     _min?: MonitoringJobMinOrderByAggregateInput
@@ -13967,13 +13967,13 @@ export namespace Prisma {
     OR?: MonitoringJobScalarWhereWithAggregatesInput[]
     NOT?: MonitoringJobScalarWhereWithAggregatesInput | MonitoringJobScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"MonitoringJob"> | string
-    type?: EnumJobTypeWithAggregatesFilter<"MonitoringJob"> | $Enums.JobType
     clientName?: StringWithAggregatesFilter<"MonitoringJob"> | string
     cronExpression?: StringWithAggregatesFilter<"MonitoringJob"> | string
     nextRunAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
     userId?: StringNullableWithAggregatesFilter<"MonitoringJob"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"MonitoringJob"> | Date | string
+    type?: EnumJobTypeWithAggregatesFilter<"MonitoringJob"> | $Enums.JobType
   }
 
   export type AuditLogWhereInput = {
@@ -14207,8 +14207,8 @@ export namespace Prisma {
     volatilityScore?: DecimalNullableFilter<"RiskProfile"> | Decimal | DecimalJsLike | number | string | null
     riskScore?: FloatNullableFilter<"RiskProfile"> | number | null
     lastAnalysed?: DateTimeFilter<"RiskProfile"> | Date | string
-    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
     alerts?: RiskAlertListRelationFilter
+    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
   }
 
   export type RiskProfileOrderByWithRelationInput = {
@@ -14219,8 +14219,8 @@ export namespace Prisma {
     volatilityScore?: SortOrderInput | SortOrder
     riskScore?: SortOrderInput | SortOrder
     lastAnalysed?: SortOrder
-    monitoringJob?: MonitoringJobOrderByWithRelationInput
     alerts?: RiskAlertOrderByRelationAggregateInput
+    monitoringJob?: MonitoringJobOrderByWithRelationInput
   }
 
   export type RiskProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -14234,8 +14234,8 @@ export namespace Prisma {
     volatilityScore?: DecimalNullableFilter<"RiskProfile"> | Decimal | DecimalJsLike | number | string | null
     riskScore?: FloatNullableFilter<"RiskProfile"> | number | null
     lastAnalysed?: DateTimeFilter<"RiskProfile"> | Date | string
-    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
     alerts?: RiskAlertListRelationFilter
+    monitoringJob?: XOR<MonitoringJobScalarRelationFilter, MonitoringJobWhereInput>
   }, "id" | "monitoringJobId">
 
   export type RiskProfileOrderByWithAggregationInput = {
@@ -14615,87 +14615,87 @@ export namespace Prisma {
 
   export type MonitoringJobCreateInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
+    type?: $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+    riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUncheckedCreateInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
+    type?: $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+    riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
+    riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
+    riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobCreateManyInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
   }
 
   export type MonitoringJobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
   }
 
   export type MonitoringJobUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
   }
 
   export type AuditLogCreateInput = {
@@ -14943,8 +14943,8 @@ export namespace Prisma {
     volatilityScore?: Decimal | DecimalJsLike | number | string | null
     riskScore?: number | null
     lastAnalysed?: Date | string
-    monitoringJob: MonitoringJobCreateNestedOneWithoutRiskProfileInput
     alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
+    monitoringJob: MonitoringJobCreateNestedOneWithoutRiskProfileInput
   }
 
   export type RiskProfileUncheckedCreateInput = {
@@ -14965,8 +14965,8 @@ export namespace Prisma {
     volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
     lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    monitoringJob?: MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput
     alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
+    monitoringJob?: MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput
   }
 
   export type RiskProfileUncheckedUpdateInput = {
@@ -15410,13 +15410,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type EnumJobTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15443,15 +15436,22 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type RiskProfileNullableScalarRelationFilter = {
-    is?: RiskProfileWhereInput | null
-    isNot?: RiskProfileWhereInput | null
+  export type EnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type PublicDataAnalysisListRelationFilter = {
     every?: PublicDataAnalysisWhereInput
     some?: PublicDataAnalysisWhereInput
     none?: PublicDataAnalysisWhereInput
+  }
+
+  export type RiskProfileNullableScalarRelationFilter = {
+    is?: RiskProfileWhereInput | null
+    isNot?: RiskProfileWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -15465,35 +15465,35 @@ export namespace Prisma {
 
   export type MonitoringJobCountOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type MonitoringJobMaxOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type MonitoringJobMinOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     clientName?: SortOrder
     cronExpression?: SortOrder
     nextRunAt?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    type?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -15512,16 +15512,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumJobTypeFilter<$PrismaModel>
-    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15554,6 +15544,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type AuditLogCountOrderByAggregateInput = {
@@ -15726,15 +15726,15 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type MonitoringJobScalarRelationFilter = {
-    is?: MonitoringJobWhereInput
-    isNot?: MonitoringJobWhereInput
-  }
-
   export type RiskAlertListRelationFilter = {
     every?: RiskAlertWhereInput
     some?: RiskAlertWhereInput
     none?: RiskAlertWhereInput
+  }
+
+  export type MonitoringJobScalarRelationFilter = {
+    is?: MonitoringJobWhereInput
+    isNot?: MonitoringJobWhereInput
   }
 
   export type RiskAlertOrderByRelationAggregateInput = {
@@ -16079,12 +16079,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type RiskProfileCreateNestedOneWithoutMonitoringJobInput = {
-    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
-    connect?: RiskProfileWhereUniqueInput
-  }
-
   export type PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput = {
     create?: XOR<PublicDataAnalysisCreateWithoutMonitoringJobInput, PublicDataAnalysisUncheckedCreateWithoutMonitoringJobInput> | PublicDataAnalysisCreateWithoutMonitoringJobInput[] | PublicDataAnalysisUncheckedCreateWithoutMonitoringJobInput[]
     connectOrCreate?: PublicDataAnalysisCreateOrConnectWithoutMonitoringJobInput | PublicDataAnalysisCreateOrConnectWithoutMonitoringJobInput[]
@@ -16092,7 +16086,7 @@ export namespace Prisma {
     connect?: PublicDataAnalysisWhereUniqueInput | PublicDataAnalysisWhereUniqueInput[]
   }
 
-  export type RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput = {
+  export type RiskProfileCreateNestedOneWithoutMonitoringJobInput = {
     create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
     connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
     connect?: RiskProfileWhereUniqueInput
@@ -16105,12 +16099,14 @@ export namespace Prisma {
     connect?: PublicDataAnalysisWhereUniqueInput | PublicDataAnalysisWhereUniqueInput[]
   }
 
-  export type StringFieldUpdateOperationsInput = {
-    set?: string
+  export type RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput = {
+    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
+    connect?: RiskProfileWhereUniqueInput
   }
 
-  export type EnumJobTypeFieldUpdateOperationsInput = {
-    set?: $Enums.JobType
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -16121,14 +16117,8 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type RiskProfileUpdateOneWithoutMonitoringJobNestedInput = {
-    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
-    upsert?: RiskProfileUpsertWithoutMonitoringJobInput
-    disconnect?: RiskProfileWhereInput | boolean
-    delete?: RiskProfileWhereInput | boolean
-    connect?: RiskProfileWhereUniqueInput
-    update?: XOR<XOR<RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput, RiskProfileUpdateWithoutMonitoringJobInput>, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  export type EnumJobTypeFieldUpdateOperationsInput = {
+    set?: $Enums.JobType
   }
 
   export type PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput = {
@@ -16145,7 +16135,7 @@ export namespace Prisma {
     deleteMany?: PublicDataAnalysisScalarWhereInput | PublicDataAnalysisScalarWhereInput[]
   }
 
-  export type RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput = {
+  export type RiskProfileUpdateOneWithoutMonitoringJobNestedInput = {
     create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
     connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
     upsert?: RiskProfileUpsertWithoutMonitoringJobInput
@@ -16169,6 +16159,16 @@ export namespace Prisma {
     deleteMany?: PublicDataAnalysisScalarWhereInput | PublicDataAnalysisScalarWhereInput[]
   }
 
+  export type RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput = {
+    create?: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    connectOrCreate?: RiskProfileCreateOrConnectWithoutMonitoringJobInput
+    upsert?: RiskProfileUpsertWithoutMonitoringJobInput
+    disconnect?: RiskProfileWhereInput | boolean
+    delete?: RiskProfileWhereInput | boolean
+    connect?: RiskProfileWhereUniqueInput
+    update?: XOR<XOR<RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput, RiskProfileUpdateWithoutMonitoringJobInput>, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -16177,17 +16177,17 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type MonitoringJobCreateNestedOneWithoutRiskProfileInput = {
-    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
-    connect?: MonitoringJobWhereUniqueInput
-  }
-
   export type RiskAlertCreateNestedManyWithoutRiskProfileInput = {
     create?: XOR<RiskAlertCreateWithoutRiskProfileInput, RiskAlertUncheckedCreateWithoutRiskProfileInput> | RiskAlertCreateWithoutRiskProfileInput[] | RiskAlertUncheckedCreateWithoutRiskProfileInput[]
     connectOrCreate?: RiskAlertCreateOrConnectWithoutRiskProfileInput | RiskAlertCreateOrConnectWithoutRiskProfileInput[]
     createMany?: RiskAlertCreateManyRiskProfileInputEnvelope
     connect?: RiskAlertWhereUniqueInput | RiskAlertWhereUniqueInput[]
+  }
+
+  export type MonitoringJobCreateNestedOneWithoutRiskProfileInput = {
+    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
+    connect?: MonitoringJobWhereUniqueInput
   }
 
   export type RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput = {
@@ -16221,14 +16221,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput = {
-    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
-    upsert?: MonitoringJobUpsertWithoutRiskProfileInput
-    connect?: MonitoringJobWhereUniqueInput
-    update?: XOR<XOR<MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput, MonitoringJobUpdateWithoutRiskProfileInput>, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
-  }
-
   export type RiskAlertUpdateManyWithoutRiskProfileNestedInput = {
     create?: XOR<RiskAlertCreateWithoutRiskProfileInput, RiskAlertUncheckedCreateWithoutRiskProfileInput> | RiskAlertCreateWithoutRiskProfileInput[] | RiskAlertUncheckedCreateWithoutRiskProfileInput[]
     connectOrCreate?: RiskAlertCreateOrConnectWithoutRiskProfileInput | RiskAlertCreateOrConnectWithoutRiskProfileInput[]
@@ -16241,6 +16233,14 @@ export namespace Prisma {
     update?: RiskAlertUpdateWithWhereUniqueWithoutRiskProfileInput | RiskAlertUpdateWithWhereUniqueWithoutRiskProfileInput[]
     updateMany?: RiskAlertUpdateManyWithWhereWithoutRiskProfileInput | RiskAlertUpdateManyWithWhereWithoutRiskProfileInput[]
     deleteMany?: RiskAlertScalarWhereInput | RiskAlertScalarWhereInput[]
+  }
+
+  export type MonitoringJobUpdateOneRequiredWithoutRiskProfileNestedInput = {
+    create?: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    connectOrCreate?: MonitoringJobCreateOrConnectWithoutRiskProfileInput
+    upsert?: MonitoringJobUpsertWithoutRiskProfileInput
+    connect?: MonitoringJobWhereUniqueInput
+    update?: XOR<XOR<MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput, MonitoringJobUpdateWithoutRiskProfileInput>, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
   }
 
   export type RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput = {
@@ -16372,13 +16372,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -16402,6 +16395,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeFilter<$PrismaModel> | $Enums.JobType
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16430,16 +16430,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumJobTypeFilter<$PrismaModel>
-    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -16482,6 +16472,16 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumJobTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumJobTypeWithAggregatesFilter<$PrismaModel> | $Enums.JobType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -16629,31 +16629,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type RiskProfileCreateWithoutMonitoringJobInput = {
-    id?: string
-    bqClientId?: number | null
-    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: Decimal | DecimalJsLike | number | string | null
-    riskScore?: number | null
-    lastAnalysed?: Date | string
-    alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
-  }
-
-  export type RiskProfileUncheckedCreateWithoutMonitoringJobInput = {
-    id?: string
-    bqClientId?: number | null
-    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: Decimal | DecimalJsLike | number | string | null
-    riskScore?: number | null
-    lastAnalysed?: Date | string
-    alerts?: RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput
-  }
-
-  export type RiskProfileCreateOrConnectWithoutMonitoringJobInput = {
-    where: RiskProfileWhereUniqueInput
-    create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-  }
-
   export type PublicDataAnalysisCreateWithoutMonitoringJobInput = {
     id?: string
     clientName: string
@@ -16698,35 +16673,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type RiskProfileUpsertWithoutMonitoringJobInput = {
-    update: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+  export type RiskProfileCreateWithoutMonitoringJobInput = {
+    id?: string
+    bqClientId?: number | null
+    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
+    lastAnalysed?: Date | string
+    alerts?: RiskAlertCreateNestedManyWithoutRiskProfileInput
+  }
+
+  export type RiskProfileUncheckedCreateWithoutMonitoringJobInput = {
+    id?: string
+    bqClientId?: number | null
+    avgMonthlyVolume?: Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: Decimal | DecimalJsLike | number | string | null
+    riskScore?: number | null
+    lastAnalysed?: Date | string
+    alerts?: RiskAlertUncheckedCreateNestedManyWithoutRiskProfileInput
+  }
+
+  export type RiskProfileCreateOrConnectWithoutMonitoringJobInput = {
+    where: RiskProfileWhereUniqueInput
     create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
-    where?: RiskProfileWhereInput
-  }
-
-  export type RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput = {
-    where?: RiskProfileWhereInput
-    data: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
-  }
-
-  export type RiskProfileUpdateWithoutMonitoringJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
-    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
-  }
-
-  export type RiskProfileUncheckedUpdateWithoutMonitoringJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
-    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
-    alerts?: RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput
   }
 
   export type PublicDataAnalysisUpsertWithWhereUniqueWithoutMonitoringJobInput = {
@@ -16766,33 +16735,35 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"PublicDataAnalysis"> | Date | string | null
   }
 
-  export type MonitoringJobCreateWithoutRiskProfileInput = {
-    id?: string
-    type?: $Enums.JobType
-    clientName: string
-    cronExpression: string
-    nextRunAt: Date | string
-    userId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+  export type RiskProfileUpsertWithoutMonitoringJobInput = {
+    update: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
+    create: XOR<RiskProfileCreateWithoutMonitoringJobInput, RiskProfileUncheckedCreateWithoutMonitoringJobInput>
+    where?: RiskProfileWhereInput
   }
 
-  export type MonitoringJobUncheckedCreateWithoutRiskProfileInput = {
-    id?: string
-    type?: $Enums.JobType
-    clientName: string
-    cronExpression: string
-    nextRunAt: Date | string
-    userId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+  export type RiskProfileUpdateToOneWithWhereWithoutMonitoringJobInput = {
+    where?: RiskProfileWhereInput
+    data: XOR<RiskProfileUpdateWithoutMonitoringJobInput, RiskProfileUncheckedUpdateWithoutMonitoringJobInput>
   }
 
-  export type MonitoringJobCreateOrConnectWithoutRiskProfileInput = {
-    where: MonitoringJobWhereUniqueInput
-    create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+  export type RiskProfileUpdateWithoutMonitoringJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
+    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
+    alerts?: RiskAlertUpdateManyWithoutRiskProfileNestedInput
+  }
+
+  export type RiskProfileUncheckedUpdateWithoutMonitoringJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bqClientId?: NullableIntFieldUpdateOperationsInput | number | null
+    avgMonthlyVolume?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    volatilityScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    riskScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    lastAnalysed?: DateTimeFieldUpdateOperationsInput | Date | string
+    alerts?: RiskAlertUncheckedUpdateManyWithoutRiskProfileNestedInput
   }
 
   export type RiskAlertCreateWithoutRiskProfileInput = {
@@ -16823,39 +16794,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type MonitoringJobUpsertWithoutRiskProfileInput = {
-    update: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+  export type MonitoringJobCreateWithoutRiskProfileInput = {
+    id?: string
+    clientName: string
+    cronExpression: string
+    nextRunAt: Date | string
+    userId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type?: $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisCreateNestedManyWithoutMonitoringJobInput
+  }
+
+  export type MonitoringJobUncheckedCreateWithoutRiskProfileInput = {
+    id?: string
+    clientName: string
+    cronExpression: string
+    nextRunAt: Date | string
+    userId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type?: $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUncheckedCreateNestedManyWithoutMonitoringJobInput
+  }
+
+  export type MonitoringJobCreateOrConnectWithoutRiskProfileInput = {
+    where: MonitoringJobWhereUniqueInput
     create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
-    where?: MonitoringJobWhereInput
-  }
-
-  export type MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput = {
-    where?: MonitoringJobWhereInput
-    data: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
-  }
-
-  export type MonitoringJobUpdateWithoutRiskProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    clientName?: StringFieldUpdateOperationsInput | string
-    cronExpression?: StringFieldUpdateOperationsInput | string
-    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
-  }
-
-  export type MonitoringJobUncheckedUpdateWithoutRiskProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    clientName?: StringFieldUpdateOperationsInput | string
-    cronExpression?: StringFieldUpdateOperationsInput | string
-    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
   }
 
   export type RiskAlertUpsertWithWhereUniqueWithoutRiskProfileInput = {
@@ -16885,6 +16850,41 @@ export namespace Prisma {
     description?: StringFilter<"RiskAlert"> | string
     metadata?: JsonNullableFilter<"RiskAlert">
     createdAt?: DateTimeFilter<"RiskAlert"> | Date | string
+  }
+
+  export type MonitoringJobUpsertWithoutRiskProfileInput = {
+    update: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+    create: XOR<MonitoringJobCreateWithoutRiskProfileInput, MonitoringJobUncheckedCreateWithoutRiskProfileInput>
+    where?: MonitoringJobWhereInput
+  }
+
+  export type MonitoringJobUpdateToOneWithWhereWithoutRiskProfileInput = {
+    where?: MonitoringJobWhereInput
+    data: XOR<MonitoringJobUpdateWithoutRiskProfileInput, MonitoringJobUncheckedUpdateWithoutRiskProfileInput>
+  }
+
+  export type MonitoringJobUpdateWithoutRiskProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUpdateManyWithoutMonitoringJobNestedInput
+  }
+
+  export type MonitoringJobUncheckedUpdateWithoutRiskProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    cronExpression?: StringFieldUpdateOperationsInput | string
+    nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    publicDataAnalyses?: PublicDataAnalysisUncheckedUpdateManyWithoutMonitoringJobNestedInput
   }
 
   export type RiskProfileCreateWithoutAlertsInput = {
@@ -17005,25 +17005,25 @@ export namespace Prisma {
 
   export type MonitoringJobCreateWithoutPublicDataAnalysesInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
     riskProfile?: RiskProfileCreateNestedOneWithoutMonitoringJobInput
   }
 
   export type MonitoringJobUncheckedCreateWithoutPublicDataAnalysesInput = {
     id?: string
-    type?: $Enums.JobType
     clientName: string
     cronExpression: string
     nextRunAt: Date | string
     userId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    type?: $Enums.JobType
     riskProfile?: RiskProfileUncheckedCreateNestedOneWithoutMonitoringJobInput
   }
 
@@ -17068,25 +17068,25 @@ export namespace Prisma {
 
   export type MonitoringJobUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     riskProfile?: RiskProfileUpdateOneWithoutMonitoringJobNestedInput
   }
 
   export type MonitoringJobUncheckedUpdateWithoutPublicDataAnalysesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     clientName?: StringFieldUpdateOperationsInput | string
     cronExpression?: StringFieldUpdateOperationsInput | string
     nextRunAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
     riskProfile?: RiskProfileUncheckedUpdateOneWithoutMonitoringJobNestedInput
   }
 

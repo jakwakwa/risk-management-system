@@ -1,14 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, AlertTriangle } from 'lucide-react';
+import { formatDistanceToNow } from "date-fns";
+import { type DashboardAlert } from "@/app/actions/dashboard";
 
 interface AlertProps {
-  alerts: {
-    id: string;
-    client: string;
-    description: string;
-    severity: string;
-    time: string;
-  }[]
+	alerts: DashboardAlert[];
 }
 
 export function RiskAlerts({ alerts }: AlertProps) {
@@ -38,7 +34,7 @@ export function RiskAlerts({ alerts }: AlertProps) {
               <div className="space-y-1">
                 <p className="text-sm font-medium leading-none">{alert.client}</p>
                 <p className="text-sm text-muted-foreground">{alert.description}</p>
-                <p className="text-xs text-muted-foreground">{alert.time}</p>
+                <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(alert.time), { addSuffix: true })}</p>
               </div>
             </div>
           ))}

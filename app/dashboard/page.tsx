@@ -12,8 +12,13 @@ import { RiskHeatmap } from "@/components/risk-heatmap";
 import { TransactionTrends } from "@/components/charts/transaction-trends";
 import { RiskAlerts } from "@/components/risk-alerts";
 import { MonthlyComparisonTable } from "@/components/charts/monthly-comparison-table";
+import { ClientsTable } from "@/components/clients-table";
+import { getDashboardData } from "@/app/actions/dashboard";
 
 export default async function DashboardPage() {
+	// 0. Fetch Dashboard Core Data (Clients, etc)
+	const { clients } = await getDashboardData();
+
 	// 1. Fetch Real Counts
 	const totalJobs = await db.monitoringJob.count();
 	// We count 'Sandbox' records that look like 'CASE-%' as our Risk Flags
@@ -146,6 +151,11 @@ export default async function DashboardPage() {
 				<div className="col-span-3">
 					<RiskAlerts alerts={formattedAlerts} />
 				</div>
+			</div>
+
+			{/* Client Overview Section */}
+			<div className="grid gap-4">
+				<ClientsTable clients={clients} />
 			</div>
 		</div>
 	);
