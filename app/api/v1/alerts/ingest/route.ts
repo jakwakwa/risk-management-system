@@ -56,25 +56,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 4. BigQuery Ingestion
-    // Map fields to BigQuery table schema (assuming TRANSACTIONS table compatibility)
-    // Mapping:
-    // raw_amount -> amount
-    // status -> status
-    // createdAt -> transactionDate
-    // identifier -> clientId (Try parse int, store in metadata if fail)
-    
-    const bqRow = {
+    // 4. BigQuery Ingestion (Flattened Payload)
+    const row = {
       alert_id,
       subject_name,
       identifier,
       raw_amount,
       status,
-      created_at: createdAt, // ISO string matches BigQuery TIMESTAMP
+      created_at: bqClient.timestamp(new Date(createdAt)),
+      ingested_at: bqClient.timestamp(new Date()),
     };
 
-    // Extract Dataset and Table from BQ_TABLES.TRANSACTIONS
-    // Format: 'project.dataset.table' or 'dataset.table'
     const parts = BQ_TABLES.TRANSACTIONS.split('.');
     const datasetId = parts.length > 2 ? parts[1] : parts[0];
     const tableId = parts.length > 2 ? parts[2] : parts[1];
@@ -82,7 +74,17 @@ export async function POST(req: NextRequest) {
     await bqClient
       .dataset(datasetId)
       .table(tableId)
-      .insert([{ insertId: alert_id, json: bqRow }]); // Use alert_id as insertId for BQ deduplication
+      .insert([row])
+      .catch((err) => {
+        if (err.name === 'PartialFailureError') {
+          console.error('❌ BigQuery Partial Failure Details:');
+          console.error(JSON.stringify(err.errors, null, 2));
+        } else {
+          console.error('❌ BigQuery Insert Failed:', err);
+        }
+      });
+
+    console.log(`✅ Ingested Alert: ${alert_id}`);
 
     // 5. Response Handling
     return NextResponse.json({ status: 'Accepted', message: 'Queued for processing' }, { status: 202 });
