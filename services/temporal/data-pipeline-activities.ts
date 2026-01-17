@@ -87,3 +87,30 @@ export async function createRiskCases(anomalies: any[]): Promise<void> {
     }
   }
 }
+
+/**
+ * 5. Sends email alert after pipeline report is complete.
+ */
+export async function sendPipelineEmailAlert(
+	jobId: string,
+	anomalyCount: number
+): Promise<void> {
+	// Dynamic import to avoid bundling issues with Temporal
+	const { sendPipelineAlertEmail } = await import("@/lib/email");
+
+	Context.current().log.info(`📧 Sending pipeline alert email for job ${jobId}...`);
+
+	const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+	const result = await sendPipelineAlertEmail({
+		jobId,
+		anomalyCount,
+		timestamp: new Date(),
+		reportUrl: `${appUrl}/reports/${jobId}`,
+	});
+
+	if (result.success) {
+		Context.current().log.info(`✅ Email sent successfully. ID: ${result.messageId}`);
+	} else {
+		Context.current().log.warn(`⚠️ Email failed: ${result.error}`);
+	}
+}
