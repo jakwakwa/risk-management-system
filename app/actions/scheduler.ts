@@ -45,7 +45,7 @@ export async function createMonitoringJob(
           scheduleId: `schedule-${job.id}`,
           spec: {
               cronExpressions: [cronExpression],
-              jitter: '1m', // Requirements: "Jitter: Apply randomized delays"
+              jitter: '1m', 
           },
           action: {
               type: 'startWorkflow',
@@ -56,8 +56,6 @@ export async function createMonitoringJob(
       })
   } catch (e) {
       console.error('Failed to create Temporal Schedule:', e)
-      // Should we rollback DB? For now, we'll keep it but maybe mark as error.
-      // Or just throw to UI.
       throw e
   }
 
