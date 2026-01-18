@@ -9,6 +9,7 @@ export interface PipelineAlertPayload {
 	anomalyCount: number;
 	timestamp: Date;
 	reportUrl?: string;
+	summary?: string;
 }
 
 export interface EmailResult {
@@ -25,7 +26,7 @@ export interface EmailResult {
  * Generates HTML email for pipeline alerts.
  */
 function generatePipelineAlertHtml(payload: PipelineAlertPayload): string {
-	const { jobId, anomalyCount, timestamp, reportUrl } = payload;
+	const { jobId, anomalyCount, timestamp, reportUrl, summary } = payload;
 	const formattedDate = timestamp.toLocaleDateString("en-US", {
 		weekday: "long",
 		year: "numeric",
@@ -42,12 +43,15 @@ function generatePipelineAlertHtml(payload: PipelineAlertPayload): string {
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; }
+    .header { background: linear-gradient(135deg, #856b38 0%, #734f08 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; }
     .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
     .alert-badge { display: inline-block; background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
-    .stat { margin: 20px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #667eea; }
+    .stat { margin: 20px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #db1f2e; }
     .stat-label { color: #6b7280; font-size: 12px; text-transform: uppercase; }
-    .stat-value { color: #111827; font-size: 24px; font-weight: 700; }
+    .stat-value { color: #111827; font-size: 34px; font-weight: 800; }
+    .summary-box { background: #fff; padding: 20px; border-radius: 8px; border-left: 4px solid #734f08; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .summary-title { font-weight: 600; color: #4b5563; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; }
+    .summary-text { color: #374151; line-height: 1.6; font-size: 15px; }
     .button { display: inline-block; background: #667eea; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; margin-top: 20px; }
     .footer { text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px; }
   </style>
@@ -62,6 +66,17 @@ function generatePipelineAlertHtml(payload: PipelineAlertPayload): string {
     <div class="content">
       <p>The anomaly detection pipeline has completed analysis and identified potential risks requiring attention.</p>
       
+      ${
+				summary
+					? `
+      <div class="summary-box">
+        <div class="summary-title">AI Assessment</div>
+        <div class="summary-text">${summary}</div>
+      </div>
+      `
+					: ""
+			}
+
       <div class="stat">
         <div class="stat-label">Anomalies Detected</div>
         <div class="stat-value">${anomalyCount}</div>
@@ -85,15 +100,40 @@ function generatePipelineAlertHtml(payload: PipelineAlertPayload): string {
 }
 
 /**
+ * Simple utility to strip HTML for text-only emails.
+ */
+function stripHtml(html?: string): string {
+	if (!html) return "";
+	return html
+		.replace(/<br\s*\/?>/gi, "\n")
+		.replace(/<li>/gi, "• ")
+		.replace(/<\/li>/gi, "\n")
+		.replace(/<p>/gi, "")
+		.replace(/<\/p>/gi, "\n\n")
+		.replace(/<[^>]+>/g, "");
+}
+
+/**
  * Generates plain text version for pipeline alerts.
  */
 function generatePipelineAlertText(payload: PipelineAlertPayload): string {
-	const { jobId, anomalyCount, timestamp, reportUrl } = payload;
+	const { jobId, anomalyCount, timestamp, reportUrl, summary } = payload;
+	const cleanSummary = stripHtml(summary);
+
 	return `
 PIPELINE ANALYSIS ALERT
 =======================
 
 The anomaly detection pipeline has completed and detected ${anomalyCount} anomalies.
+
+${
+	cleanSummary
+		? `
+AI ASSESSMENT:
+${cleanSummary}
+`
+		: ""
+}
 
 Job ID: ${jobId}
 Timestamp: ${timestamp.toISOString()}
