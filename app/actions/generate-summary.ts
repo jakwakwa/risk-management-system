@@ -2,6 +2,7 @@
 
 import { VertexAI } from "@google-cloud/vertexai";
 import type { Anomaly } from "@/types/anomaly";
+import { getGcpAuthOptions } from "@/lib/gcp-auth";
 
 export async function generateReportSummary(anomalies: Anomaly[]) {
 	if (!(process.env.GCP_PROJECT_ID && process.env.VERTEX_AI_LOCATION)) {
@@ -9,9 +10,11 @@ export async function generateReportSummary(anomalies: Anomaly[]) {
 	}
 
 	// Initialize Vertex with your Cloud project and location
+	const { projectId, authClient } = getGcpAuthOptions();
 	const vertex_ai = new VertexAI({
-		project: process.env.GCP_PROJECT_ID,
+		project: projectId || process.env.GCP_PROJECT_ID,
 		location: process.env.VERTEX_AI_LOCATION,
+		googleAuthOptions: authClient ? { authClient } : undefined,
 	});
 
 	const model = "gemini-2.0-flash-001";

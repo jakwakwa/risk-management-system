@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
 
 	// STEP 2: Generate embedding - DIRECT SDK call
 	const model = vertexAI.getGenerativeModel({ model: "text-embedding-004" });
-	const embeddingResult = await model.embedContent(clientName);
+	// biome-ignore lint/suspicious/noExplicitAny: method exists in runtime but missing in type
+	const embeddingResult = await (model as any).embedContent(clientName);
 	const clientEmbedding = embeddingResult.embedding.values;
 
 	// STEP 3: Vector search with pgvector - DIRECT SQL query
