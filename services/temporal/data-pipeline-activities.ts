@@ -7,6 +7,7 @@ import { getGcpAuthOptions } from "@/lib/gcp-auth";
 import type { Anomaly } from "@/types/anomaly";
 
 const { projectId, authClient } = getGcpAuthOptions();
+import { createNotification } from "@/lib/notifications";
 
 const resolvedProjectId =
 	projectId || process.env.GCP_PROJECT_ID || "stratcol-risk-analysis-engine";
@@ -49,6 +50,11 @@ export async function runBigQueryMLAnalysis(
   `;
 
 	try {
+		await createNotification(
+			"Analysis Started",
+			`BigQuery ML analysis Job ${jobId} has started.`,
+			"INFO"
+		);
 		const [job] = await bqClient.createQueryJob({ query, location: "US" });
 		Context.current().log.info(`Job ${job.id} started. Waiting for BQML completion...`);
 		await job.getQueryResults();
@@ -56,6 +62,11 @@ export async function runBigQueryMLAnalysis(
 		return job.id || "unknown";
 	} catch (error) {
 		Context.current().log.error("❌ BQML Job Failed", { error });
+		await createNotification(
+			"Analysis Failed",
+			`BigQuery ML analysis failed for job ${jobId}.`,
+			"ERROR"
+		);
 		throw error;
 	}
 }
@@ -129,6 +140,14 @@ export async function saveDailyReport(
 			status: "GENERATED",
 		},
 	});
+
+	await createNotification(
+		"Report Generated",
+		`Anomaly report ${jobId} generated with ${anomalies.length} anomalies.`,
+		"SUCCESS",
+		undefined,
+		`/reports/${jobId}`
+	);
 }
 
 /**
@@ -140,7 +159,7 @@ export async function generateReportSummary(anomalies: Anomaly[]): Promise<strin
 		return "No anomalies detected.";
 	}
 
-	if (!process.env.GCP_PROJECT_ID || !process.env.VERTEX_AI_LOCATION) {
+	if (!(process.env.GCP_PROJECT_ID && process.env.VERTEX_AI_LOCATION)) {
 		Context.current().log.warn("Missing Vertex AI configuration, skipping summary.");
 		return "Summary generation skipped: Missing GCP configuration.";
 	}
@@ -231,7 +250,17 @@ export async function sendPipelineEmailAlert(
 
 	if (result.success) {
 		Context.current().log.info(`✅ Email sent successfully. ID: ${result.messageId}`);
+		await createNotification(
+			"Email Sent",
+			`Pipeline alert email sent for job ${jobId}.`,
+			"SUCCESS"
+		);
 	} else {
 		Context.current().log.warn(`⚠️ Email failed: ${result.error}`);
+		await createNotification(
+			"Email Failed",
+			`Failed to send pipeline alert email for job ${jobId}.`,
+			"WARNING"
+		);
 	}
 }

@@ -239,6 +239,17 @@ exports.Prisma.AnomalyReportScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  link: 'link',
+  read: 'read',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -282,7 +293,8 @@ exports.Prisma.ModelName = {
   PublicDataAnalysis: 'PublicDataAnalysis',
   ManualInvestigativeReport: 'ManualInvestigativeReport',
   Sandbox: 'Sandbox',
-  AnomalyReport: 'AnomalyReport'
+  AnomalyReport: 'AnomalyReport',
+  Notification: 'Notification'
 };
 
 /**

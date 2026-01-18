@@ -17,12 +17,12 @@ export default async function AnalyticsPage() {
 				/>
 
 				<div className="grid gap-6 lg:grid-cols-2">
-					<div className="lg:col-span-2">
+					<div className="lg:col-span-1">
 						<MonthlyComparisonTable />
 						<DisputeBounceChart data={disputeBounceData} />
 					</div>
 				</div>
-				<div className="grid gap-6 lg:grid-cols-3">
+				<div className="">
 					<TransactionVolumeChart />
 					<IndustryCategoryChart />
 				</div>

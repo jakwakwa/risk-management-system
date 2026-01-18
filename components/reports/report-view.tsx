@@ -17,6 +17,7 @@ import {
 import { Loader2, FileDown, Sparkles, AlertTriangle } from "lucide-react";
 
 import type { Anomaly } from "@/types/anomaly";
+import { SectionHeader } from "../shared/section-header";
 
 interface ReportViewProps {
 	data: Anomaly[];
@@ -44,11 +45,10 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 		<div className="space-y-6">
 			<div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-						<AlertTriangle className="h-6 w-6 text-warning" />
-						Anomaly Analysis Report
-					</h2>
-					<p className="text-muted-foreground text-sm">Job ID: {jobId}</p>
+					<SectionHeader
+						title="Anomaly Analysis Report"
+						description={`Job ID: ${jobId.slice(0, 6)}...`}
+					/>
 				</div>
 				<div className="flex gap-2">
 					<PDFDownloadLink
@@ -85,7 +85,7 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 				</Card>
 
 				{/* AI Summary Section */}
-				<Card className="border-border bg-card/50 flex flex-col max-h-300 h-full overflow-y-scroll">
+				<Card className="border-border bg-primary flex flex-col max-h-300 h-full overflow-y-scroll">
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
 							<Sparkles className="h-5 w-5 text-ring" />
@@ -139,7 +139,7 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 			</div>
 
 			{/* Data Table Preview */}
-			<Card className="border-border bg-card/50">
+			<Card className="border-border">
 				<CardHeader>
 					<CardTitle>Top Anomalies List</CardTitle>
 				</CardHeader>

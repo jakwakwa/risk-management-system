@@ -44,7 +44,7 @@ const CustomYAxisTick = (props: CustomYAxisTickProps) => {
 				textAnchor={textAnchor}
 				fill="text-stone-300"
 				fontSize={12}
-				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-2) font-light stroke-0">
+				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-4) font-light stroke-1">
 				<tspan>{payload?.value}</tspan>
 			</text>
 		</g>
@@ -63,18 +63,18 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 					config={{
 						volume: {
 							label: "Total Value",
-							color: "var(--chart-6)",
+							color: "var(--chart-1)",
 						},
 						transactions: {
 							label: "Transaction Count",
-							color: "var(--chart-5)",
+							color: "var(--chart-2)",
 						},
 					}}
-					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-foreground w-full bg-sidebar/40 rounded-lg shadow-black/20 shadow-xl">
+					className="border-0 border-background h-72 px-[11px] py-[7px] text-xs font-mono opacity-100 text-primary w-full bg-sidebar/50 rounded-xl shadow-black/10 shadow-md">
 					<ResponsiveContainer width="100%" height="100%">
 						<LineChart data={data} margin={{ top: 20, right: 1, left: 1, bottom: 15 }}>
-							<CartesianGrid strokeDasharray="3 3" stroke="var(--chart-4)" />
-							<XAxis dataKey="day" className="text-xs" />
+							<CartesianGrid strokeDasharray="3 3" stroke="var(--color-stone-400)" />
+							<XAxis dataKey="day" className="text-xs text-stone-500" />
 							<YAxis yAxisId="left" tick={<CustomYAxisTick />} />
 							<YAxis yAxisId="right" orientation="right" tick={<CustomYAxisTick />} />
 							<ChartTooltip content={<ChartTooltipContent labelKey="day" />} />

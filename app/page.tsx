@@ -59,7 +59,7 @@ async function DashboardContent() {
 
 export default function DashboardPage() {
 	return (
-		<div className="min-h-screen bg-background font-sans font-light border-none">
+		<div className="min-h-screen bg-background font-sans text-foreground/80 border-none">
 			<Suspense
 				fallback={
 					<div className="container mx-auto p-6 space-y-6">

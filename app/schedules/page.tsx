@@ -1,12 +1,8 @@
-import {
-	getMonitoringJobs,
-	createMonitoringJob,
-	deleteMonitoringJob,
-	createSystemJob,
-	triggerEtlPipeline,
-	getPipelineStatus,
-} from "../actions/scheduler";
-import { Button } from "@/components/ui/button";
+import { getMonitoringJobs, getPipelineStatus } from "../actions/scheduler";
+import { EnableEtlButton, TriggerEtlButton } from "./etl-control-buttons";
+import { CreateJobForm } from "./create-job-form";
+import { DeleteJobButton } from "./delete-job-button";
+
 import {
 	Card,
 	CardContent,
@@ -14,8 +10,6 @@ import {
 	CardTitle,
 	CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
 	Table,
 	TableBody,
@@ -25,7 +19,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CronPicker } from "@/components/scheduler/cron-picker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { utcToSat, cronToHumanReadable } from "@/lib/cron-utils";
 import { PageContainer } from "@/components/shared/page-container";
@@ -45,38 +38,6 @@ export default async function SchedulesPage() {
 
 	const systemJobs = jobs.filter(j => j.type !== "CLIENT_MONITORING");
 	const clientJobs = jobs.filter(j => j.type === "CLIENT_MONITORING");
-
-	async function createClientJob(formData: FormData) {
-		"use server";
-		const clientName = formData.get("clientName") as string;
-		const cron = formData.get("cron") as string;
-		const userId = "user_123";
-		// Cron is already converted to UTC by CronPicker
-		await createMonitoringJob({ clientName, cronExpression: cron, userId });
-	}
-
-	async function createEtlJob() {
-		"use server";
-		// 5am SAT = 3am UTC
-		await createSystemJob({ type: "SYSTEM_ETL", cronExpression: "00 17 * * *" });
-	}
-
-	async function triggerEtlJob() {
-		"use server";
-		await triggerEtlPipeline();
-	}
-
-	async function createInferenceJob() {
-		"use server";
-		// 9am SAT = 7am UTC
-		await createSystemJob({ type: "SYSTEM_INFERENCE", cronExpression: "0 7 * * *" });
-	}
-
-	async function deleteJob(formData: FormData) {
-		"use server";
-		const jobId = formData.get("jobId") as string;
-		await deleteMonitoringJob(jobId);
-	}
 
 	const { header, tabs, clients, system } = schedulesContent;
 
@@ -98,29 +59,7 @@ export default async function SchedulesPage() {
 								<CardDescription>{clients.createCard.description}</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<form action={createClientJob} className="space-y-4">
-									<div className="space-y-2">
-										<Label htmlFor="clientName">
-											{clients.createCard.labels.clientName}
-										</Label>
-										<Input
-											id="clientName"
-											name="clientName"
-											placeholder={clients.createCard.labels.clientNamePlaceholder}
-											required
-										/>
-									</div>
-									<div className="space-y-2">
-										<Label htmlFor="cron">{clients.createCard.labels.schedule}</Label>
-										<CronPicker name="cron" defaultValue="45 14 * * *" />
-										<p className="text-[10px] text-muted-foreground">
-											{clients.createCard.labels.scheduleHelp}
-										</p>
-									</div>
-									<Button type="submit" className="w-full">
-										{clients.createCard.labels.submitButton}
-									</Button>
-								</form>
+								<CreateJobForm content={clients.createCard} />
 							</CardContent>
 						</Card>
 
@@ -152,12 +91,10 @@ export default async function SchedulesPage() {
 													{job.nextRunAt?.toLocaleDateString()}
 												</TableCell>
 												<TableCell>
-													<form action={deleteJob}>
-														<input type="hidden" name="jobId" value={job.id} />
-														<Button variant="destructive" size="sm" type="submit">
-															{clients.tableCard.deleteButton}
-														</Button>
-													</form>
+													<DeleteJobButton
+														jobId={job.id}
+														label={clients.tableCard.deleteButton}
+													/>
 												</TableCell>
 											</TableRow>
 										))}
@@ -179,7 +116,7 @@ export default async function SchedulesPage() {
 
 				<TabsContent value="system" className="space-y-4 ">
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-						<Card className="bg-card/80 border-dashed border-2 col-span-1 animate-pulse">
+						<Card className="bg-card/80 border-dashed border-2 col-span-1">
 							<CardHeader className="pb-3">
 								<CardTitle className="text-sm font-medium text-muted-foreground">
 									{system.quickActions.etl.label}
@@ -189,18 +126,10 @@ export default async function SchedulesPage() {
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-3">
-								<form action={createEtlJob}>
-									<Button variant="secondary" className="w-full">
-										{system.quickActions.etl.button}
-									</Button>
-								</form>
-								<form action={triggerEtlJob}>
-									<Button variant="default" className="w-full">
-										Trigger Pipeline Now
-									</Button>
-								</form>
+								<EnableEtlButton label={system.quickActions.etl.button} />
+								<TriggerEtlButton />
 								{runningWorkflows.length > 0 && (
-									<div className="flex items-center gap-2 p-2 bg-cyan-700/40 text-chart-4  animate-pulse w-full text-center rounded-md text-sm border-cyan-500 border-1.5">
+									<div className="flex items-center gap-2 p-2 bg-cyan-400/5 text-cyan-200 animate-[pulse_2s_cubic-bezier(0.4,0,0.9,1)_infinite] w-full text-center rounded-md border-cyan-500 border-[1.5px]">
 										<Loader2 className="w-4 h-4 animate-spin" />
 										{runningWorkflows.length} Pipeline(s) Running
 									</div>
@@ -236,12 +165,10 @@ export default async function SchedulesPage() {
 													</div>
 												</TableCell>
 												<TableCell>
-													<form action={deleteJob}>
-														<input type="hidden" name="jobId" value={job.id} />
-														<Button variant="destructive" size="sm" type="submit">
-															{system.tableCard.deleteButton}
-														</Button>
-													</form>
+													<DeleteJobButton
+														jobId={job.id}
+														label={system.tableCard.deleteButton}
+													/>
 												</TableCell>
 											</TableRow>
 										))}

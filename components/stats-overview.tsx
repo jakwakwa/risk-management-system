@@ -72,7 +72,7 @@ export async function StatsOverview() {
 			{stats.map(stat => {
 				const Icon = stat.icon;
 				return (
-					<Card key={stat.title} className="p-6 rounded-4xl shadow-lg border-none my-2">
+					<Card key={stat.title} className="p-6 rounded-4xl my-2">
 						<div className="flex items-center justify-between">
 							<div className="flex items-center gap-3">
 								<div

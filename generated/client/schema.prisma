@@ -165,3 +165,17 @@ model AnomalyReport {
 
   @@index([jobId])
 }
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String? // Optional for system-wide notifications
+  title     String
+  message   String
+  type      String // INFO, SUCCESS, WARNING, ERROR
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
