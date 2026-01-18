@@ -36,12 +36,6 @@ export function DashboardHeader() {
 							Analytics
 						</Link>
 
-						<Link href="/dashboard">
-							<Button variant="ghost" className="w-full justify-start">
-								<LayoutDashboard className="w-4 h-4 mr-2" />
-								Anamolies
-							</Button>
-						</Link>
 						<Link href="/dashboard/manual-screening">
 							<Button variant="ghost" className="w-full justify-start">
 								<ClipboardList className="w-4 h-4 mr-2" />
@@ -60,12 +54,12 @@ export function DashboardHeader() {
 								Reports
 							</Button>
 						</Link>
-						{/* <Link href="/settings">
+						<Link href="/settings">
 							<Button variant="ghost" className="w-full justify-start">
 								<Settings className="w-4 h-4 mr-2" />
 								Engine Tuning
 							</Button>
-						</Link> */}
+						</Link>
 					</nav>
 				</div>
 				<div className="flex items-center gap-4">

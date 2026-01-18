@@ -5,7 +5,7 @@
 
 :root {
   /* Updated color scheme for professional risk management dashboard */
-  --background: rgb(21, 21, 25);
+  --background: rgb(42, 42, 48);
   --foreground: rgba(116, 112, 102, 0.966);
   --card: rgba(26, 26, 31, 0.876);
   --card-foreground: rgba(144, 132, 95, 0.983);
@@ -27,11 +27,14 @@
   --border: rgba(122, 122, 112, 0.147);
   --input: rgba(102, 95, 89, 0.388);
   --ring: rgb(168, 140, 37);
-  --chart-1: rgba(199, 188, 140, 0.869);
-  --chart-2: rgb(133, 126, 104);
-  --chart-3: rgb(141, 136, 114);
-  --chart-4: #9597863f;
-  --chart-5: #3ad1d1a4;
+  --chart-1: rgba(241, 71, 71, 0.771);
+  --chart-2: rgba(200, 160, 0, 0.866);
+  --chart-3: rgba(50, 126, 213, 0.547);
+  --chart-4: #b4ed243a;
+  --chart-5: #6185be3a;
+  --chart-6: rgba(156, 128, 93, 0.771);
+  --chart-7: rgba(172, 153, 79, 0.866);
+  --chart-8: rgba(248, 198, 145, 0.547);
   --radius: 0.5rem;
   --sidebar: oklch(43.954% 0.02832 110.17 / 0.316);
   --sidebar-foreground: rgba(57, 54, 46, 0.045);
@@ -73,6 +76,10 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.577 0.245 27.325);
   --chart-5: oklch(39.893% 0.04354 209.058);
+  --chart-6: oklch(83.208% 0.22706 148.532);
+  --chart-7: oklch(0.646 0.155 165.614);
+  --chart-8: oklch(0.769 0.188 70.08);
+
   --sidebar: oklch(0.19 0.015 264.542);
   --sidebar-foreground: oklch(0.96 0.005 264.542);
   --sidebar-primary: oklch(46.274% 0.06866 238.923);
@@ -84,8 +91,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', 'Inter Fallback';
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-sans: 'Poppins', 'Poppins Fallback';
+  --font-mono: "Roboto Mono", "Roboto Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -114,6 +121,10 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

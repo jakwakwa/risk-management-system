@@ -33,6 +33,8 @@ import { SectionHeader } from "@/components/shared/section-header";
 import { schedulesContent } from "./content";
 import { Loader2 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function SchedulesPage() {
 	const userId = "user_123";
 	// Fetch jobs and status

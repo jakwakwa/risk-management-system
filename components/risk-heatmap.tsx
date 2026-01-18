@@ -71,7 +71,7 @@ export async function RiskHeatmap() {
 									<TableCell>
 										<Badge
 											variant={
-												Number(profile.riskScore) > 80 ? "destructive" : "secondary"
+												Number(profile.riskScore) > 90 ? "destructive" : "secondary"
 											}>
 											{profile.riskScore?.toFixed(0)}
 										</Badge>

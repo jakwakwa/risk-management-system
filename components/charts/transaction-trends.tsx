@@ -20,13 +20,20 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 
 interface TransactionTrendsProps {
 	data: {
-		month: string;
+		day: string;
 		volume: number;
 		transactions: number;
 	}[];
 }
 
-const CustomYAxisTick = (props: any) => {
+interface CustomYAxisTickProps {
+	x?: number;
+	y?: number;
+	payload?: { value: string | number };
+	textAnchor?: "start" | "middle" | "end" | "inherit";
+}
+
+const CustomYAxisTick = (props: CustomYAxisTickProps) => {
 	const { x, y, payload, textAnchor } = props;
 	return (
 		<g transform={`translate(${x},${y})`}>
@@ -38,7 +45,7 @@ const CustomYAxisTick = (props: any) => {
 				fill="text-stone-300"
 				fontSize={12}
 				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-2)/90 font-light stroke-1">
-				<tspan>{payload.value}</tspan>
+				<tspan>{payload?.value}</tspan>
 			</text>
 		</g>
 	);
@@ -77,8 +84,8 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 								type="monotone"
 								dataKey="volume"
 								stroke="var(--chart-1)"
-								strokeWidth={4}
-								dot={{ r: 4 }}
+								strokeWidth={2}
+								dot={{ r: 2 }}
 								name="Total Value"
 							/>
 							<Line
@@ -86,8 +93,8 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 								type="monotone"
 								dataKey="transactions"
 								stroke="var(--chart-5)"
-								strokeWidth={4}
-								dot={{ r: 4 }}
+								strokeWidth={2}
+								dot={{ r: 2 }}
 								name="Count"
 							/>
 						</LineChart>

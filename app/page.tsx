@@ -3,12 +3,24 @@ import { StatsOverview } from "@/components/stats-overview";
 import { RiskAlerts } from "@/components/risk-alerts";
 import { ClientsTable } from "@/components/clients-table";
 import { getDashboardData } from "@/app/actions/dashboard";
+import {
+	getTransactionTrends,
+	getDisputeBounceData,
+} from "@/app/actions/dashboard-charts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionTrends } from "@/components/charts/transaction-trends";
 import { RiskHeatmap } from "@/components/risk-heatmap";
+import { DisputeBounceChart } from "@/components/charts/dispute-bounce-chart";
+
+export const dynamic = "force-dynamic";
 
 async function DashboardContent() {
-	const { clients, alerts, error } = await getDashboardData();
+	const [{ clients, alerts, error }, transactionTrends, disputeBounceData] =
+		await Promise.all([
+			getDashboardData(),
+			getTransactionTrends(),
+			getDisputeBounceData(),
+		]);
 
 	if (error) {
 		return (
@@ -30,12 +42,15 @@ async function DashboardContent() {
 			<StatsOverview />
 			<div className="grid gap-6 lg:grid-cols-3">
 				<div className="flex flex-col gap-4 lg:col-span-2">
-					<TransactionTrends data={[]} />
-					<ClientsTable clients={clients} />
+					<TransactionTrends data={transactionTrends} />
+					<DisputeBounceChart data={disputeBounceData} />
 				</div>
 				<div className="flex flex-col gap-4">
 					<RiskHeatmap />
 					<RiskAlerts alerts={alerts} />
+				</div>
+				<div className="lg:col-span-3">
+					<ClientsTable clients={clients} />
 				</div>
 			</div>
 		</main>

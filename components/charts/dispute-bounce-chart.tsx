@@ -18,24 +18,17 @@ import {
 } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
-const data = [
-	{ month: "Jan", disputeRate: 1.2, bounceRate: 0.8 },
-	{ month: "Feb", disputeRate: 1.4, bounceRate: 0.9 },
-	{ month: "Mar", disputeRate: 1.1, bounceRate: 0.7 },
-	{ month: "Apr", disputeRate: 1.8, bounceRate: 1.2 },
-	{ month: "May", disputeRate: 2.1, bounceRate: 1.4 },
-	{ month: "Jun", disputeRate: 1.9, bounceRate: 1.1 },
-	{ month: "Jul", disputeRate: 1.6, bounceRate: 0.9 },
-	{ month: "Aug", disputeRate: 1.7, bounceRate: 1.0 },
-	{ month: "Sep", disputeRate: 2.3, bounceRate: 1.5 },
-	{ month: "Oct", disputeRate: 2.0, bounceRate: 1.3 },
-	{ month: "Nov", disputeRate: 1.8, bounceRate: 1.1 },
-	{ month: "Dec", disputeRate: 1.5, bounceRate: 0.8 },
-];
+interface DisputeBounceChartProps {
+	data: {
+		month: string;
+		disputeRate: number;
+		bounceRate: number;
+	}[];
+}
 
-export function DisputeBounceChart() {
+export function DisputeBounceChart({ data }: DisputeBounceChartProps) {
 	return (
-		<Card className="px-px rounded-t-none">
+		<Card>
 			<CardHeader>
 				<CardTitle className="text-foreground">Dispute & Bounce Rate Analysis</CardTitle>
 				<CardDescription>Monthly dispute and bounce rate percentages</CardDescription>
