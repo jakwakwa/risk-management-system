@@ -20,7 +20,7 @@ export function SectionHeader({
 				<h1 className="bg-linear-to-r from-chart-6 via-chart-7 to-chart-8 text-transparent bg-clip-text font-extrabold text-4xl filter drop-shadow-[2px_3px_1px_rgba(0,0,0,0.1)]">
 					{title}
 				</h1>
-				{description && <p className="text-foreground/50 mt-1">{description}</p>}
+				{description && <p className="text-primary/70 mt-1">{description}</p>}
 			</div>
 			{children && <div className="flex items-center gap-3">{children}</div>}
 		</div>

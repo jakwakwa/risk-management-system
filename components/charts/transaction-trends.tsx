@@ -44,7 +44,7 @@ const CustomYAxisTick = (props: CustomYAxisTickProps) => {
 				textAnchor={textAnchor}
 				fill="text-stone-300"
 				fontSize={12}
-				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-4) font-light stroke-1">
+				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-chart-4 font-light stroke-1">
 				<tspan>{payload?.value}</tspan>
 			</text>
 		</g>

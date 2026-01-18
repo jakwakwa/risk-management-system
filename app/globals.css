@@ -7,28 +7,28 @@
 
 :root {
   /* Dark mode colors for risk dashboard */
-  --background: rgb(224, 228, 234);
-  --foreground: oklch(63.535% 0.04327 89.73 / 0.995);
+  --background: rgb(200, 202, 206);
+  --foreground: oklch(69.699% 0.03105 89.628 / 0.995);
   --card: oklch(92.88% 0.00602 240.353 / 0.931);
-  --card-foreground: oklch(63.332% 0.0136 91.594);
+  --card-foreground: oklch(53.878% 0.01594 88.751);
   --popover: oklch(96.33% 0.00753 260.889 / 0.115);
   --popover-foreground: oklch(43.952% 0.03098 82.155);
-  --primary: oklch(29.653% 0.05362 98.262);
+  --primary: oklch(41.785% 0.04759 98.622);
   --primary-foreground: oklch(65.427% 0.09145 92.581);
-  --secondary: oklch(42.308% 0.04074 82.427);
-  --secondary-foreground: oklch(74.174% 0.02991 74.163);
-  --muted: oklch(75.395% 0.08013 116.223 / 0.138);
-  --muted-foreground: oklch(59.836% 0.02091 97.066 / 0.602);
+  --secondary: oklch(42.742% 0.05909 82.671);
+  --secondary-foreground: oklch(48.284% 0.01867 73.433);
+  --muted: oklch(53.18% 0.00658 84.526 / 0.147);
+  --muted-foreground: oklch(51.952% 0.01547 97.669 / 0.602);
   --accent: oklch(60.028% 0.0338 99.169 / 0.189);
   --accent-foreground: oklch(0.96 0.005 264.542);
   --destructive: oklch(62.882% 0.12957 18.438 / 0.753);
   --destructive-foreground: oklch(85.574% 0.03261 335.274);
   --success: oklch(70.765% 0.09415 172.04);
   --success-foreground: oklch(78.031% 0.0649 138.744);
-  --warning: oklch(74.135% 0.15023 107.407);
-  --warning-foreground: oklch(57.662% 0.11562 113.1);
+  --warning: oklch(78.143% 0.16384 107.313);
+  --warning-foreground: oklch(49.566% 0.10317 106.14 / 0.688);
   --border: oklch(83.28% 0.00009 271.152 / 0.45);
-  --input: oklch(89.046% 0.00359 248.508 / 0.153);
+  --input: oklch(86.214% 0.00827 254.07 / 0.956);
   --ring: oklch(82.937% 0.10717 95.728 / 0.854);
   --chart-1: oklch(63.453% 0.09891 90.906 / 0.655);
   --chart-2: oklch(56.087% 0.09421 280.031);

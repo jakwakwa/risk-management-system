@@ -52,7 +52,7 @@ export default async function SchedulesPage() {
 				</TabsList>
 
 				<TabsContent value="clients" className="space-y-4">
-					<div className="grid gap-8 md:grid-cols-1">
+					<div className="grid gap-8 md:grid-cols-3">
 						<Card className="md:col-span-1 h-fit">
 							<CardHeader>
 								<CardTitle>{clients.createCard.title}</CardTitle>
@@ -63,7 +63,7 @@ export default async function SchedulesPage() {
 							</CardContent>
 						</Card>
 
-						<Card className="md:col-span-1">
+						<Card className="md:col-span-2">
 							<CardHeader>
 								<CardTitle>{clients.tableCard.title}</CardTitle>
 							</CardHeader>
@@ -115,7 +115,7 @@ export default async function SchedulesPage() {
 				</TabsContent>
 
 				<TabsContent value="system" className="space-y-4 ">
-					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
 						<Card className="bg-card/80 border-dashed border-2 col-span-1">
 							<CardHeader className="pb-3">
 								<CardTitle className="text-sm font-medium text-muted-foreground">

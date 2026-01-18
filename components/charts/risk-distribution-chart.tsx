@@ -10,21 +10,18 @@ import {
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 
-const data = [
-	{ name: "E-commerce", value: 45, color: "hsl(var(--chart-1))" },
-	{ name: "Professional Services", value: 28, color: "hsl(var(--chart-2))" },
-	{ name: "SaaS", value: 18, color: "hsl(var(--chart-3))" },
-	{ name: "Manufacturing", value: 12, color: "hsl(var(--chart-4))" },
-	{ name: "Healthcare", value: 9, color: "hsl(var(--chart-5))" },
-	{ name: "Other", value: 8, color: "hsl(var(--muted))" },
-];
+interface ChartData {
+	name: string;
+	value: number;
+	color: string;
+}
 
-export function IndustryCategoryChart() {
+export function RiskDistributionChart({ data }: { data: ChartData[] }) {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-foreground">Industry Distribution</CardTitle>
-				<CardDescription>Client distribution by industry category</CardDescription>
+				<CardTitle className="text-foreground">Risk Distribution</CardTitle>
+				<CardDescription>Client distribution by risk tier</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<ChartContainer

@@ -1,6 +1,7 @@
 "use server";
 
 import { bqClient, BQ_TABLES } from "@/lib/bigquery";
+import { db } from "@/lib/db";
 
 export type TransactionTrendData = {
 	day: string;
@@ -73,6 +74,74 @@ export async function getDisputeBounceData(): Promise<DisputeBounceData[]> {
 		}));
 	} catch (error) {
 		console.error("Failed to fetch dispute/bounce data:", error);
+		return [];
+	}
+}
+
+/**
+ * Fetches monthly aggregated transaction volume and count from BigQuery.
+ * Returns data for the last 12 months.
+ */
+export async function getMonthlyTransactionVolume() {
+	try {
+		const [rows] = await bqClient.query({
+			query: `
+				SELECT 
+					FORMAT_DATE('%b', DATE(created_at)) as month,
+					FORMAT_DATE('%Y-%m', DATE(created_at)) as sort_key,
+					SUM(raw_amount) as volume,
+					COUNT(*) as transactions
+				FROM \`${BQ_TABLES.TRANSACTIONS}\`
+				GROUP BY 1, 2
+				ORDER BY sort_key
+				LIMIT 12
+			`,
+		});
+
+		return rows.map((r: Record<string, unknown>) => ({
+			month: String(r.month),
+			volume: Number(r.volume || 0),
+			transactions: Number(r.transactions || 0),
+		}));
+	} catch (error) {
+		console.error("Failed to fetch monthly transaction volume:", error);
+		return [];
+	}
+}
+
+/**
+ * Fetches risk distribution data from PostgreSQL.
+ * Categorizes clients into Low, Medium, High, and Critical risk tiers.
+ */
+export async function getRiskDistribution() {
+	try {
+		const profiles = await db.riskProfile.findMany({
+			select: { riskScore: true },
+		});
+
+		const distribution = {
+			Low: 0,
+			Medium: 0,
+			High: 0,
+			Critical: 0,
+		};
+
+		profiles.forEach(p => {
+			const score = p.riskScore || 0;
+			if (score >= 90) distribution.Critical++;
+			else if (score >= 75) distribution.High++;
+			else if (score >= 50) distribution.Medium++;
+			else distribution.Low++;
+		});
+
+		return [
+			{ name: "Critical", value: distribution.Critical, color: "var(--chart-1)" },
+			{ name: "High", value: distribution.High, color: "var(--chart-2)" },
+			{ name: "Medium", value: distribution.Medium, color: "var(--chart-3)" },
+			{ name: "Low", value: distribution.Low, color: "var(--chart-4)" },
+		].filter(d => d.value > 0); // Only show existing categories
+	} catch (error) {
+		console.error("Failed to fetch risk distribution:", error);
 		return [];
 	}
 }

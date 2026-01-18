@@ -14,7 +14,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Loader2, FileDown, Sparkles, AlertTriangle } from "lucide-react";
+import { Loader2, FileDown, Sparkles } from "lucide-react";
 
 import type { Anomaly } from "@/types/anomaly";
 import { SectionHeader } from "../shared/section-header";
@@ -85,13 +85,15 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 				</Card>
 
 				{/* AI Summary Section */}
-				<Card className="border-border bg-primary flex flex-col max-h-300 h-full overflow-y-scroll">
+				<Card className="bg-chart-2/90  border-border flex flex-col max-h-300 h-full overflow-y-scroll">
 					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<Sparkles className="h-5 w-5 text-ring" />
+						<CardTitle className="flex items-center gap-2 text-purple-300">
+							<Sparkles className="h-5 w-5 text-purple-200" />
 							AI Insight
 						</CardTitle>
-						<CardDescription>Powered by Gemini 2.5 Flash</CardDescription>
+						<CardDescription className="text-purple-50">
+							Powered by Gemini 2.5 Flash
+						</CardDescription>
 					</CardHeader>
 					<CardContent className="flex-1">
 						{!summary ? (
@@ -113,9 +115,9 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 								</Button>
 							</div>
 						) : (
-							<div className="bg-card p-4 rounded-lg border border-border text-card-foreground leading-relaxed">
+							<div className="bg-white/70 p-4 rounded-lg border border-border text-chart-2 leading-relaxed max-h-96 overflow-y-scroll">
 								<div
-									className="prose prose-sm prose-invert max-w-none 
+									className="prose prose-sm prose-invert text-sm max-w-80 
 									prose-headings:text-foreground prose-headings:font-semibold prose-headings:mt-4 prose-headings:mb-2
 									prose-p:text-muted-foreground prose-p:my-2
 									prose-strong:text-foreground
@@ -171,7 +173,7 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 											{item.identifier}
 										</td>
 										<td className="p-4 align-middle text-success font-mono">
-											${item.raw_amount}
+											R{item.raw_amount}
 										</td>
 										<td className="p-4 align-middle text-warning font-mono">
 											{item.normalized_distance.toFixed(4)}

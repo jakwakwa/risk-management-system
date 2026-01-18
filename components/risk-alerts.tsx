@@ -33,7 +33,7 @@ export function RiskAlerts({ alerts }: AlertProps) {
 							{alert.severity === "critical" ? (
 								<AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
 							) : (
-								<AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5" />
+								<AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
 							)}
 							<div className="space-y-1">
 								<p className="text-sm font-medium leading-none">{alert.client}</p>
@@ -42,9 +42,9 @@ export function RiskAlerts({ alerts }: AlertProps) {
 									{(() => {
 										try {
 											const date = new Date(alert.time);
-											if (isNaN(date.getTime())) return "Just now";
+											if (Number.isNaN(date.getTime())) return "Just now";
 											return formatDistanceToNow(date, { addSuffix: true });
-										} catch (e) {
+										} catch (_e) {
 											return "Just now";
 										}
 									})()}

@@ -8,11 +8,7 @@ import {
 	Users,
 	ShieldCheck,
 	AlertCircle,
-	FileWarningIcon,
-	CheckIcon,
-	FileWarning,
 	TrophyIcon,
-	MessageCircleWarningIcon,
 } from "lucide-react";
 
 const stats = [
@@ -49,7 +45,7 @@ const stats = [
 
 export async function StatsOverview() {
 	// 0. Fetch Dashboard Core Data (Clients, etc)
-
+	const { clients } = await getDashboardData();
 	// 1. Fetch Real Counts
 	const totalJobs = await db.monitoringJob.count();
 	// We count 'Sandbox' records that look like 'CASE-%' as our Risk Flags
@@ -57,7 +53,14 @@ export async function StatsOverview() {
 		where: { alert_id: { startsWith: "CASE-" } },
 	});
 
-	// 3. Fetch Recent Valid Transactions
+	const avgRiskScore =
+		clients.length > 0
+			? (clients.reduce((acc, curr) => acc + curr.riskScore, 0) / clients.length).toFixed(
+					1
+				)
+			: "0.0";
+
+	// 2. Fetch Recent Valid Transactions
 	const recentTransactions = await db.sandbox.findMany({
 		where: { alert_id: { startsWith: "CASE-" } },
 		orderBy: { createdAt: "desc" },
@@ -113,7 +116,7 @@ export async function StatsOverview() {
 			<Card className="rounded-4xl">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
 					<CardTitle className="text-sm font-medium">Model Garden Status</CardTitle>
-					{totalJobs > 0 ? (
+					{totalMatches > 0 ? (
 						<ShieldCheck className="h-4 w-4 text-success" />
 					) : (
 						<ShieldCheck className="h-4 w-4 text-destructive" />
@@ -121,7 +124,7 @@ export async function StatsOverview() {
 				</CardHeader>
 				<CardContent>
 					<div className="text-2xl font-bold text-success my-2">Operational</div>
-					{totalJobs > 0 ? (
+					{clients.length > 0 ? (
 						<p className="text-xs text-muted-foreground">Active</p>
 					) : (
 						<p className="text-xs text-muted-foreground">Inactive</p>
@@ -160,14 +163,14 @@ export async function StatsOverview() {
 			<Card className="rounded-4xl">
 				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 					<CardTitle className="text-sm font-medium">AI Risk Flags</CardTitle>
-					{totalMatches > 20 ? (
+					{totalJobs > 20 ? (
 						<AlertCircle className="h-4 w-4 text-destructive" />
 					) : (
 						<AlertCircle className="h-4 w-4 text-success" />
 					)}
 				</CardHeader>
 				<CardContent>
-					<div className="text-2xl font-bold text-destructive">{totalMatches}</div>
+					<div className="text-2xl font-bold text-destructive">{avgRiskScore}</div>
 					<p className="text-xs text-muted-foreground">Recent Cases</p>
 				</CardContent>
 			</Card>

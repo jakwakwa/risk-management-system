@@ -59,9 +59,9 @@ export default function RootLayout({
 					<main className="flex-1 overflow-auto">
 						<DashboardHeader />
 						{children}
-						<footer className="bg-background/90 h-16 bottom-0">
+						<footer className="bg-black/30 h-16 bottom-0">
 							<div className="p-4 border-t">
-								<div className="text-sm text-muted-foreground/50">
+								<div className="text-sm text-white/60">
 									v0.0.2 Walking Skeleton (Blind Index)
 								</div>
 							</div>

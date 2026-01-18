@@ -1,12 +1,18 @@
 import { TransactionVolumeChart } from "@/components/charts/transaction-volume-chart";
 import { DisputeBounceChart } from "@/components/charts/dispute-bounce-chart";
-import { IndustryCategoryChart } from "@/components/charts/industry-category-chart";
+import { RiskDistributionChart } from "@/components/charts/risk-distribution-chart";
 import { MonthlyComparisonTable } from "@/components/charts/monthly-comparison-table";
-import { getDisputeBounceData } from "@/app/actions/dashboard-charts";
+import {
+	getDisputeBounceData,
+	getMonthlyTransactionVolume,
+	getRiskDistribution,
+} from "@/app/actions/dashboard-charts";
 import { SectionHeader } from "@/components/shared/section-header";
 
 export default async function AnalyticsPage() {
 	const disputeBounceData = await getDisputeBounceData();
+	const monthlyVolumeData = await getMonthlyTransactionVolume();
+	const riskDistributionData = await getRiskDistribution();
 
 	return (
 		<div className="min-h-screen bg-background font-sans font-light">
@@ -23,8 +29,8 @@ export default async function AnalyticsPage() {
 					</div>
 				</div>
 				<div className="">
-					<TransactionVolumeChart />
-					<IndustryCategoryChart />
+					<TransactionVolumeChart data={monthlyVolumeData} />
+					<RiskDistributionChart data={riskDistributionData} />
 				</div>
 			</main>
 		</div>

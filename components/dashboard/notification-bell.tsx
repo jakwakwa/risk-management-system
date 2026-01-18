@@ -66,7 +66,7 @@ export function NotificationBell() {
 					toast.success("All notifications marked as read");
 				}
 			}
-		} catch (error) {
+		} catch (_error) {
 			toast.error("Failed to update notifications");
 		}
 	};
