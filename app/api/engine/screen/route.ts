@@ -1,18 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
 import { Storage } from "@google-cloud/storage";
 import { VertexAI } from "@google-cloud/vertexai";
 import { generatePDF } from "@/lib/report-generator";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
+import { getGcpAuthOptions } from "@/lib/gcp-auth";
 
-const storage = new Storage({
-    projectId: process.env.GCP_PROJECT_ID,
-});
+const authOptions = getGcpAuthOptions();
 
+// biome-ignore lint/suspicious/noExplicitAny: Google Cloud library type mismatch
+const storage = new Storage(authOptions as any);
+
+const { projectId, authClient } = authOptions;
 const vertexAI = new VertexAI({
-	project: process.env.GCP_PROJECT_ID!,
+	project: projectId || process.env.GCP_PROJECT_ID!,
 	location: process.env.VERTEX_AI_LOCATION || "us-central1",
+	// biome-ignore lint/suspicious/noExplicitAny: Google Cloud library type mismatch
+	googleAuthOptions: authClient ? { authClient: authClient as any } : undefined,
 });
 
 export async function POST(req: NextRequest) {
