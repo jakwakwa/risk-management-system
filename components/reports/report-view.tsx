@@ -57,7 +57,7 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 						}
 						fileName={`anomaly-report-${jobId}.pdf`}>
 						{({ loading }) => (
-							<Button variant="outline" disabled={loading} className="gap-2">
+							<Button disabled={loading} className="gap-2">
 								{loading ? (
 									<Loader2 className="h-4 w-4 animate-spin" />
 								) : (
@@ -85,17 +85,17 @@ export function ReportView({ data, jobId }: ReportViewProps) {
 				</Card>
 
 				{/* AI Summary Section */}
-				<Card className="border-border bg-card/50 flex flex-col max-h-200 overflow-y-scroll">
+				<Card className="border-border bg-card/50 flex flex-col max-h-300 h-full overflow-y-scroll">
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
-							<Sparkles className="h-5 w-5 text-chart-1" />
+							<Sparkles className="h-5 w-5 text-ring" />
 							AI Insight
 						</CardTitle>
 						<CardDescription>Powered by Gemini 2.5 Flash</CardDescription>
 					</CardHeader>
 					<CardContent className="flex-1">
 						{!summary ? (
-							<div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-4 min-h-[200px]">
+							<div className="h-full flex flex-col items-center justify-center p-6 text-center space-y-4 ">
 								<p className="text-muted-foreground text-sm">
 									Generate an executive summary of these anomalies using Vertex AI.
 								</p>

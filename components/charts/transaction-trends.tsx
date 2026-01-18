@@ -44,7 +44,7 @@ const CustomYAxisTick = (props: CustomYAxisTickProps) => {
 				textAnchor={textAnchor}
 				fill="text-stone-300"
 				fontSize={12}
-				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-2)/90 font-light stroke-1">
+				className="recharts-text text-[11px] tracking-widest recharts-cartesian-axis-tick-value stroke-(--chart-2) font-light stroke-0">
 				<tspan>{payload?.value}</tspan>
 			</text>
 		</g>
@@ -63,7 +63,7 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 					config={{
 						volume: {
 							label: "Total Value",
-							color: "var(--chart-1)",
+							color: "var(--chart-6)",
 						},
 						transactions: {
 							label: "Transaction Count",
@@ -78,24 +78,26 @@ export function TransactionTrends({ data }: TransactionTrendsProps) {
 							<YAxis yAxisId="left" tick={<CustomYAxisTick />} />
 							<YAxis yAxisId="right" orientation="right" tick={<CustomYAxisTick />} />
 							<ChartTooltip content={<ChartTooltipContent labelKey="day" />} />
-							<Legend wrapperStyle={{ color: "var(--chart-5)" }} />
+							<Legend wrapperStyle={{ color: "var(--chart-7)" }} />
 							<Line
 								yAxisId="left"
 								type="monotone"
 								dataKey="volume"
+								strokeOpacity={0.8}
 								stroke="var(--chart-1)"
-								strokeWidth={2}
-								dot={{ r: 2 }}
-								name="Total Value"
+								strokeWidth={3}
+								dot={{ r: 8 }}
+								name="Volume"
 							/>
 							<Line
 								yAxisId="right"
 								type="monotone"
 								dataKey="transactions"
+								strokeOpacity={0.8}
 								stroke="var(--chart-5)"
 								strokeWidth={2}
-								dot={{ r: 2 }}
-								name="Count"
+								dot={{ r: 8 }}
+								name="Total Transactions"
 							/>
 						</LineChart>
 					</ResponsiveContainer>

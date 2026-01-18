@@ -177,14 +177,14 @@ export default async function SchedulesPage() {
 					</div>
 				</TabsContent>
 
-				<TabsContent value="system" className="space-y-4">
+				<TabsContent value="system" className="space-y-4 ">
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-						<Card className="bg-card/80 border-dashed border-2 col-span-1">
+						<Card className="bg-card/80 border-dashed border-2 col-span-1 animate-pulse">
 							<CardHeader className="pb-3">
 								<CardTitle className="text-sm font-medium text-muted-foreground">
 									{system.quickActions.etl.label}
 								</CardTitle>
-								<CardDescription className="text-lg font-semibold text-chart-1">
+								<CardDescription className="text-lg font-semibold text-card-foreground">
 									{system.quickActions.etl.title}
 								</CardDescription>
 							</CardHeader>

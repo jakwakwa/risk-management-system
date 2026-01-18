@@ -86,7 +86,7 @@ export function TransactionVolumeChart({ data: propData }: TransactionVolumeChar
 								yAxisId="right"
 								type="monotone"
 								dataKey="transactions"
-								stroke="var(--chart-3)"
+								stroke="var(--chart-2)"
 								strokeWidth={4}
 								dot={{ r: 4 }}
 								name="Transaction Count"

@@ -55,14 +55,14 @@ export function DisputeBounceChart({ data }: DisputeBounceChartProps) {
 							<Legend />
 							<Bar
 								dataKey="disputeRate"
-								// fill="var(--color-chart-3)"
-								fill="var(--color-zinc-900)"
+								fill="var(--color-chart-2)"
+								// fill="var(--color-amber-200)"
 								radius={[4, 4, 0, 0]}
 								name="Dispute Rate (%)"
 							/>
 							<Bar
 								dataKey="bounceRate"
-								fill="var(--color-zinc-800)"
+								fill="var(--color-chart-1)"
 								radius={[4, 4, 0, 0]}
 								name="Bounce Rate (%)"
 							/>

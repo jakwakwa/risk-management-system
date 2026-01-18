@@ -63,10 +63,9 @@ export function AnomalyChart({ data }: AnomalyChartProps) {
 			<div className="text-xs text-muted-foreground leading-6">
 				<p>{`Score > 1.8 Critical`}</p>
 				<p>{`Score > 1.75 High`}</p>
-				<p>{`Otherwise: Normal/Low`}</p>
 			</div>
 			<ResponsiveContainer width="100%" height="100%">
-				<ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+				<ScatterChart margin={{ top: 20, right: 20, bottom: 100, left: 20 }}>
 					<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
 					<XAxis
 						type="number"
@@ -102,10 +101,6 @@ export function AnomalyChart({ data }: AnomalyChartProps) {
 					/>
 					<Scatter name="Anomalies" data={chartData}>
 						{chartData.map((entry, index) => {
-							// Logic:
-							// Score > 1.8 -> Critical (Chart 4 - often reddish)
-							// Score > 1.75 -> High (Chart 3 - orange/yellowish)
-							// Else -> Normal/Low (Chart 1 - primary theme color)
 							let fill = "var(--chart-5)";
 							if (entry.score > 1.8) fill = "var(--chart-1)";
 							else if (entry.score > 1.75) fill = "var(--chart-2)";
