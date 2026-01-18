@@ -5,14 +5,14 @@
 
 :root {
   /* Updated color scheme for professional risk management dashboard */
-  --background: rgb(42, 42, 48);
+  --background: rgb(30, 30, 36);
   --foreground: rgba(116, 112, 102, 0.966);
-  --card: rgba(26, 26, 31, 0.876);
+  --card: rgba(46, 46, 56, 0.876);
   --card-foreground: rgba(144, 132, 95, 0.983);
   --popover: rgb(227, 210, 186);
   --popover-foreground: rgb(58, 55, 46);
   --primary: #645435;
-  --secondary: rgba(94, 89, 69, 0.759);
+  --secondary: rgba(158, 137, 52, 0.759);
   --secondary-foreground: rgba(198, 198, 169, 0.67);
   --muted: rgba(2, 1, 1, 0.627);
   --muted-foreground: #a7a29af6;
@@ -27,19 +27,19 @@
   --border: rgba(122, 122, 112, 0.147);
   --input: rgba(102, 95, 89, 0.388);
   --ring: rgb(168, 140, 37);
-  --chart-1: rgba(241, 71, 71, 0.771);
-  --chart-2: rgba(200, 160, 0, 0.866);
-  --chart-3: rgba(50, 126, 213, 0.547);
-  --chart-4: #b4ed243a;
-  --chart-5: #6185be3a;
+  --chart-1: rgba(246, 42, 65, 0.988);
+  --chart-2: rgba(217, 196, 11, 0.34);
+  --chart-3: rgba(202, 203, 237, 0.157);
+  --chart-4: #554b19c3;
+  --chart-5: #ffd56b1a;
   --chart-6: rgba(156, 128, 93, 0.771);
-  --chart-7: rgba(172, 153, 79, 0.866);
+  --chart-7: rgba(252, 210, 152, 0.753);
   --chart-8: rgba(248, 198, 145, 0.547);
   --radius: 0.5rem;
   --sidebar: oklch(43.954% 0.02832 110.17 / 0.316);
   --sidebar-foreground: rgba(57, 54, 46, 0.045);
   --sidebar-primary: rgb(128, 115, 102);
-  --sidebar-primary-foreground: rgba(126, 124, 113, 0.631);
+  --sidebar-primary-foreground: rgba(201, 198, 177, 0.631);
   --sidebar-accent: oklch(39.035% 0.01954 107.315);
   --sidebar-accent-foreground: rgb(127, 121, 103);
   --sidebar-border: oklch(78.944% 0.01018 273.311);

@@ -7,7 +7,6 @@ import {
 	Calendar,
 	ClipboardList,
 	FileText,
-	LayoutDashboard,
 	HomeIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
